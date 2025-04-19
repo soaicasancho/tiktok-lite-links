@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -105,8 +104,8 @@
     const container = document.getElementById('linkContainer');
     const clickedLinks = JSON.parse(localStorage.getItem('clickedLinks') || '{}');
     const lastUpdated = localStorage.getItem('lastUpdated');
-
     const today = new Date().toISOString().split('T')[0];
+
     if (lastUpdated !== today) {
       localStorage.removeItem('clickedLinks');
       localStorage.setItem('lastUpdated', today);
@@ -116,19 +115,22 @@
       const button = document.createElement('button');
       button.className = 'link-button';
 
+      const clickCount = clickedLinks[link + '_count'] || 0;
+
       if (clickedLinks[link] === today) {
-        button.textContent = 'Đã bấm';
+        button.textContent = `Đã bấm (${clickCount} lượt)`;
         button.classList.add('clicked');
         button.disabled = true;
       } else {
-        button.textContent = `Link ${index + 1}`;
+        button.textContent = `Link ${index + 1} (${clickCount} lượt)`;
       }
 
       button.onclick = () => {
         window.open(link, '_blank');
         clickedLinks[link] = today;
+        clickedLinks[link + '_count'] = clickCount + 1;
         localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
-        button.textContent = 'Đã bấm';
+        button.textContent = `Đã bấm (${clickedLinks[link + '_count']} lượt)`;
         button.classList.add('clicked');
         button.disabled = true;
       };
