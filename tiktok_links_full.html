@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách link TikTok</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .link-button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      text-align: center;
+      border: none;
+      border-radius: 8px;
+      background-color: #1da1f2;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .clicked {
+      background-color: gray;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <h2>Danh sách liên kết TikTok</h2>
+  <div id="linkContainer"></div>
+
+  <script>
+    const links = [
+      "https://lite.tiktok.com/t/ZSr9A16Ae/",
+      "https://lite.tiktok.com/t/ZSr9A1ASy/",
+      "https://lite.tiktok.com/t/ZSr9A1MxF/",
+      "https://lite.tiktok.com/t/ZSr9A27ou/",
+      "https://lite.tiktok.com/t/ZSr9A4Gnj/",
+      "https://lite.tiktok.com/t/ZSr9A4gGa/",
+      "https://lite.tiktok.com/t/ZSr9A5DL7/",
+      "https://lite.tiktok.com/t/ZSr9A5YSq/",
+      "https://lite.tiktok.com/t/ZSr9A5oS1/",
+      "https://lite.tiktok.com/t/ZSr9A97PB/",
+      "https://lite.tiktok.com/t/ZSr9A9mYe/",
+      "https://lite.tiktok.com/t/ZSr9AA55K/",
+      "https://lite.tiktok.com/t/ZSr9AAhj8/",
+      "https://lite.tiktok.com/t/ZSr9ACH8r/",
+      "https://lite.tiktok.com/t/ZSr9ACuSA/",
+      "https://lite.tiktok.com/t/ZSr9ADMoF/",
+      "https://lite.tiktok.com/t/ZSr9AF5Dc/",
+      "https://lite.tiktok.com/t/ZSr9AG6Ec/",
+      "https://lite.tiktok.com/t/ZSr9AHtW8/",
+      "https://lite.tiktok.com/t/ZSr9AJWtA/",
+      "https://lite.tiktok.com/t/ZSr9ALBMj/",
+      "https://lite.tiktok.com/t/ZSr9ALkXY/",
+      "https://lite.tiktok.com/t/ZSr9ALwK6/",
+      "https://lite.tiktok.com/t/ZSr9AMDnU/",
+      "https://lite.tiktok.com/t/ZSr9AMGvW/",
+      "https://lite.tiktok.com/t/ZSr9AMcHM/",
+      "https://lite.tiktok.com/t/ZSr9ANTar/",
+      "https://lite.tiktok.com/t/ZSr9ANfm4/",
+      "https://lite.tiktok.com/t/ZSr9APkUX/",
+      "https://lite.tiktok.com/t/ZSr9ARKHD/",
+      "https://lite.tiktok.com/t/ZSr9ARMfa/",
+      "https://lite.tiktok.com/t/ZSr9ARbKe/",
+      "https://lite.tiktok.com/t/ZSr9ASKhB/",
+      "https://lite.tiktok.com/t/ZSr9ATExC/",
+      "https://lite.tiktok.com/t/ZSr9ATtey/",
+      "https://lite.tiktok.com/t/ZSr9AU4tt/",
+      "https://lite.tiktok.com/t/ZSr9AVHQ5/",
+      "https://lite.tiktok.com/t/ZSr9AVkuq/",
+      "https://lite.tiktok.com/t/ZSr9AXmDn/",
+      "https://lite.tiktok.com/t/ZSr9AXsVX/",
+      "https://lite.tiktok.com/t/ZSr9AYe3V/",
+      "https://lite.tiktok.com/t/ZSr9AauhP/",
+      "https://lite.tiktok.com/t/ZSr9AdD5g/",
+      "https://lite.tiktok.com/t/ZSr9AeoD5/",
+      "https://lite.tiktok.com/t/ZSr9AfkMj/",
+      "https://lite.tiktok.com/t/ZSr9AgDY1/",
+      "https://lite.tiktok.com/t/ZSr9AkTKM/",
+      "https://lite.tiktok.com/t/ZSr9AmMXj/",
+      "https://lite.tiktok.com/t/ZSr9AnDLd/",
+      "https://lite.tiktok.com/t/ZSr9ApnRW/",
+      "https://lite.tiktok.com/t/ZSr9AqepN/",
+      "https://lite.tiktok.com/t/ZSr9ArU9A/",
+      "https://lite.tiktok.com/t/ZSr9AsMfM/",
+      "https://lite.tiktok.com/t/ZSr9AuxKF/",
+      "https://lite.tiktok.com/t/ZSr9AySPH/",
+      "https://lite.tiktok.com/t/ZSr9AygPN/",
+      "https://lite.tiktok.com/t/ZSr9DFk8q/",
+      "https://lite.tiktok.com/t/ZSr9DJScA/",
+      "https://lite.tiktok.com/t/ZSr9DYG4y/",
+      "https://lite.tiktok.com/t/ZSr9Dj5qf/",
+      "https://lite.tiktok.com/t/ZSr9S3QK9/",
+      "https://lite.tiktok.com/t/ZSr9SE7mu/",
+      "https://lite.tiktok.com/t/ZSr9Scmre/",
+      "https://lite.tiktok.com/t/ZSr9SvB5H/",
+      "https://lite.tiktok.com/t/ZSr9Swb6T/"
+    ];
+
+    const container = document.getElementById('linkContainer');
+    const clickedLinks = JSON.parse(localStorage.getItem('clickedLinks') || '{}');
+    const lastUpdated = localStorage.getItem('lastUpdated');
+
+    const today = new Date().toISOString().split('T')[0];
+    if (lastUpdated !== today) {
+      localStorage.removeItem('clickedLinks');
+      localStorage.setItem('lastUpdated', today);
+    }
+
+    links.forEach((link, index) => {
+      const button = document.createElement('button');
+      button.className = 'link-button';
+
+      if (clickedLinks[link] === today) {
+        button.textContent = 'Đã bấm';
+        button.classList.add('clicked');
+        button.disabled = true;
+      } else {
+        button.textContent = `Link ${index + 1}`;
+      }
+
+      button.onclick = () => {
+        window.open(link, '_blank');
+        clickedLinks[link] = today;
+        localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
+        button.textContent = 'Đã bấm';
+        button.classList.add('clicked');
+        button.disabled = true;
+      };
+
+      container.appendChild(button);
+    });
+  </script>
+</body>
+</html>
