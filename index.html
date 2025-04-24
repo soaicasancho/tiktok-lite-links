@@ -7,14 +7,30 @@
   <style>
     body {
       font-family: sans-serif;
-      padding: 20px;
+      margin: 0;
+      padding-top: 70px; /* Chừa không gian cho tiêu đề cố định */
+    }
+
+    /* Tiêu đề cố định và căn giữa */
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      z-index: 1000;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
     }
 
     .link-button {
       display: block;
       width: 100%;
       padding: 10px;
-      margin-bottom: 10px;
+      margin: 10px 0;
       text-align: center;
       border: none;
       border-radius: 8px;
@@ -22,8 +38,6 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
-
-      /* Thêm hiệu ứng chuyển động */
       transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -43,10 +57,14 @@
       color: #eee;
       cursor: default;
     }
+
+    #linkContainer {
+      padding: 0 20px;
+    }
   </style>
 </head>
 <body>
-  <h2>Video 60 Phút by Đăng Giáp</h2>
+  <div class="fixed-header">Video 60 Phút by Đăng Giáp</div>
   <div id="linkContainer"></div>
 
   <script>
