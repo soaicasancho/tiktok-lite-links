@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Video 60 Phút by Đăng Giáp</title>
   <style>
     body {
       font-family: sans-serif;
       margin: 0;
-      padding-top: 70px; /* Chừa không gian cho tiêu đề cố định */
+      padding-top: 70px;
     }
 
-    /* Tiêu đề cố định và căn giữa */
     .fixed-header {
       position: fixed;
       top: 0;
@@ -26,11 +25,16 @@
       border-bottom: 1px solid #ccc;
     }
 
+    .link-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      padding: 0 20px;
+    }
+
     .link-button {
-      display: block;
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
       text-align: center;
       border: none;
       border-radius: 8px;
@@ -58,17 +62,27 @@
       cursor: default;
     }
 
-    #linkContainer {
-      padding: 0 20px;
+    .link-button:disabled {
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
   <div class="fixed-header">Video 60 Phút by Đăng Giáp</div>
-  <div id="linkContainer"></div>
+  <div class="link-grid" id="linkGrid"></div>
 
   <script>
-    const links = [
+    const regularLinks = [
+      "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", ""
+    ];
+
+    const liteLinks = [
       "https://lite.tiktok.com/t/ZSr9A16Ae/",
       "https://lite.tiktok.com/t/ZSr9A1ASy/",
       "https://lite.tiktok.com/t/ZSr9A1MxF/",
@@ -136,7 +150,7 @@
       "https://lite.tiktok.com/t/ZSr9Swb6T/"
     ];
 
-    const container = document.getElementById('linkContainer');
+    const container = document.getElementById('linkGrid');
     const clickedLinks = JSON.parse(localStorage.getItem('clickedLinks') || '{}');
     const lastUpdated = localStorage.getItem('lastUpdated');
     const today = new Date().toISOString().split('T')[0];
@@ -146,32 +160,50 @@
       localStorage.setItem('lastUpdated', today);
     }
 
-    links.forEach((link, index) => {
-      const button = document.createElement('button');
-      button.className = 'link-button';
+    const total = Math.max(regularLinks.length, liteLinks.length);
 
-      const clickCount = clickedLinks[link + '_count'] || 0;
+    for (let i = 0; i < total; i++) {
+      const createButton = (link, index, type) => {
+        const btn = document.createElement('button');
+        btn.className = 'link-button';
 
-      if (clickedLinks[link] === today) {
-        button.textContent = `Đã bấm (${clickCount} lượt)`;
-        button.classList.add('clicked');
-        button.disabled = true;
-      } else {
-        button.textContent = `Link ${index + 1} (${clickCount} lượt)`;
-      }
+        const clickKey = link + '_' + type;
+        const clickCount = clickedLinks[clickKey + '_count'] || 0;
 
-      button.onclick = () => {
-        window.open(link, '_blank');
-        clickedLinks[link] = today;
-        clickedLinks[link + '_count'] = clickCount + 1;
-        localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
-        button.textContent = `Đã bấm (${clickedLinks[link + '_count']} lượt)`;
-        button.classList.add('clicked');
-        button.disabled = true;
+        if (!link) {
+          btn.textContent = type === 'regular' ? `TikTok Thường ${index + 1}` : `TikTok Lite ${index + 1}`;
+          btn.disabled = true;
+          btn.style.backgroundColor = '#ccc';
+          return btn;
+        }
+
+        if (clickedLinks[clickKey] === today) {
+          btn.textContent = `Đã bấm (${clickCount} lượt)`;
+          btn.classList.add('clicked');
+          btn.disabled = true;
+        } else {
+          btn.textContent = type === 'regular' ? `TikTok Thường ${index + 1}` : `TikTok Lite ${index + 1}`;
+        }
+
+        btn.onclick = () => {
+          window.open(link, '_blank');
+          clickedLinks[clickKey] = today;
+          clickedLinks[clickKey + '_count'] = clickCount + 1;
+          localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
+          btn.textContent = `Đã bấm (${clickedLinks[clickKey + '_count']} lượt)`;
+          btn.classList.add('clicked');
+          btn.disabled = true;
+        };
+
+        return btn;
       };
 
-      container.appendChild(button);
-    });
+      const regularBtn = createButton(regularLinks[i], i, 'regular');
+      const liteBtn = createButton(liteLinks[i], i, 'lite');
+
+      container.appendChild(regularBtn);
+      container.appendChild(liteBtn);
+    }
   </script>
 </body>
 </html>
