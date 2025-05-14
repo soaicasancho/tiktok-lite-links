@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Video 60 Phút by Đăng Giáp</title>
+  <title>Video 60 Phút</title>
   <style>
     body {
       font-family: sans-serif;
@@ -25,22 +25,54 @@
       border-bottom: 1px solid #ccc;
     }
 
-    .link-grid {
+    .main-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 10px 20px;
       padding: 0 20px;
     }
 
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .section {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      text-align: center;
+      cursor: pointer;
+      padding: 6px;
+      background-color: #eee;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .section-title:hover {
+      background-color: #ddd;
+    }
+
     .link-button {
       width: 100%;
-      padding: 10px;
       text-align: center;
       border: none;
       border-radius: 8px;
       background-color: #1da1f2;
       color: white;
       font-size: 16px;
+      padding: 10px 12px;
       cursor: pointer;
       transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
@@ -65,14 +97,93 @@
     .link-button:disabled {
       cursor: not-allowed;
     }
+
+    .link-container {
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    .collapsed {
+      display: none;
+    }
+
+    .toggle-icon {
+      font-size: 16px;
+    }
+
+    /* Khoảng cách giữa các nút trong cột 1 */
+    #customColumn .link-button {
+      margin-bottom: 8px;
+    }
+
+    /* Khoảng cách nhỏ hơn (1/2) cho cột 2 và 3 */
+    #regularColumn .link-button,
+    #liteColumn .link-button {
+      margin-bottom: -2px;
+    }
   </style>
 </head>
 <body>
   <div class="fixed-header">Video 60 Phút by Đăng Giáp</div>
-  <div class="link-grid" id="linkGrid"></div>
+  <div class="main-grid">
+    <!-- Cột 1 -->
+    <div class="column" id="customColumn">
+      <div class="section">
+        <div class="section-title" onclick="toggleSection('linkCoc')">
+          <span class="toggle-icon" id="icon-linkCoc">+</span> Link Cóc
+        </div>
+        <div id="linkCoc" class="link-container collapsed"></div>
+      </div>
+      <div class="section">
+        <div class="section-title" onclick="toggleSection('linkTuyet')">
+          <span class="toggle-icon" id="icon-linkTuyet">+</span> Link Tuyết
+        </div>
+        <div id="linkTuyet" class="link-container collapsed"></div>
+      </div>
+      <div class="section">
+        <div class="section-title" onclick="toggleSection('linkMochi')">
+          <span class="toggle-icon" id="icon-linkMochi">+</span> Link Mochi
+        </div>
+        <div id="linkMochi" class="link-container collapsed"></div>
+      </div>
+    </div>
+
+    <!-- Cột 2 -->
+    <div class="column" id="regularColumn"></div>
+
+    <!-- Cột 3 -->
+    <div class="column" id="liteColumn"></div>
+  </div>
 
   <script>
+    const linkCoc = [
+      { url: "https://example.com/coc1", label: "Máy 16PRM" },
+      { url: "https://example.com/coc2", label: "Máy XS" },
+      { url: "https://example.com/coc3", label: "Máy 7PL" },
+      { url: "https://example.com/coc4", label: "Máy 6PL" },
+      { url: "https://example.com/coc5", label: "Máy ?" },
+      { url: "https://example.com/coc6", label: "Máy ?" },
+      { url: "https://example.com/coc7", label: "Máy ?" },
+      { url: "https://example.com/coc8", label: "Máy ?" }
+    ];
+
+    const linkTuyet = [
+      { url: "https://example.com/tuyet1", label: "Máy ?" },
+      { url: "https://example.com/tuyet2", label: "Máy ?" },
+      { url: "https://example.com/tuyet3", label: "Máy ?" },
+      { url: "https://example.com/tuyet4", label: "Máy ?" },
+      { url: "https://example.com/tuyet5", label: "Máy ?" },
+      { url: "https://example.com/tuyet6", label: "Máy ?" }
+    ];
+
+    const linkMochi = [
+      { url: "https://example.com/mochi1", label: "Máy ?" },
+      { url: "https://example.com/mochi2", label: "Máy ?" },
+      { url: "https://example.com/mochi3", label: "Máy ?" }
+    ];
+
     const regularLinks = [
+      // 🔗 CỘT 2: Link TikTok Thường
       "https://www.tiktok.com/t/ZSr9A16Ae/",
       "https://www.tiktok.com/t/ZSr9A1ASy/",
       "https://www.tiktok.com/t/ZSr9A1MxF/",
@@ -141,6 +252,7 @@
     ];
 
     const liteLinks = [
+      // 🔗 CỘT 3: Link TikTok Lite
       "https://lite.tiktok.com/t/ZSr9A16Ae/",
       "https://lite.tiktok.com/t/ZSr9A1ASy/",
       "https://lite.tiktok.com/t/ZSr9A1MxF/",
@@ -208,7 +320,6 @@
       "https://lite.tiktok.com/t/ZSr9Swb6T/"
     ];
 
-    const container = document.getElementById('linkGrid');
     const clickedLinks = JSON.parse(localStorage.getItem('clickedLinks') || '{}');
     const lastUpdated = localStorage.getItem('lastUpdated');
     const today = new Date().toISOString().split('T')[0];
@@ -218,50 +329,58 @@
       localStorage.setItem('lastUpdated', today);
     }
 
-    const total = Math.max(regularLinks.length, liteLinks.length);
+    function createButton(link, label, type, allowMultiple = false) {
+      const btn = document.createElement('button');
+      btn.className = 'link-button';
+      const key = link + '_' + type;
+      const clickCount = clickedLinks[key + '_count'] || 0;
 
-    for (let i = 0; i < total; i++) {
-      const createButton = (link, index, type) => {
-        const btn = document.createElement('button');
-        btn.className = 'link-button';
+      if (!allowMultiple && clickedLinks[key] === today) {
+        btn.textContent = `Đã bấm (${clickCount} lượt)`;
+        btn.classList.add('clicked');
+        btn.disabled = true;
+      } else {
+        btn.textContent = `${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}`;
+      }
 
-        const clickKey = link + '_' + type;
-        const clickCount = clickedLinks[clickKey + '_count'] || 0;
-
-        if (!link) {
-          btn.textContent = type === 'regular' ? `TikTok Thường ${index + 1}` : `TikTok Lite ${index + 1}`;
-          btn.disabled = true;
-          btn.style.backgroundColor = '#ccc';
-          return btn;
-        }
-
-        if (clickedLinks[clickKey] === today) {
-          btn.textContent = `Đã bấm (${clickCount} lượt)`;
+      btn.onclick = () => {
+        window.open(link, '_blank');
+        clickedLinks[key] = today;
+        clickedLinks[key + '_count'] = clickCount + 1;
+        localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
+        if (!allowMultiple) {
+          btn.textContent = `Đã bấm (${clickedLinks[key + '_count']} lượt)`;
           btn.classList.add('clicked');
           btn.disabled = true;
         } else {
-          btn.textContent = type === 'regular' ? `TikTok Thường ${index + 1}` : `TikTok Lite ${index + 1}`;
+          btn.textContent = `${label} (${clickedLinks[key + '_count']} lượt)`;
         }
-
-        btn.onclick = () => {
-          window.open(link, '_blank');
-          clickedLinks[clickKey] = today;
-          clickedLinks[clickKey + '_count'] = clickCount + 1;
-          localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
-          btn.textContent = `Đã bấm (${clickedLinks[clickKey + '_count']} lượt)`;
-          btn.classList.add('clicked');
-          btn.disabled = true;
-        };
-
-        return btn;
       };
 
-      const regularBtn = createButton(regularLinks[i], i, 'regular');
-      const liteBtn = createButton(liteLinks[i], i, 'lite');
-
-      container.appendChild(regularBtn);
-      container.appendChild(liteBtn);
+      return btn;
     }
+
+    function renderLinks(containerId, links, type, prefix, allowMultiple = false) {
+      const container = document.getElementById(containerId);
+      links.forEach((link, i) => {
+        const btn = createButton(link.url || link, link.label || `${prefix} ${i + 1}`, type, allowMultiple);
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleSection(id) {
+      const container = document.getElementById(id);
+      const icon = document.getElementById('icon-' + id);
+      container.classList.toggle('collapsed');
+      icon.textContent = container.classList.contains('collapsed') ? '+' : '−';
+    }
+
+    renderLinks('linkCoc', linkCoc, 'coc', 'Cóc', true);
+    renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
+    renderLinks('linkMochi', linkMochi, 'mochi', 'Mochi', true);
+
+    renderLinks('regularColumn', regularLinks, 'regular', 'TikTok Thường');
+    renderLinks('liteColumn', liteLinks, 'lite', 'TikTok Lite');
   </script>
 </body>
 </html>
