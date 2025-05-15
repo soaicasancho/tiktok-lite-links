@@ -111,12 +111,10 @@
       font-size: 16px;
     }
 
-    /* Khoảng cách giữa các nút trong cột 1 */
     #customColumn .link-button {
       margin-bottom: 8px;
     }
 
-    /* Khoảng cách nhỏ hơn (1/2) cho cột 2 và 3 */
     #regularColumn .link-button,
     #liteColumn .link-button {
       margin-bottom: -2px;
@@ -177,9 +175,9 @@
     ];
 
     const linkMochi = [
-      { url: "https://example.com/mochi1", label: "Máy ?" },
-      { url: "https://example.com/mochi2", label: "Máy ?" },
-      { url: "https://example.com/mochi3", label: "Máy ?" }
+      { url: "https://example.com/mochi1", label: "Máy ?", protected: true  },
+      { url: "https://example.com/mochi2", label: "Máy ?", protected: true  },
+      { url: "https://example.com/mochi3", label: "Máy ?", protected: true  }
     ];
 
     const regularLinks = [
@@ -329,7 +327,7 @@
       localStorage.setItem('lastUpdated', today);
     }
 
-    function createButton(link, label, type, allowMultiple = false) {
+    function createButton(link, label, type, allowMultiple = false, isProtected = false) {
       const btn = document.createElement('button');
       btn.className = 'link-button';
       const key = link + '_' + type;
@@ -344,6 +342,13 @@
       }
 
       btn.onclick = () => {
+        if (isProtected) {
+          const pass = prompt("Bạn không có quyền truy cập tính năng này\nNhập Mật Khẩu để tiếp tục:");
+          if (pass !== "8322") {
+            alert("Sai mật khẩu!");
+            return;
+          }
+        }
         window.open(link, '_blank');
         clickedLinks[key] = today;
         clickedLinks[key + '_count'] = clickCount + 1;
@@ -363,7 +368,13 @@
     function renderLinks(containerId, links, type, prefix, allowMultiple = false) {
       const container = document.getElementById(containerId);
       links.forEach((link, i) => {
-        const btn = createButton(link.url || link, link.label || `${prefix} ${i + 1}`, type, allowMultiple);
+        const btn = createButton(
+          link.url || link,
+          link.label || `${prefix} ${i + 1}`,
+          type,
+          allowMultiple,
+          link.protected || false
+        );
         container.appendChild(btn);
       });
     }
