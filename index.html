@@ -29,7 +29,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      padding: 10px 20px;
+      padding: 0 20px;
     }
 
     .section {
@@ -65,7 +65,7 @@
       border-radius: 8px;
       background-color: #1da1f2;
       color: white;
-      font-size: 14px;
+      font-size: 16px;
       padding: 10px 12px;
       cursor: pointer;
       transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -103,7 +103,7 @@
     }
 
     .toggle-icon {
-      font-size: 14px;
+      font-size: 16px;
     }
 
     .bottom-section {
@@ -113,12 +113,19 @@
       padding: 20px;
     }
 
+    /* Đảm bảo không bị ghi đè bởi media query cũ */
+    @media (max-width: 480px) {
+      .link-button {
+        font-size: 15px;
+        padding: 8px 10px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="fixed-header">Video 60 Phút by Đăng Giáp</div>
 
-  <!-- Top Section: 3 hàng dọc - mỗi hàng 1 mục -->
+  <!-- Phần trên gồm Link Cóc, Tuyết, Mochi -->
   <div class="top-section">
     <div class="section">
       <div class="section-title" onclick="toggleSection('linkCoc')">
@@ -126,14 +133,12 @@
       </div>
       <div id="linkCoc" class="link-container collapsed"></div>
     </div>
-
     <div class="section">
       <div class="section-title" onclick="toggleSection('linkTuyet')">
         <span class="toggle-icon" id="icon-linkTuyet">+</span> Link Tuyết
       </div>
       <div id="linkTuyet" class="link-container collapsed"></div>
     </div>
-
     <div class="section">
       <div class="section-title" onclick="toggleSection('linkMochi')">
         <span class="toggle-icon" id="icon-linkMochi">+</span> Link Mochi
@@ -142,7 +147,7 @@
     </div>
   </div>
 
-  <!-- Bottom Section: 2 cột -->
+  <!-- Phần dưới gồm TikTok thường và TikTok Lite -->
   <div class="bottom-section">
     <div class="section" id="regularColumn">
       <div class="section-title">TikTok Thường</div>
@@ -174,146 +179,21 @@
     ];
 
     const linkMochi = [
-      { url: "https://example.com/mochi1", label: "Máy ?", protected: true  },
-      { url: "https://example.com/mochi2", label: "Máy ?", protected: true  },
-      { url: "https://example.com/mochi3", label: "Máy ?", protected: true  }
+      { url: "https://example.com/mochi1", label: "Máy ?", protected: true },
+      { url: "https://example.com/mochi2", label: "Máy ?", protected: true },
+      { url: "https://example.com/mochi3", label: "Máy ?", protected: true }
     ];
 
     const regularLinks = [
-      // 🔗 CỘT 2: Link TikTok Thường
       "https://www.tiktok.com/t/ZSr9A16Ae/",
       "https://www.tiktok.com/t/ZSr9A1ASy/",
-      "https://www.tiktok.com/t/ZSr9A1MxF/",
-      "https://www.tiktok.com/t/ZSr9A27ou/",
-      "https://www.tiktok.com/t/ZSr9A4Gnj/",
-      "https://www.tiktok.com/t/ZSr9A4gGa/",
-      "https://www.tiktok.com/t/ZSr9A5DL7/",
-      "https://www.tiktok.com/t/ZSr9A5YSq/",
-      "https://www.tiktok.com/t/ZSr9A5oS1/",
-      "https://www.tiktok.com/t/ZSr9A97PB/",
-      "https://www.tiktok.com/t/ZSr9A9mYe/",
-      "https://www.tiktok.com/t/ZSr9AA55K/",
-      "https://www.tiktok.com/t/ZSr9AAhj8/",
-      "https://www.tiktok.com/t/ZSr9ACH8r/",
-      "https://www.tiktok.com/t/ZSr9ACuSA/",
-      "https://www.tiktok.com/t/ZSr9ADMoF/",
-      "https://www.tiktok.com/t/ZSr9AF5Dc/",
-      "https://www.tiktok.com/t/ZSr9AG6Ec/",
-      "https://www.tiktok.com/t/ZSr9AHtW8/",
-      "https://www.tiktok.com/t/ZSr9AJWtA/",
-      "https://www.tiktok.com/t/ZSr9ALBMj/",
-      "https://www.tiktok.com/t/ZSr9ALkXY/",
-      "https://www.tiktok.com/t/ZSr9ALwK6/",
-      "https://www.tiktok.com/t/ZSr9AMDnU/",
-      "https://www.tiktok.com/t/ZSr9AMGvW/",
-      "https://www.tiktok.com/t/ZSr9AMcHM/",
-      "https://www.tiktok.com/t/ZSr9ANTar/",
-      "https://www.tiktok.com/t/ZSr9ANfm4/",
-      "https://www.tiktok.com/t/ZSr9APkUX/",
-      "https://www.tiktok.com/t/ZSr9ARKHD/",
-      "https://www.tiktok.com/t/ZSr9ARMfa/",
-      "https://www.tiktok.com/t/ZSr9ARbKe/",
-      "https://www.tiktok.com/t/ZSr9ASKhB/",
-      "https://www.tiktok.com/t/ZSr9ATExC/",
-      "https://www.tiktok.com/t/ZSr9ATtey/",
-      "https://www.tiktok.com/t/ZSr9AU4tt/",
-      "https://www.tiktok.com/t/ZSr9AVHQ5/",
-      "https://www.tiktok.com/t/ZSr9AVkuq/",
-      "https://www.tiktok.com/t/ZSr9AXmDn/",
-      "https://www.tiktok.com/t/ZSr9AXsVX/",
-      "https://www.tiktok.com/t/ZSr9AYe3V/",
-      "https://www.tiktok.com/t/ZSr9AauhP/",
-      "https://www.tiktok.com/t/ZSr9AdD5g/",
-      "https://www.tiktok.com/t/ZSr9AeoD5/",
-      "https://www.tiktok.com/t/ZSr9AfkMj/",
-      "https://www.tiktok.com/t/ZSr9AgDY1/",
-      "https://www.tiktok.com/t/ZSr9AkTKM/",
-      "https://www.tiktok.com/t/ZSr9AmMXj/",
-      "https://www.tiktok.com/t/ZSr9AnDLd/",
-      "https://www.tiktok.com/t/ZSr9ApnRW/",
-      "https://www.tiktok.com/t/ZSr9AqepN/",
-      "https://www.tiktok.com/t/ZSr9ArU9A/",
-      "https://www.tiktok.com/t/ZSr9AsMfM/",
-      "https://www.tiktok.com/t/ZSr9AuxKF/",
-      "https://www.tiktok.com/t/ZSr9AySPH/",
-      "https://www.tiktok.com/t/ZSr9AygPN/",
-      "https://www.tiktok.com/t/ZSr9DFk8q/",
-      "https://www.tiktok.com/t/ZSr9DJScA/",
-      "https://www.tiktok.com/t/ZSr9DYG4y/",
-      "https://www.tiktok.com/t/ZSr9Dj5qf/",
-      "https://www.tiktok.com/t/ZSr9S3QK9/",
-      "https://www.tiktok.com/t/ZSr9SE7mu/",
-      "https://www.tiktok.com/t/ZSr9Scmre/",
-      "https://www.tiktok.com/t/ZSr9SvB5H/",
       "https://www.tiktok.com/t/ZSr9Swb6T/"
     ];
 
     const liteLinks = [
-      // 🔗 CỘT 3: Link TikTok Lite
       "https://lite.tiktok.com/t/ZSr9A16Ae/",
       "https://lite.tiktok.com/t/ZSr9A1ASy/",
       "https://lite.tiktok.com/t/ZSr9A1MxF/",
-      "https://lite.tiktok.com/t/ZSr9A27ou/",
-      "https://lite.tiktok.com/t/ZSr9A4Gnj/",
-      "https://lite.tiktok.com/t/ZSr9A4gGa/",
-      "https://lite.tiktok.com/t/ZSr9A5DL7/",
-      "https://lite.tiktok.com/t/ZSr9A5YSq/",
-      "https://lite.tiktok.com/t/ZSr9A5oS1/",
-      "https://lite.tiktok.com/t/ZSr9A97PB/",
-      "https://lite.tiktok.com/t/ZSr9A9mYe/",
-      "https://lite.tiktok.com/t/ZSr9AA55K/",
-      "https://lite.tiktok.com/t/ZSr9AAhj8/",
-      "https://lite.tiktok.com/t/ZSr9ACH8r/",
-      "https://lite.tiktok.com/t/ZSr9ACuSA/",
-      "https://lite.tiktok.com/t/ZSr9ADMoF/",
-      "https://lite.tiktok.com/t/ZSr9AF5Dc/",
-      "https://lite.tiktok.com/t/ZSr9AG6Ec/",
-      "https://lite.tiktok.com/t/ZSr9AHtW8/",
-      "https://lite.tiktok.com/t/ZSr9AJWtA/",
-      "https://lite.tiktok.com/t/ZSr9ALBMj/",
-      "https://lite.tiktok.com/t/ZSr9ALkXY/",
-      "https://lite.tiktok.com/t/ZSr9ALwK6/",
-      "https://lite.tiktok.com/t/ZSr9AMDnU/",
-      "https://lite.tiktok.com/t/ZSr9AMGvW/",
-      "https://lite.tiktok.com/t/ZSr9AMcHM/",
-      "https://lite.tiktok.com/t/ZSr9ANTar/",
-      "https://lite.tiktok.com/t/ZSr9ANfm4/",
-      "https://lite.tiktok.com/t/ZSr9APkUX/",
-      "https://lite.tiktok.com/t/ZSr9ARKHD/",
-      "https://lite.tiktok.com/t/ZSr9ARMfa/",
-      "https://lite.tiktok.com/t/ZSr9ARbKe/",
-      "https://lite.tiktok.com/t/ZSr9ASKhB/",
-      "https://lite.tiktok.com/t/ZSr9ATExC/",
-      "https://lite.tiktok.com/t/ZSr9ATtey/",
-      "https://lite.tiktok.com/t/ZSr9AU4tt/",
-      "https://lite.tiktok.com/t/ZSr9AVHQ5/",
-      "https://lite.tiktok.com/t/ZSr9AVkuq/",
-      "https://lite.tiktok.com/t/ZSr9AXmDn/",
-      "https://lite.tiktok.com/t/ZSr9AXsVX/",
-      "https://lite.tiktok.com/t/ZSr9AYe3V/",
-      "https://lite.tiktok.com/t/ZSr9AauhP/",
-      "https://lite.tiktok.com/t/ZSr9AdD5g/",
-      "https://lite.tiktok.com/t/ZSr9AeoD5/",
-      "https://lite.tiktok.com/t/ZSr9AfkMj/",
-      "https://lite.tiktok.com/t/ZSr9AgDY1/",
-      "https://lite.tiktok.com/t/ZSr9AkTKM/",
-      "https://lite.tiktok.com/t/ZSr9AmMXj/",
-      "https://lite.tiktok.com/t/ZSr9AnDLd/",
-      "https://lite.tiktok.com/t/ZSr9ApnRW/",
-      "https://lite.tiktok.com/t/ZSr9AqepN/",
-      "https://lite.tiktok.com/t/ZSr9ArU9A/",
-      "https://lite.tiktok.com/t/ZSr9AsMfM/",
-      "https://lite.tiktok.com/t/ZSr9AuxKF/",
-      "https://lite.tiktok.com/t/ZSr9AySPH/",
-      "https://lite.tiktok.com/t/ZSr9AygPN/",
-      "https://lite.tiktok.com/t/ZSr9DFk8q/",
-      "https://lite.tiktok.com/t/ZSr9DJScA/",
-      "https://lite.tiktok.com/t/ZSr9DYG4y/",
-      "https://lite.tiktok.com/t/ZSr9Dj5qf/",
-      "https://lite.tiktok.com/t/ZSr9S3QK9/",
-      "https://lite.tiktok.com/t/ZSr9SE7mu/",
-      "https://lite.tiktok.com/t/ZSr9Scmre/",
-      "https://lite.tiktok.com/t/ZSr9SvB5H/",
       "https://lite.tiktok.com/t/ZSr9Swb6T/"
     ];
 
@@ -388,6 +268,7 @@
     renderLinks('linkCoc', linkCoc, 'coc', 'Cóc', true);
     renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
     renderLinks('linkMochi', linkMochi, 'mochi', 'Mochi', true);
+
     renderLinks('regularColumn', regularLinks, 'regular', 'TikTok Thường');
     renderLinks('liteColumn', liteLinks, 'lite', 'TikTok Lite');
   </script>
