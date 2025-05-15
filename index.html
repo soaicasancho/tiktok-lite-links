@@ -25,17 +25,11 @@
       border-bottom: 1px solid #ccc;
     }
 
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px 20px;
-      padding: 0 20px;
-    }
-
-    .column {
+    .top-section {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      padding: 10px 20px;
     }
 
     .section {
@@ -71,10 +65,11 @@
       border-radius: 8px;
       background-color: #1da1f2;
       color: white;
-      font-size: 16px;
+      font-size: 14px;
       padding: 10px 12px;
       cursor: pointer;
       transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 8px;
     }
 
     .link-button:hover {
@@ -108,49 +103,58 @@
     }
 
     .toggle-icon {
-      font-size: 16px;
+      font-size: 14px;
     }
 
-    #customColumn .link-button {
-      margin-bottom: 8px;
+    .bottom-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
     }
 
-    #regularColumn .link-button,
-    #liteColumn .link-button {
-      margin-bottom: -2px;
+    @media (max-width: 768px) {
+      .bottom-section {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="fixed-header">Video 60 Phút by Đăng Giáp</div>
-  <div class="main-grid">
-    <!-- Cột 1 -->
-    <div class="column" id="customColumn">
-      <div class="section">
-        <div class="section-title" onclick="toggleSection('linkCoc')">
-          <span class="toggle-icon" id="icon-linkCoc">+</span> Link Cóc
-        </div>
-        <div id="linkCoc" class="link-container collapsed"></div>
+
+  <!-- Top Section: 3 hàng dọc - mỗi hàng 1 mục -->
+  <div class="top-section">
+    <div class="section">
+      <div class="section-title" onclick="toggleSection('linkCoc')">
+        <span class="toggle-icon" id="icon-linkCoc">+</span> Link Cóc
       </div>
-      <div class="section">
-        <div class="section-title" onclick="toggleSection('linkTuyet')">
-          <span class="toggle-icon" id="icon-linkTuyet">+</span> Link Tuyết
-        </div>
-        <div id="linkTuyet" class="link-container collapsed"></div>
-      </div>
-      <div class="section">
-        <div class="section-title" onclick="toggleSection('linkMochi')">
-          <span class="toggle-icon" id="icon-linkMochi">+</span> Link Mochi
-        </div>
-        <div id="linkMochi" class="link-container collapsed"></div>
-      </div>
+      <div id="linkCoc" class="link-container collapsed"></div>
     </div>
 
-    <!-- Cột 2 -->
-    <div class="column" id="regularColumn"></div>
+    <div class="section">
+      <div class="section-title" onclick="toggleSection('linkTuyet')">
+        <span class="toggle-icon" id="icon-linkTuyet">+</span> Link Tuyết
+      </div>
+      <div id="linkTuyet" class="link-container collapsed"></div>
+    </div>
 
-    <!-- Cột 3 -->
-    <div class="column" id="liteColumn"></div>
+    <div class="section">
+      <div class="section-title" onclick="toggleSection('linkMochi')">
+        <span class="toggle-icon" id="icon-linkMochi">+</span> Link Mochi
+      </div>
+      <div id="linkMochi" class="link-container collapsed"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Section: 2 cột -->
+  <div class="bottom-section">
+    <div class="section" id="regularColumn">
+      <div class="section-title">TikTok Thường</div>
+    </div>
+    <div class="section" id="liteColumn">
+      <div class="section-title">TikTok Lite</div>
+    </div>
   </div>
 
   <script>
@@ -389,7 +393,6 @@
     renderLinks('linkCoc', linkCoc, 'coc', 'Cóc', true);
     renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
     renderLinks('linkMochi', linkMochi, 'mochi', 'Mochi', true);
-
     renderLinks('regularColumn', regularLinks, 'regular', 'TikTok Thường');
     renderLinks('liteColumn', liteLinks, 'lite', 'TikTok Lite');
   </script>
