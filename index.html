@@ -114,8 +114,87 @@
 
     .top-section {
       padding: 10px 4px;
-  }
+    }
 
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    /* Modal box */
+    .modal {
+      background: white;
+      padding: 18px 20px;
+      border-radius: 10px;
+      width: 320px;
+      max-width: 90%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .modal input[type="password"] {
+      width: 100%;
+      padding: 8px 8px;
+      font-size: 16px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .modal .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .modal .buttons button {
+      padding: 8px 24px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .modal #modal-ok {
+      background-color: #1da1f2;
+      color: white;
+    }
+
+    .modal #modal-ok:disabled {
+      background-color: #a5d1fb;
+      cursor: not-allowed;
+    }
+
+    .modal #modal-cancel {
+      background-color: #ddd;
+      color: #333;
+    }
+
+    .modal #modal-cancel:hover {
+      background-color: #bbb;
+    }
+
+    .modal #modal-ok:hover:enabled {
+      background-color: #0d8ddb;
+    }
+
+    .modal .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+    
   </style>
 </head>
 <body>
@@ -337,26 +416,83 @@
 
       btn.onclick = () => {
         if (isProtected) {
-          const pass = prompt("Bạn không có quyền truy cập tính năng này\nNhập Mật Khẩu để tiếp tục:");
-          if (pass !== "8322") {
-            alert("Sai mật khẩu!");
-            return;
-          }
-        }
-        window.open(link, '_blank');
-        clickedLinks[key] = today;
-        clickedLinks[key + '_count'] = clickCount + 1;
-        localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
-        if (!allowMultiple) {
-          btn.textContent = `Đã bấm (${clickedLinks[key + '_count']} lượt)`;
-          btn.classList.add('clicked');
-          btn.disabled = true;
+          showPasswordModal(link, label, key, allowMultiple, clickCount, btn);
         } else {
-          btn.textContent = `${label} (${clickedLinks[key + '_count']} lượt)`;
+          openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
         }
       };
 
       return btn;
+    }
+
+    function openLinkAndSave(link, label, key, allowMultiple, clickCount, btn) {
+      window.open(link, '_blank');
+      clickedLinks[key] = today;
+      clickedLinks[key + '_count'] = clickCount + 1;
+      localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
+      if (!allowMultiple) {
+        btn.textContent = `Đã bấm (${clickedLinks[key + '_count']} lượt)`;
+        btn.classList.add('clicked');
+        btn.disabled = true;
+      } else {
+        btn.textContent = `${label} (${clickedLinks[key + '_count']} lượt)`;
+      }
+    }
+
+    function showPasswordModal(link, label, key, allowMultiple, clickCount, btn) {
+      // Tạo overlay modal
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+
+      overlay.innerHTML = `
+        <div class="modal">
+          <div>Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
+          <input type="password" id="modal-password" autocomplete="off" />
+          <div class="buttons">
+            <button id="modal-cancel">Hủy</button>
+            <button id="modal-ok" disabled>OK</button>
+          </div>
+          <div class="error" id="modal-error">Mật khẩu không đúng. Vui lòng thử lại.</div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+
+      const input = overlay.querySelector('#modal-password');
+      const btnOk = overlay.querySelector('#modal-ok');
+      const btnCancel = overlay.querySelector('#modal-cancel');
+      const errorMsg = overlay.querySelector('#modal-error');
+
+      // Bật/tắt nút OK khi có nhập
+      input.addEventListener('input', () => {
+        errorMsg.style.display = 'none';
+        btnOk.disabled = input.value.trim().length === 0;
+      });
+
+      btnCancel.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+      });
+
+      btnOk.addEventListener('click', () => {
+        if (input.value !== '8322') {
+          errorMsg.style.display = 'block';
+          input.focus();
+          return;
+        }
+        // Mật khẩu đúng
+        document.body.removeChild(overlay);
+        openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
+      });
+
+      // Tự focus input khi mở modal
+      input.focus();
+
+      // Khi bấm Enter cũng kích hoạt OK nếu nút OK đang bật
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !btnOk.disabled) {
+          btnOk.click();
+        }
+      });
     }
 
     function renderLinks(containerId, links, type, prefix, allowMultiple = false) {
