@@ -247,6 +247,13 @@
     </div>
   </div>
 
+  <!-- ✅ Nút reset lịch sử đếm ngược -->
+  <div style="text-align: center; padding: 20px;">
+  <button id="resetBtn" style="padding: 10px 20px; font-size: 16px; border-radius: 8px; background-color: #f44336; color: white; border: none; cursor: pointer;">
+    🔄 Reset Thời Gian Đếm Ngược
+    </button>
+  </div>
+
   <script>
     // ✅ Dữ liệu link cụ thể
     const linkCoc = [
@@ -262,8 +269,7 @@
       { url: "https://lite.tiktok.com/t/ZSrRtdS5n/", label: "Máy XS", protected: true },
       { url: "https://lite.tiktok.com/t/ZSrRn6Gx2/", label: "Máy 16PRM" },
       { url: "https://lite.tiktok.com/t/ZShxvepxY/", label: "Máy 6SPL" },
-      { url: "https://lite.tiktok.com/t/ZShQcVeyS/", label: "Máy Ip7", protected: true },
-      { url: "https://lite.tiktok.com/t/ZShbFKUqp/", label: "Máy Cường" }
+      { url: "https://lite.tiktok.com/t/ZShQcVeyS/", label: "Máy Ip7", protected: true }
     ];
 
     const linkMochi = [
@@ -582,6 +588,66 @@
     renderLinks('regularColumn', regularLinks, 'regular', 'Video');
     renderLinks('liteColumn', liteLinks, 'lite', 'Video');
     //___________________________________________________________
+
+    // Hàm gọi khi bấm nút reset
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      // Sử dụng lại hàm showPasswordModal để nhập mật khẩu
+      showPasswordModalForReset();
+    });
+
+    function showPasswordModalForReset() {
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.innerHTML = `
+        <div class="modal">
+          <div>Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
+          <input type="password" id="modal-password-reset" autocomplete="off" />
+          <div class="buttons">
+            <button id="modal-cancel-reset">Hủy</button>
+            <button id="modal-ok-reset" disabled>OK</button>
+          </div>
+          <div class="error" id="modal-error-reset">Mật khẩu không đúng. Vui lòng thử lại.</div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      const input = overlay.querySelector('#modal-password-reset');
+      const btnOk = overlay.querySelector('#modal-ok-reset');
+      const btnCancel = overlay.querySelector('#modal-cancel-reset');
+      const errorMsg = overlay.querySelector('#modal-error-reset');
+
+      input.addEventListener('input', () => {
+        errorMsg.style.display = 'none';
+        btnOk.disabled = input.value.trim().length === 0;
+      });
+
+      btnCancel.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+      });
+
+      btnOk.addEventListener('click', () => {
+        if (input.value !== '8322') {
+          errorMsg.style.display = 'block';
+          input.focus();
+          return;
+        }
+        document.body.removeChild(overlay);
+        resetCountdown();
+      });
+
+      input.focus();
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !btnOk.disabled) btnOk.click();
+      });
+    }
+
+    // Hàm reset thực sự
+    function resetCountdown() {
+      localStorage.removeItem('clickedLinks');
+      alert('Đã reset thành công. Tải lại trang để áp dụng.');
+      location.reload();
+    }
+
   </script>
 </body>
 </html>
