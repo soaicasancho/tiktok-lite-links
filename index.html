@@ -240,10 +240,10 @@
   <!-- ✅ Các cột TikTok ở dưới cùng -->
   <div class="bottom-section">
     <div class="section" id="regularColumn">
-      <div class="section-title">TikTok Thường</div>
+      <div class="section-title" id="tiktok-normal">TikTok Thường</div>
     </div>
     <div class="section" id="liteColumn">
-      <div class="section-title">TikTok Lite</div>
+      <div class="section-title" id="tiktok-lite">TikTok Lite</div>
     </div>
   </div>
 
@@ -266,7 +266,7 @@
       <p><strong>📌 Lưu ý:</strong></p>
       <ul style="text-align: left; padding-left: 2px;">
         <li>➡️ Tất cả video đều có nội dung giống nhau.</li>
-        <li>➡️ Âm thanh Video đã được tắt hoàn toàn để đảm bảo không gây cảm giácc khó chịu khi ở gần.</li>
+        <li>➡️ Âm thanh Video đã được tắt hoàn toàn để đảm bảo không gây cảm giác khó chịu khi ở gần.</li>
       </ul>
       <p>Admin Đăng Giáp!</p>
       <div class="buttons">
@@ -276,6 +276,18 @@
   </div>
 
   <script>
+
+
+
+    // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
+    const lockDays = 5; // 👈 Số ngày bị khóa sau 5 lần sai 
+
+
+
+
+
+
+
     // ✅ Dữ liệu link cụ thể
     const linkCoc = [
       { url: "https://lite.tiktok.com/t/ZSh9vYu8c/", label: "Máy 16PRM", protected: true },
@@ -447,6 +459,19 @@
       btn.className = 'link-button';
       const key = link + '_' + type;
       const clickTimestamp = clickedLinks[key];
+
+      // Kiểm tra nếu đã bị khóa do nhập sai mật khẩu
+      const lockedUntil = localStorage.getItem('lockUntil_' + key);
+      if (lockedUntil && Date.now() < parseInt(lockedUntil)) {
+        const remaining = parseInt(lockedUntil) - Date.now();
+        const h = Math.floor(remaining / (1000 * 60 * 60));
+        const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        btn.textContent = `Đã bị khóa: ${h}h${m.toString().padStart(2, '0')}’`;
+        btn.disabled = true;
+        btn.classList.add('clicked');
+        return btn;
+      }
+
       const now = Date.now();
       const clickCount = clickedLinks[key + '_count'] || 0;
 
@@ -551,15 +576,28 @@
         if (input.value !== '8322') {
           errorMsg.style.display = 'block';
           input.focus();
+
+          // Ghi nhận số lần sai
+          const failKey = 'wrongAttempts_' + key;
+          const currentFail = parseInt(localStorage.getItem(failKey)) || 0;
+          const newFail = currentFail + 1;
+          localStorage.setItem(failKey, newFail);
+
+          // Nếu đủ 5 lần, khóa nút
+          if (newFail >= 5) {
+            const lockUntil = Date.now() + lockDays * 24 * 60 * 60 * 1000;
+            localStorage.setItem('lockUntil_' + key, lockUntil);
+          }
+
           return;
         }
+
+        // Nhập đúng → xóa lịch sử sai và tiếp tục
+        localStorage.removeItem('wrongAttempts_' + key);
+        localStorage.removeItem('lockUntil_' + key);
+
         document.body.removeChild(overlay);
         openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
-      });
-
-      input.focus();
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !btnOk.disabled) btnOk.click();
       });
     }
 
@@ -669,7 +707,7 @@
       location.reload();
     }
 
-    // ✅ Modal thông báo tính năng mới – chỉ hiển thị 2 lần
+    // ✅ Modal thông báo tính năng mới – chỉ hiển thị 5 lần
     (function() {
       const modalKey = 'featureModalShownCount';
       let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
@@ -682,10 +720,76 @@
 
         okBtn.addEventListener('click', () => {
           modal.style.display = 'none';
-          localStorage.setItem(modalKey, (count + 1).toString());
+          localStorage.setItem(modalKey, (count +1).toString());
         });
       }
     })();
+
+
+
+
+
+
+
+    // ✅ Reset vô hiệu hóa Pass mở link
+    (function() {
+      let clickCount = 0;
+      let lastClickTime = 0;
+      const maxInterval = 1000; // ms, 1 giây
+
+      const el = document.getElementById('tiktok-lite');
+      if (!el) return;
+
+      el.addEventListener('click', () => {
+        const now = Date.now();
+        if (now - lastClickTime > maxInterval) {
+          clickCount = 1;
+        } else {
+          clickCount++;
+        }
+        lastClickTime = now;
+
+        if (clickCount >= 5) {
+          // Xóa các khóa sai mật khẩu
+          for (const key in localStorage) {
+            if (key.startsWith("wrongAttempts_") || key.startsWith("lockUntil_")) {
+              localStorage.removeItem(key);
+            }
+          }
+          alert("Đã reset khóa mật khẩu!");
+          clickCount = 0;
+        }
+      });
+    })();
+
+
+
+
+
+    // ✅ reset số lần hiển thị thông báo tính năng mới
+    let tapCount = 0;
+    let tapTimeout;
+
+    const tiktokText = document.getElementById('tiktok-normal');
+
+    if (tiktokText) {
+      tiktokText.addEventListener('click', () => {
+        tapCount++;
+
+        if (tapCount >= 5) {
+          localStorage.removeItem('featureModalShownCount');
+          alert('✅ Đã reset số lần hiển thị modal!');
+          tapCount = 0;
+          clearTimeout(tapTimeout);
+          return;
+        }
+
+        clearTimeout(tapTimeout);
+        tapTimeout = setTimeout(() => {
+          tapCount = 0;
+        }, 2000); // reset nếu không bấm đủ 10 lần trong 3 giây
+      });
+    }
 
   </script>
 </body>
