@@ -266,7 +266,7 @@
       <p><strong>📌 Lưu ý:</strong></p>
       <ul style="text-align: left; padding-left: 2px;">
         <li>➡️ Tất cả video đều có nội dung giống nhau.</li>
-        <li>➡️ Âm thanh Video đã được tắt hoàn toàn để đảm bảo không gây cảm giác khó chịu khi ở gần.</li>
+        <li>➡️ Âm thanh Video đã được tắt hoàn toàn.</li>
       </ul>
       <p>Admin Đăng Giáp!</p>
       <div class="buttons">
@@ -712,7 +712,7 @@
       const modalKey = 'featureModalShownCount';
       let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
 
-      if (count < 5) {
+      if (count < 1) {
         const modal = document.getElementById('featureModal');
         const okBtn = document.getElementById('featureModal-ok');
 
