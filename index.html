@@ -125,13 +125,14 @@
       align-items: center;
       justify-content: center;
       z-index: 2000;
+      overflow: auto;
     }
     .modal {
       background: white;
-      padding: 18px 20px;
+      padding: 10px 20px 70px 20px;
       border-radius: 10px;
-      width: 320px;
-      max-width: 90%;
+      width: 95%;
+      max-width: 500px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       text-align: center;
       font-family: Arial, sans-serif;
@@ -257,16 +258,16 @@
   <!-- ✅🔔 Thông báo hiển thị 5 lần -->
   <div id="featureModal" class="modal-overlay" style="display: none;">
     <div class="modal">
-      <h3>🔒 Thông báo về tính năng mới</h3>
-        <p>Nhằm hạn chế nguy cơ bị phát hiện bạn đang Phone Farm, chúng tôi đã phát triển một cơ chế đặc biệt sau:</p>
+      <h3>🔔 Thông báo tính năng mới</h3>
+        <p>Để hạn bị phát hiện Phone Farm, chúng tôi đã thêm vào cơ chế đặc biệt sau:</p>
       <ul style="text-align: left; padding-left: 2px;">
-        <li>➡️ Sau khi bạn bấm xem một video bất kỳ, video đó sẽ tự động bị vô hiệu hóa và không thể xem lại sau một khoảng thời gian nhất định.</li>
-        <li>➡️ Bạn hoàn toàn có thể xem video khác để tiếp tục trải nghiệm.</li>
+        <li> Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.</li>
+        <li> Vì vậy hãy chọn video khác để Phone Farm.</li>
       </ul>
       <p><strong>📌 Lưu ý:</strong></p>
       <ul style="text-align: left; padding-left: 2px;">
-        <li>➡️ Tất cả video đều có nội dung giống nhau.</li>
-        <li>➡️ Âm thanh Video đã được tắt hoàn toàn để đảm bảo không gây cảm giác khó chịu khi ở gần.</li>
+        <li> Tất cả video có nội dung giống nhau.</li>
+        <li> Âm thanh Video đã được loại bỏ.</li>
       </ul>
       <p>Admin Đăng Giáp!</p>
       <div class="buttons">
@@ -280,7 +281,7 @@
 
 
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
-    const lockDays = 5; // 👈 Số ngày bị khóa sau 5 lần sai 
+    const lockDays = 100; // 👈 Số ngày bị khóa sau 5 lần sai 
 
 
 
@@ -466,7 +467,7 @@
         const remaining = parseInt(lockedUntil) - Date.now();
         const h = Math.floor(remaining / (1000 * 60 * 60));
         const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-        btn.textContent = `Đã bị khóa: ${h}h${m.toString().padStart(2, '0')}’`;
+        btn.textContent = `🔓 ${h}h${m.toString().padStart(2, '0')}’`;
         btn.disabled = true;
         btn.classList.add('clicked');
         return btn;
@@ -703,7 +704,7 @@
     // Hàm reset thực sự
     function resetCountdown() {
       localStorage.removeItem('clickedLinks');
-      alert('Đã reset thành công. Tải lại trang để áp dụng.');
+      alert('Đã reset thành công thời gian đến ngược Video.');
       location.reload();
     }
 
@@ -756,7 +757,7 @@
               localStorage.removeItem(key);
             }
           }
-          alert("Đã reset khóa mật khẩu!");
+          alert("✅ Mục nhập mật khẩu đã được mở khóa!");
           clickCount = 0;
         }
       });
@@ -778,7 +779,7 @@
 
         if (tapCount >= 5) {
           localStorage.removeItem('featureModalShownCount');
-          alert('✅ Đã reset số lần hiển thị modal!');
+          alert('✅ Đã reset số lần hiển thị thông báo lúc truy cập trang!');
           tapCount = 0;
           clearTimeout(tapTimeout);
           return;
@@ -787,7 +788,7 @@
         clearTimeout(tapTimeout);
         tapTimeout = setTimeout(() => {
           tapCount = 0;
-        }, 2000); // reset nếu không bấm đủ 10 lần trong 3 giây
+        }, 2000); // reset nếu không bấm đủ 5 lần trong 3 giây
       });
     }
 
