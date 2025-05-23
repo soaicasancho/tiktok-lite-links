@@ -279,7 +279,7 @@
   <script>
 
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
-    const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai 
+    const lockDays = 121; // 👈 Số ngày bị khóa sau 5 lần sai 
 
     // ✅ Dữ liệu link cụ thể
     const linkCoc = [
@@ -496,8 +496,8 @@
       if (!allowMultiple && clickTimestamp) {
         const clickedDate = new Date(clickTimestamp);
         const unlockDate = new Date(clickedDate);
-        unlockDate.setDate(unlockDate.getDate() + 12);                  // +12 ngày
-        unlockDate.setHours(0, 0, 0, 0);                                         // 00:00:00 ngày thứ 13
+        unlockDate.setDate(unlockDate.getDate() + 15);                  // +15 ngày
+        unlockDate.setHours(0, 0, 0, 0);                                         // 00:00:00 ngày thứ 16
 
         const timeLeft = unlockDate - now;
 
