@@ -278,16 +278,8 @@
 
   <script>
 
-
-
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
-    const lockDays = 100; // 👈 Số ngày bị khóa sau 5 lần sai 
-
-
-
-
-
-
+    const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai 
 
     // ✅ Dữ liệu link cụ thể
     const linkCoc = [
@@ -462,25 +454,50 @@
       const clickTimestamp = clickedLinks[key];
 
       // Kiểm tra nếu đã bị khóa do nhập sai mật khẩu
-      const lockedUntil = localStorage.getItem('lockUntil_' + key);
-      if (lockedUntil && Date.now() < parseInt(lockedUntil)) {
-        const remaining = parseInt(lockedUntil) - Date.now();
-        const h = Math.floor(remaining / (1000 * 60 * 60));
-        const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-        btn.textContent = `🔓 ${h}h${m.toString().padStart(2, '0')}’`;
-        btn.disabled = true;
-        btn.classList.add('clicked');
-        return btn;
+      const lockStartTime = parseInt(localStorage.getItem('lockStartTime_' + key));
+      if (!isNaN(lockStartTime)) {
+        const lockDuration = lockDays * 24 * 60 * 60 * 1000; // ms
+        const newLockUntil = lockStartTime + lockDuration;
+
+        if (Date.now() < newLockUntil) {
+          btn.disabled = true;
+          btn.classList.add('clicked');
+
+          const updateCountdown = () => {
+            const remaining = newLockUntil - Date.now();
+            if (remaining <= 0) {
+              clearInterval(interval);
+              localStorage.removeItem('lockStartTime_' + key);
+              btn.textContent = `${label} (${clickCount} lượt)`;
+              btn.disabled = false;
+              btn.classList.remove('clicked');
+            } else {
+              const h = Math.floor(remaining / (1000 * 60 * 60));
+              const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+              const s = Math.floor((remaining % (1000 * 60)) / 1000);
+              btn.textContent = `🔓 ${h}h${m.toString().padStart(2, '0')}m${s.toString().padStart(2, '0')}s`;
+            }
+          };
+
+          updateCountdown(); // Gọi lần đầu
+          const interval = setInterval(updateCountdown, 1000); // Cập nhật mỗi giây
+
+          return btn;
+        } else {
+          // Đã hết thời gian khóa → xóa key
+          localStorage.removeItem('lockStartTime_' + key);
+        }
       }
 
+      // Chỉnh thời gian đếm ngược khi xem video
       const now = Date.now();
       const clickCount = clickedLinks[key + '_count'] || 0;
 
       if (!allowMultiple && clickTimestamp) {
         const clickedDate = new Date(clickTimestamp);
         const unlockDate = new Date(clickedDate);
-        unlockDate.setDate(unlockDate.getDate() + 4); // +4 ngày
-        unlockDate.setHours(0, 0, 0, 0); // 00:00:00 ngày thứ 5
+        unlockDate.setDate(unlockDate.getDate() + 12);                  // +12 ngày
+        unlockDate.setHours(0, 0, 0, 0);                                         // 00:00:00 ngày thứ 13
 
         const timeLeft = unlockDate - now;
 
@@ -491,7 +508,7 @@
           btn.classList.add('clicked');
           btn.disabled = true;
 
-          // Cập nhật đếm ngược theo thời gian thực
+          // Cập nhật đếm ngược theo thời gian thực cho nút bấm Video
           const interval = setInterval(() => {
             const nowUpdate = Date.now();
             const timeLeftUpdate = unlockDate - nowUpdate;
@@ -504,9 +521,10 @@
             } else {
               const h = Math.floor(timeLeftUpdate / (1000 * 60 * 60));
               const m = Math.floor((timeLeftUpdate % (1000 * 60 * 60)) / (1000 * 60));
-              btn.textContent = `Xem lại sau: ${h}h${m.toString().padStart(2, '0')}’`;
+              const s = Math.floor((timeLeftUpdate % (1000 * 60)) / 1000);
+              btn.textContent = `Xem lại sau: ${h}h${m.toString().padStart(2, '0')}m${s.toString().padStart(2, '0')}s`;
             }
-          }, 60 * 1000); // cập nhật mỗi phút
+          }, 1000); // cập nhật mỗi giây, nếu muốn cập nhật mỗi phút đổi thành 60*1000
         } else {
           // Đã hết thời gian khóa
           btn.textContent = `${label} (${clickCount} lượt)`;
@@ -522,7 +540,6 @@
           openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
         }
       };
-
       return btn;
     }
 
@@ -586,16 +603,14 @@
 
           // Nếu đủ 5 lần, khóa nút
           if (newFail >= 5) {
-            const lockUntil = Date.now() + lockDays * 24 * 60 * 60 * 1000;
-            localStorage.setItem('lockUntil_' + key, lockUntil);
+            localStorage.setItem('lockStartTime_' + key, Date.now());
           }
-
           return;
         }
 
         // Nhập đúng → xóa lịch sử sai và tiếp tục
         localStorage.removeItem('wrongAttempts_' + key);
-        localStorage.removeItem('lockUntil_' + key);
+        localStorage.removeItem('lockStartTime_' + key);
 
         document.body.removeChild(overlay);
         openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
@@ -726,12 +741,6 @@
       }
     })();
 
-
-
-
-
-
-
     // ✅ Reset vô hiệu hóa Pass mở link
     (function() {
       let clickCount = 0;
@@ -762,11 +771,7 @@
         }
       });
     })();
-
-
-
-
-
+    
     // ✅ reset số lần hiển thị thông báo tính năng mới
     let tapCount = 0;
     let tapTimeout;
