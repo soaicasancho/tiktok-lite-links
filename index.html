@@ -329,19 +329,50 @@
 
   <!-- ✅🔔 Thông báo hiển thị 5 lần -->
   <div id="featureModal" class="feature-modal-overlay" style="display: none;">
-    <div class="feature-modal">
-      <h3>🔔 Thông báo tính năng mới</h3>
-        <p>Để ngăn chặn phát hiện Phone Farm, chúng tôi đã thêm tính năng sau:</p>
-      <ul style="text-align: left; padding-left: 2px;">
-        <li> Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.</li>
-        <li> Hãy chọn video khác để Phone Farm.</li>
-      </ul>
-      <p><strong>📌 Lưu ý:</strong></p>
-      <ul style="text-align: left; padding-left: 2px;">
-        <li> Tất cả video có nội dung giống nhau.</li>
-        <li> Âm thanh Video đã được loại bỏ.</li>
-      </ul>
-      <p>Admin Đăng Giáp!</p>
+    <div class="feature-modal" style="text-align: center;">
+      <h3><strong style="font-size: 18px;">🔔 Thông báo</strong></h3>
+
+      <p style="text-align: left; font-weight: bold;; font-size: 16px;">
+        ➤ Thay đổi tên miền:
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+        ● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+         ☛　60phut.xyz (địa chỉ truy cập mới)
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+        ● Website cũ vẫn có thể truy cập bình thường.
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+        ☛　soaicasancho.github.io/tiktok-lite-links (địa chỉ truy cập cũ)
+      </p>
+
+
+      <p style="text-align: left; font-weight: bold;; font-size: 16px;">
+        ➤ Tính năng chống bị phát hiện Phone Fram:
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+        ● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+        ● Hãy chọn video khác để xem
+      </p>
+
+      <p style="text-align: left; font-weight: bold; font-size: 16px;">
+        ➤ Lưu ý:
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+        ● Tất cả video có nội dung giống nhau
+      </p>
+      <p style="text-align: left; font-style: italic; font-size: 14px;">
+        ● Âm thanh Video đã được loại bỏ
+      </p>
+
+      <p style="text-align: right; font-style: italic; font-size: 12px;">
+        Admin Đăng Giáp!
+      </p>
+
       <div class="buttons">
         <button id="featureModal-ok">Đã hiểu</button>
       </div>
@@ -831,7 +862,7 @@
       const modalKey = 'featureModalShownCount';
       let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
 
-      if (count < 0) {
+      if (count < 1) {
         const modal = document.getElementById('featureModal');
         const okBtn = document.getElementById('featureModal-ok');
 
