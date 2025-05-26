@@ -831,7 +831,7 @@
       const modalKey = 'featureModalShownCount';
       let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
 
-      if (count < 1) {
+      if (count < 0) {
         const modal = document.getElementById('featureModal');
         const okBtn = document.getElementById('featureModal-ok');
 
