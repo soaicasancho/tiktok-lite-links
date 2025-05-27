@@ -384,6 +384,9 @@
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
     const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai 
 
+    // ✅ Chỉnh số ngày bị khóa sau khi bấm xem video
+    const unlockDays = 15; // 👈 Số ngày đếm ngược khi xem video
+
     // ✅ Dữ liệu link cụ thể
     const linkCoc = [
       { url: "https://lite.tiktok.com/t/ZSh3cudbp/", label: "Galaxy 4" },
@@ -601,8 +604,8 @@
       if (!allowMultiple && clickTimestamp) {
         const clickedDate = new Date(clickTimestamp);
         const unlockDate = new Date(clickedDate);
-        unlockDate.setDate(unlockDate.getDate() + 15);                  // +15 ngày
-        unlockDate.setHours(0, 0, 0, 0);                                         // 00:00:00 ngày thứ 16
+        unlockDate.setDate(clickedDate.getDate() + unlockDays);
+        unlockDate.setHours(0, 0, 0, 0);
 
         const timeLeft = unlockDate - now;
 
@@ -654,17 +657,13 @@
     // ✅ Mở link và lưu lịch sử click
     function openLinkAndSave(link, label, key, allowMultiple, clickCount, btn) {
       window.open(link, '_blank');
-      clickedLinks[key] = Date.now();
+      clickedLinks[key] = Date.now(); // cập nhật mốc thời gian
       clickedLinks[key + '_count'] = clickCount + 1;
       localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
 
-      if (!allowMultiple) {
-        btn.textContent = `Đã bấm (${clickedLinks[key + '_count']} lượt)`;
-        btn.classList.add('clicked');
-        btn.disabled = true;
-      } else {
-        btn.textContent = `${label} (${clickedLinks[key + '_count']} lượt)`;
-      }
+      // Không xử lý đếm ngược tại đây nữa – để createButton đảm nhiệm khi reload hoặc rerender
+      btn.textContent = `⏳ Đang cập nhật...`; // Tuỳ ý
+      location.reload(); // ép tải lại để hiển thị đúng thời gian
     }
 
     // ✅ Hiện modal nhập mật khẩu nếu link có bảo vệ
