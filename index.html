@@ -296,10 +296,10 @@
     </div>
 
     <div class="section">
-      <div class="section-title" onclick="toggleSection('linkMochi')">
-        <span class="toggle-icon" id="icon-linkMochi">+</span> Link Mochi 🎂
+      <div class="section-title" onclick="toggleSection('linkSumo')">
+        <span class="toggle-icon" id="icon-linkSumo">+</span> Link Sumo 🤼
       </div>
-      <div id="linkMochi" class="link-container collapsed"></div>
+      <div id="linkSumo" class="link-container collapsed"></div>
     </div>
 
     <div class="section">
@@ -404,9 +404,7 @@
       { url: "https://lite.tiktok.com/t/ZSh3Tn4M7/", label: "Quốc Cùn" }
     ];
 
-    const linkMochi = [
-      { url: "https://lite.tiktok.com/t/ZShKhcFUf/", label: "Galaxy 7", protected: true },
-      { url: "https://lite.tiktok.com/t/ZShKhg9XC/", label: "Galaxy 4", protected: true },
+    const linkSumo = [
       { url: "https://lite.tiktok.com/t/ZShKhA1Lb/", label: "Galaxy 8", protected: true }
     ];
 
@@ -768,7 +766,7 @@
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
-      const allSections = ['linkCoc', 'linkTuyet', 'linkMochi', 'linkGioiThieu'];
+      const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkGioiThieu'];
 
       allSections.forEach(sectionId => {
         const container = document.getElementById(sectionId);
@@ -789,7 +787,7 @@
     // ✅ Hiển thị các nhóm link
     renderLinks('linkCoc', linkCoc, 'coc', 'Cóc', true);
     renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
-    renderLinks('linkMochi', linkMochi, 'mochi', 'Mochi', true);
+    renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true);
     renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true);
     //___________________________________________________________
 
