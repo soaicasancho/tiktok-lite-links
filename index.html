@@ -294,7 +294,7 @@
       display: block;
       width: 160px;
       margin: 5px 0;
-      padding: 8px 12px;
+      padding: 8px 4px;
       border: none;
       background: #f0f0f0;
       border-radius: 6px;
@@ -303,7 +303,7 @@
     }
 
     #floatingMenuOptions hr {
-      margin: 8px 0;
+      margin: 8px 10;
       border: none;
       border-top: 1px solid #ccc;
     }
@@ -315,7 +315,7 @@
 
     #floatingMenuButton img {
       width: 50px;           /* hoặc 40px tùy kích thước mong muốn */
-      height: 50px;
+      height: 45px;
       border-radius: 50%;
       object-fit: cover;
     }
@@ -481,8 +481,10 @@
     ];
 
     const linkKhoBau = [
-      { url: "https://example.com/treasure1", label: "Kho Báu 1", protected: true  },
-      { url: "https://example.com/treasure2", label: "Kho Báu 2", protected: true  }
+      { url: "https://lite.tiktok.com/t/ZSkdVvu5x/", label: "Sony 01" },
+      { url: "https://lite.tiktok.com/t/ZSkdVBP4N/", label: "Sony 22" },
+      { url: "https://lite.tiktok.com/t/ZSkdqVLyh/", label: "Sony 25" },
+      { url: "https://lite.tiktok.com/t/ZSkdVehRm/", label: "Sony 29" }
     ];
 
     const linkGioiThieu = [
@@ -1025,6 +1027,20 @@
 
     // Bất kỳ click nào bên ngoài menu sẽ đóng menu (nếu đang mở)
     document.addEventListener('click', (e) => {
+      if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // ➕ Chạm tay ngoài menu để đóng (cho mobile)
+    document.addEventListener('touchstart', (e) => {
+      if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== menuButton) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // ➕ Cuộn trang sẽ tự đóng menu
+    window.addEventListener('scroll', () => {
       if (!menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
       }
