@@ -264,18 +264,96 @@
       }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #floatingMenuButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #f44336;
+      color: white;
+      font-size: 24px;
+      padding: 10px 14px;
+      border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    #floatingMenuOptions {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      padding: 10px;
+      z-index: 998;
+    }
+
+    #floatingMenuOptions button {
+      display: block;
+      width: 160px;
+      margin: 5px 0;
+      padding: 8px 12px;
+      border: none;
+      background: #f0f0f0;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    #floatingMenuOptions hr {
+      margin: 8px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </style>
 </head>
 <body>
   <!-- ✅ Tiêu đề cố định -->
-  <div class="fixed-header">Video 60 Phút by Đăng Giáp</div>
+  <div class="fixed-header" id="title"></div>
 
   <!-- ✅ Mục Thông tin liên hệ -->
   <div class="contact-info">
     <div class="blinking-text">
-      <div>Admin đang xây kênh Tiktok.</div>
-      <div>Mọi người cho Admin 1 lượt follow nhé!</div>
-      <div>Chúc mọi người làm ăn phát đạt.</div>
+      <div id="info1"></div>
+      <div id="info2"></div>
+      <div id="info3"></div>
     </div>
   </div>
 
@@ -283,28 +361,36 @@
   <div class="top-section">
     <div class="section">
       <div class="section-title" onclick="toggleSection('linkCoc')">
-        <span class="toggle-icon" id="icon-linkCoc">+</span> Link Cóc 🐸
+        <span class="toggle-icon" id="icon-linkCoc">+</span> <span id="group-coc"></span>
       </div>
+
       <div id="linkCoc" class="link-container collapsed"></div>
     </div>
 
     <div class="section">
       <div class="section-title" onclick="toggleSection('linkTuyet')">
-        <span class="toggle-icon" id="icon-linkTuyet">+</span> Link Tuyết ❄
+        <span class="toggle-icon" id="icon-linkTuyet">+</span> <span id="group-tuyet"></span>
       </div>
       <div id="linkTuyet" class="link-container collapsed"></div>
     </div>
 
     <div class="section">
       <div class="section-title" onclick="toggleSection('linkSumo')">
-        <span class="toggle-icon" id="icon-linkSumo">+</span> Link Sumo 🤼
+        <span class="toggle-icon" id="icon-linkSumo">+</span> <span id="group-sumo"></span>
       </div>
       <div id="linkSumo" class="link-container collapsed"></div>
     </div>
 
     <div class="section">
+      <div class="section-title" onclick="toggleSection('linkKhoBau')">
+        <span class="toggle-icon" id="icon-linkKhoBau">+</span> <span id="group-khobau">Mở Kho Báu 💎</span>
+      </div>
+      <div id="linkKhoBau" class="link-container collapsed"></div>
+    </div>
+
+    <div class="section">
       <div class="section-title" onclick="toggleSection('linkGioiThieu')">
-        <span class="toggle-icon" id="icon-linkGioiThieu">+</span> Link Giới Thiệu 📢
+        <span class="toggle-icon" id="icon-linkGioiThieu">+</span> <span id="group-gt"></span>
       </div>
       <div id="linkGioiThieu" class="link-container collapsed"></div>
     </div>
@@ -320,56 +406,48 @@
     </div>
   </div>
 
-  <!-- ✅ Nút reset lịch sử đếm ngược -->
-  <div style="text-align: center; padding: 20px;">
-  <button id="resetBtn" style="padding: 10px 20px; font-size: 16px; border-radius: 8px; background-color: #f44336; color: white; border: none; cursor: pointer;">
-    🔄 Reset Thời Gian Đếm Ngược
-    </button>
-  </div>
-
   <!-- ✅🔔 Thông báo hiển thị 5 lần -->
   <div id="featureModal" class="feature-modal-overlay" style="display: none;">
     <div class="feature-modal" style="text-align: center;">
-      <h3><strong style="font-size: 18px;">🔔 Thông báo</strong></h3>
+      <h3><strong id="modal-title" style="font-size: 18px;">🔔 Thông báo</strong></h3>
 
-      <p style="text-align: left; font-weight: bold;; font-size: 16px;">
+      <p id="modal-line1" style="text-align: left; font-weight: bold; font-size: 16px;">
         ➤ Thay đổi tên miền:
-      </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
+     </p>
+      <p id="modal-line2" style="text-align: left; font-style: italic; font-size: 14px;">
         ● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:
       </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
-         👉 60phut.xyz (Link mới)
+      <p id="modal-line3" style="text-align: left; font-style: italic; font-size: 14px;">
+        👉 60phut.xyz (Link mới)
       </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
+      <p id="modal-line4" style="text-align: left; font-style: italic; font-size: 14px;">
         ● Website cũ vẫn có thể truy cập bình thường.
       </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
+      <p id="modal-line5" style="text-align: left; font-style: italic; font-size: 14px;">
         👉 soaicasancho.github.io/tiktok-lite-links (Link cũ)
       </p>
 
-
-      <p style="text-align: left; font-weight: bold;; font-size: 16px;">
+      <p id="modal-line6" style="text-align: left; font-weight: bold; font-size: 16px;">
         ➤ Tính năng chống bị phát hiện Phone Fram:
       </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
+      <p id="modal-line7" style="text-align: left; font-style: italic; font-size: 14px;">
         ● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định
       </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
+      <p id="modal-line8" style="text-align: left; font-style: italic; font-size: 14px;">
         ● Hãy chọn video khác để xem
       </p>
 
-      <p style="text-align: left; font-weight: bold; font-size: 16px;">
+      <p id="modal-line9" style="text-align: left; font-weight: bold; font-size: 16px;">
         ➤ Lưu ý:
       </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
+      <p id="modal-line10" style="text-align: left; font-style: italic; font-size: 14px;">
         ● Tất cả video có nội dung giống nhau
       </p>
-      <p style="text-align: left; font-style: italic; font-size: 14px;">
+      <p id="modal-line11" style="text-align: left; font-style: italic; font-size: 14px;">
         ● Âm thanh Video đã được loại bỏ
       </p>
 
-      <p style="text-align: right; font-style: italic; font-size: 12px;">
+      <p id="modal-line12" style="text-align: right; font-style: italic; font-size: 12px;">
         Admin Đăng Giáp!
       </p>
 
@@ -377,6 +455,19 @@
         <button id="featureModal-ok">Đã hiểu</button>
       </div>
     </div>
+  </div>
+
+
+  <!-- ✅ Nút bong bóng menu -->
+  <div id="floatingMenuButton">☰</div>
+
+  <!-- ✅ Menu nổi -->
+  <div id="floatingMenuOptions" class="hidden">
+    <button onclick="changeLanguage('vi')">Tiếng Việt</button>
+    <button onclick="changeLanguage('en')">English</button>
+    <button onclick="changeLanguage('ja')">日本語</button>
+    <hr>
+    <button id="resetBtn">🔄 Reset Đếm Ngược</button>
   </div>
 
   <script>
@@ -400,13 +491,18 @@
 
     const linkTuyet = [
       { url: "https://lite.tiktok.com/t/ZShxvepxY/", label: "Máy Rút Tiền" },
-      { url: "https://lite.tiktok.com/t/ZShvvoobX/", label: "Máy Galxy S9+" },
+      { url: "https://lite.tiktok.com/t/ZShvvoobX/", label: "Máy Galxy S9+", protected: true },
       { url: "https://lite.tiktok.com/t/ZSh3Tn4M7/", label: "Quốc Cùn" },
-      { url: "https://lite.tiktok.com/t/ZShEHwmaB/", label: "Galaxy 4" }
+      { url: "https://lite.tiktok.com/t/ZShEHwmaB/", label: "Galaxy 4", protected: true }
     ];
 
     const linkSumo = [
       { url: "https://lite.tiktok.com/t/ZShKhA1Lb/", label: "Galaxy 8", protected: true }
+    ];
+
+    const linkKhoBau = [
+      { url: "https://example.com/treasure1", label: "Kho Báu 1", protected: true  },
+      { url: "https://example.com/treasure2", label: "Kho Báu 2", protected: true  }
     ];
 
     const linkGioiThieu = [
@@ -671,7 +767,7 @@
       overlay.className = 'modal-overlay';
       overlay.innerHTML = `
         <div class="modal">
-          <div>Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
+          <div id="modal-text">Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
           <input type="password" id="modal-password" autocomplete="off" />
           <div class="buttons">
             <button id="modal-cancel">Hủy</button>
@@ -681,6 +777,7 @@
         </div>
       `;
       document.body.appendChild(overlay);
+      applyLanguage(currentLanguage); // 🔁 Gọi lại hàm dịch sau khi modal được thêm vào DOM
 
       const input = overlay.querySelector('#modal-password');
       const btnOk = overlay.querySelector('#modal-ok');
@@ -767,7 +864,7 @@
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
-      const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkGioiThieu'];
+      const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkKhoBau', 'linkGioiThieu'];
 
       allSections.forEach(sectionId => {
         const container = document.getElementById(sectionId);
@@ -789,6 +886,7 @@
     renderLinks('linkCoc', linkCoc, 'coc', 'Cóc', true);
     renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
     renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true);
+    renderLinks('linkKhoBau', linkKhoBau, 'khobau', 'Kho Báu', true);
     renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true);
     //___________________________________________________________
 
@@ -808,7 +906,7 @@
       overlay.className = 'modal-overlay';
       overlay.innerHTML = `
         <div class="modal">
-          <div>Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
+          <div id="modal-text-reset">Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
           <input type="password" id="modal-password-reset" autocomplete="off" />
           <div class="buttons">
             <button id="modal-cancel-reset">Hủy</button>
@@ -818,6 +916,7 @@
         </div>
       `;
       document.body.appendChild(overlay);
+      applyLanguage(currentLanguage); // 🔁 Thêm dòng này sau khi tạo modal
 
       const input = overlay.querySelector('#modal-password-reset');
       const btnOk = overlay.querySelector('#modal-ok-reset');
@@ -930,6 +1029,202 @@
       });
     }
 
+    // Toggle menu nổi tự động đóng nếu ấn bên ngoài nút menu
+    const menuButton = document.getElementById('floatingMenuButton');
+    const menu = document.getElementById('floatingMenuOptions');
+
+    menuButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
+      menu.classList.toggle('hidden');
+    });
+
+    // Ngăn click trong menu lan ra ngoài (không bị đóng menu)
+    menu.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Bất kỳ click nào bên ngoài menu sẽ đóng menu (nếu đang mở)
+    document.addEventListener('click', (e) => {
+      if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // Ưu tiên ngôn ngữ người dùng đã chọn
+    let currentLanguage = localStorage.getItem('appLang');
+
+    if (!currentLanguage) {
+      const browserLang = navigator.language || navigator.userLanguage;
+
+      if (browserLang.startsWith('ja')) {
+        currentLanguage = 'ja';
+      } else if (browserLang.startsWith('vi')) {
+        currentLanguage = 'vi';
+      } else {
+        currentLanguage = 'en';
+      }
+    }
+
+    applyLanguage(currentLanguage);
+
+    // Hàm đổi ngôn ngữ
+    function changeLanguage(lang) {
+      localStorage.setItem('appLang', lang);
+      applyLanguage(lang);
+      alert('Ngôn ngữ đã chuyển sang: ' + (lang === 'vi' ? 'Tiếng Việt' : lang === 'en' ? 'English' : '日本語'));
+      location.reload(); // Reload để áp dụng ngôn ngữ mới
+    }
+
+    // Hàm áp dụng ngôn ngữ (thay thế văn bản tại chỗ)
+    function applyLanguage(lang) {
+      const translations = {
+  vi: {
+    title: "Video 60 Phút by Đăng Giáp",
+    "tiktok-normal": "TikTok Thường",
+    "tiktok-lite": "TikTok Lite",
+    "reset": "Reset Đếm Ngược",
+    "group-coc": "Link Cóc 🐸",
+    "group-tuyet": "Link Tuyết ❄",
+    "group-sumo": "Link Sumo 🤼",
+    "group-khobau": "Mở Kho Báu 💎",
+    "group-gt": "Link Giới Thiệu 📢",
+    "info1": "Admin đang xây kênh Tiktok.",
+    "info2": "Mọi người cho Admin 1 lượt follow nhé!",
+    "info3": "Chúc mọi người làm ăn phát đạt.",
+    "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
+    "modal-cancel": "Hủy",
+    "modal-ok": "OK",
+    "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.",
+    "modal-ok-confirm": "Đã hiểu",
+    "modal-title": "🔔 Thông báo",
+    "modal-line1": "➤ Thay đổi tên miền:",
+    "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
+    "modal-line3": "👉 60phut.xyz (Link mới)",
+    "modal-line4": "● Website cũ vẫn có thể truy cập bình thường.",
+    "modal-line5": "👉 soaicasancho.github.io/tiktok-lite-links (Link cũ)",
+    "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
+    "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
+    "modal-line8": "● Hãy chọn video khác để xem.",
+    "modal-line9": "➤ Lưu ý:",
+    "modal-line10": "● Tất cả video có nội dung giống nhau.",
+    "modal-line11": "● Âm thanh Video đã được loại bỏ.",
+    "modal-line12": "Admin Đăng Giáp!"
+  },
+  en: {
+    title: "60-Minute Videos by Dang Giap",
+    "tiktok-normal": "Regular TikTok",
+    "tiktok-lite": "TikTok Lite",
+    "reset": "Reset Countdown",
+    "group-coc": "Frog Links 🐸",
+    "group-tuyet": "Snow Links ❄",
+    "group-sumo": "Sumo Links 🤼",
+    "group-khobau": "Treasure Chest 💎",
+    "group-gt": "Intro Links 📢",
+    "info1": "Admin is building a TikTok channel.",
+    "info2": "We’d appreciate your support with a follow!",
+    "info3": "Wish you successful business.",
+    "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:",
+    "modal-cancel": "Cancel",
+    "modal-ok": "OK",
+    "modal-error": "Incorrect password. Please try again.",
+    "modal-ok": "Got it",
+    "modal-title": "🔔 Notification",
+    "modal-line1": "➤ Domain Name Change:",
+    "modal-line2": "● From May 26, 2025, the website address will change to:",
+    "modal-line3": "👉 60phut.xyz (New link)",
+    "modal-line4": "● The old website will still be accessible.",
+    "modal-line5": "👉 soaicasancho.github.io/tiktok-lite-links (Old link)",
+    "modal-line6": "➤ Anti-Detection Feature for Phone Fram:",
+    "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.",
+    "modal-line8": "● Please select another video to watch.",
+    "modal-line9": "➤ Note:",
+    "modal-line10": "● All videos have the same content.",
+    "modal-line11": "● Video audio has been removed.",
+    "modal-line12": "Admin Dang Giap!"
+  },
+  ja: {
+    title: "Đăng Giápの60分無音動画",
+    "tiktok-normal": "通常のTikTok",
+    "tiktok-lite": "TikTokライト版",
+    "reset": "カウントダウンをリセット",
+    "group-coc": "カエルリンク 🐸",
+    "group-tuyet": "雪リンク ❄",
+    "group-sumo": "相撲リンク 🤼",
+    "group-khobau": "宝箱解放💎",
+    "group-gt": "紹介リンク 📢",
+    "info1": "管理者はTikTokチャンネルを開設中です。",
+    "info2": "ぜひフォローをお願いします！",
+    "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。",
+    "modal-cancel": "キャンセル",
+    "modal-ok": "OK",
+    "modal-error": "パスワードが間違っています。もう一度お試しください。",
+    "modal-ok": "了解",
+    "modal-title": "🔔 お知らせ",
+    "modal-line1": "➤ ドメイン変更:",
+    "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更されます:",
+    "modal-line3": "👉 60phut.xyz（新しいリンク）",
+    "modal-line4": "● 旧ウェブサイトも引き続き利用可能です。",
+    "modal-line5": "👉 soaicasancho.github.io/tiktok-lite-links（旧リンク）",
+    "modal-line6": "➤ Phone Fram検出防止機能:",
+    "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。",
+    "modal-line8": "● 別の動画を選択してください。",
+    "modal-line9": "➤ 注意:",
+    "modal-line10": "● すべての動画の内容は同じです。",
+    "modal-line11": "● 動画の音声は削除されています。",
+    "modal-line12": "管理者 Đăng Giáp!"
+  }
+};
+  const t = translations[lang];
+
+  document.getElementById('title').textContent = t.title;
+  document.getElementById('tiktok-normal').textContent = t["tiktok-normal"];
+  document.getElementById('tiktok-lite').textContent = t["tiktok-lite"];
+  document.getElementById('resetBtn').textContent = '🔄 ' + t["reset"];
+
+  document.getElementById('group-coc').textContent = t["group-coc"];
+  document.getElementById('group-tuyet').textContent = t["group-tuyet"];
+  document.getElementById('group-sumo').textContent = t["group-sumo"];
+　document.getElementById('group-khobau').textContent = t["group-khobau"];
+  document.getElementById('group-gt').textContent = t["group-gt"];
+
+  document.getElementById('info1').textContent = t["info1"];
+  document.getElementById('info2').textContent = t["info2"];
+  document.getElementById('info3').textContent = t["info3"];
+
+  if (document.getElementById('modal-text')) {
+    document.getElementById('modal-text').innerHTML = t["modal-text"];
+  }
+  if (document.getElementById('modal-cancel')) {
+    document.getElementById('modal-cancel').textContent = t["modal-cancel"];
+  }
+  if (document.getElementById('modal-ok')) {
+    document.getElementById('modal-ok').textContent = t["modal-ok"];
+  }
+  if (document.getElementById('modal-error')) {
+    document.getElementById('modal-error').textContent = t["modal-error"];
+  }
+
+if (document.getElementById('modal-text-reset')) {
+    document.getElementById('modal-text-reset').innerHTML = t["modal-text"];
+  }
+  if (document.getElementById('modal-cancel-reset')) {
+    document.getElementById('modal-cancel-reset').textContent = t["modal-cancel"];
+  }
+  if (document.getElementById('modal-ok-reset')) {
+    document.getElementById('modal-ok-reset').textContent = t["modal-ok"];
+  }
+  if (document.getElementById('modal-error-reset')) {
+    document.getElementById('modal-error-reset').textContent = t["modal-error"];
+  }
+
+  document.getElementById('modal-title').textContent = t["modal-title"];
+  document.getElementById('featureModal-ok').textContent = t["modal-ok-confirm"];
+  for (let i = 1; i <= 13; i++) {
+    const el = document.getElementById('modal-line' + i);
+    if (el) el.textContent = t['modal-line' + i];
+    }
+  }
+  
   </script>
 </body>
 </html>
