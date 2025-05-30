@@ -1024,11 +1024,41 @@
     });
 
     // Bất kỳ click nào bên ngoài menu sẽ đóng menu (nếu đang mở)
-    document.addEventListener('click', (e) => {
+    const menuButton = document.getElementById('floatingMenuButton');
+    const menu = document.getElementById('floatingMenuOptions');
+
+     // Mở/đóng khi bấm nút
+     menuButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.classList.toggle('hidden');
+    });
+
+    // Ngăn lan sự kiện trong menu
+    menu.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Click ngoài menu để đóng
+    document.addEventListener('click', () => {
       if (!menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
       }
     });
+
+    // ➕ Chạm tay ngoài menu để đóng (cho mobile)
+    document.addEventListener('touchstart', (e) => {
+      if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== menuButton) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // ➕ Cuộn trang sẽ tự đóng menu
+    window.addEventListener('scroll', () => {
+      if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+      }
+    });
+
 
     // Ưu tiên ngôn ngữ người dùng đã chọn
     let currentLanguage = localStorage.getItem('appLang');
