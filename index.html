@@ -76,7 +76,7 @@
       padding: 12px 2px;
       cursor: pointer;
       transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-      margin-bottom: 12px;
+      margin-top: 10px;
     }
     .link-button:hover {
       box-shadow: 0 0 12px rgba(29, 161, 242, 0.6), 0 0 24px rgba(29, 161, 242, 0.4);
@@ -108,6 +108,66 @@
     /* ✅ Biểu tượng +/− */
     .toggle-icon {
       font-size: 14px;
+    }
+
+    /* ✅ Giao diện cột Link Cóc chia đều */
+    .linkCoc-wrapper {
+      display: flex;
+      gap: 4px;
+      margin-top: 10px;
+      align-items: stretch;
+    }
+
+    /* ✅ Mỗi cột có khung + cùng chiều cao */
+    .coc-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #f9f9f9;
+      padding: 2px 2px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+    }
+
+    /* ✅ Nút bấm đồng bộ chiều cao + căn giữa nội dung */
+    .link-button {
+      width: 100%;
+      height: 42px;
+      margin-top: 10px;
+      padding: 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #1da1f2;
+      color: white;
+      font-size: 14px;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .link-button:hover {
+      box-shadow: 0 0 12px rgba(29, 161, 242, 0.6), 0 0 24px rgba(29, 161, 242, 0.4);
+      transform: scale(1.01);
+    }
+
+    .link-button:active {
+      background-color: #0d8ddb;
+      transform: scale(0.96);
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .link-button:disabled {
+      cursor: not-allowed;
+    }
+
+    .clicked {
+      background-color: gray !important;
+      color: #eee;
+      cursor: default;
     }
 
     /* ✅ Các cột link TikTok dưới cùng */
@@ -314,12 +374,106 @@
       display: none;
     }
 
-
     #floatingMenuButton img {
-      width: 80%;
-      height: 80%;
+      width: 95%;
+      height: 95%;
       object-fit: contain;
     }
+
+    /* ✅ Logo quay tròn */
+    @keyframes spin-logo {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    #floatingMenuButton img {
+      animation: spin-logo 10s linear infinite;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+body.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+body.dark-mode .section {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+
+body.dark-mode .section-title {
+  background-color: #333;
+  color: #f1f1f1;
+}
+
+body.dark-mode .link-button {
+  background-color: #333;
+  color: #fff;
+}
+
+body.dark-mode .link-button:hover {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+body.dark-mode .fixed-header {
+  background-color: #1a1a1a;
+  color: #f1f1f1;
+  border-bottom: 1px solid #333;
+}
+
+body.dark-mode .modal {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+body.dark-mode .feature-modal {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+body.dark-mode .contact-info {
+  color: #ccc;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   </style>
 </head>
@@ -343,7 +497,16 @@
         <span class="toggle-icon" id="icon-linkCoc">+</span> <span id="group-coc"></span>
       </div>
 
-      <div id="linkCoc" class="link-container collapsed"></div>
+      <div id="linkCoc" class="link-container collapsed">
+        <div class="linkCoc-wrapper">
+          <div class="section coc-column" id="linkCoc-regular">
+            <div class="section-title" id="coc-tiktok-regular">TikTok Thường</div>
+         </div>
+          <div class="section coc-column" id="linkCoc-lite">
+            <div class="section-title" id="coc-tiktok-lite">TikTok Lite</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="section">
@@ -448,6 +611,7 @@
     <button onclick="changeLanguage('en')">English</button>
     <button onclick="changeLanguage('ja')">日本語</button>
     <hr>
+    <button onclick="toggleDarkMode()" id="darkModeBtn">🌙 Chế độ Tối</button>
     <button id="resetBtn">🔄 Reset Đếm Ngược</button>
   </div>
 
@@ -460,11 +624,18 @@
     const unlockDays = 15; // 👈 Số ngày đếm ngược khi xem video
 
     // ✅ Dữ liệu link cụ thể
-    const linkCoc = [
+    const linkCocLite = [
       { url: "https://lite.tiktok.com/t/ZSh3cudbp/", label: "GL 4" },
       { url: "https://lite.tiktok.com/t/ZSh33xQVq/", label: "GL 5" },
       { url: "https://lite.tiktok.com/t/ZSh33Yjob/", label: "GL 6" },
       { url: "https://lite.tiktok.com/t/ZShcngr3k/", label: "GL 9+" }
+    ];
+
+    const linkCocRegular = [
+      { url: "https://www.google.com/", label: "🔓", protected: true },
+      { url: "https://www.google.com/", label: "🔓", protected: true },
+      { url: "https://www.google.com/", label: "🔓", protected: true },
+      { url: "https://www.google.com/", label: "🔓", protected: true }
     ];
 
     const linkTuyet = [
@@ -853,7 +1024,8 @@
 
     //___________________________________________________________
     // ✅ Hiển thị các nhóm link
-    renderLinks('linkCoc', linkCoc, 'coc', 'Cóc', true);
+    renderLinks('linkCoc-lite', linkCocLite, 'coc-lite', 'Lite', true);
+    renderLinks('linkCoc-regular', linkCocRegular, 'coc-regular', 'Thường', true);
     renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
     renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true);
     renderLinks('linkKhoBau', linkKhoBau, 'khobau', 'Kho Báu', true);
@@ -1034,6 +1206,60 @@
       }
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ✅ Giao diện sáng/tối
+    function toggleDarkMode() {
+      const body = document.body;
+      body.classList.toggle('dark-mode');
+
+      const isDark = body.classList.contains('dark-mode');
+      document.getElementById('darkModeBtn').textContent = isDark ? '🌞 Chế độ Sáng' : '🌙 Chế độ Tối';
+      localStorage.setItem('darkMode', isDark ? 'yes' : 'no');
+    }
+
+    // ✅ Tự động bật chế độ cũ khi tải lại
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('darkMode') === 'yes') {
+        document.body.classList.add('dark-mode');
+        const btn = document.getElementById('darkModeBtn');
+        if (btn) btn.textContent = '🌞 Chế độ Sáng';
+      }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Ưu tiên ngôn ngữ người dùng đã chọn
     let currentLanguage = localStorage.getItem('appLang');
 
@@ -1061,13 +1287,15 @@
 
     // Hàm áp dụng ngôn ngữ (thay thế văn bản tại chỗ)
     function applyLanguage(lang) {
-      const translations = {
+     const translations = {
   vi: {
     title: "Video 60 Phút by Đăng Giáp",
-    "tiktok-normal": "TikTok Thường",
+    "tiktok-normal": "TikTok",
     "tiktok-lite": "TikTok Lite",
     "reset": "Reset Đếm Ngược",
     "group-coc": "Link Cóc 🐸",
+    "coc-tiktok-lite": "TikTok Lite",
+    "coc-tiktok-regular": "TikTok",
     "group-tuyet": "Link Tuyết ❄",
     "group-sumo": "Link Sumo 🤼",
     "group-khobau": "Mở Kho Báu 💎",
@@ -1096,10 +1324,12 @@
   },
   en: {
     title: "60-Minute Videos by Dang Giap",
-    "tiktok-normal": "Regular TikTok",
+    "tiktok-normal": "TikTok",
     "tiktok-lite": "TikTok Lite",
     "reset": "Reset Countdown",
     "group-coc": "Frog Links 🐸",
+    "coc-tiktok-lite": "TikTok Lite",
+    "coc-tiktok-regular": "TikTok",
     "group-tuyet": "Snow Links ❄",
     "group-sumo": "Sumo Links 🤼",
     "group-khobau": "Treasure Chest 💎",
@@ -1128,10 +1358,12 @@
   },
   ja: {
     title: "Đăng Giápの60分無音動画",
-    "tiktok-normal": "通常のTikTok",
-    "tiktok-lite": "TikTokライト版",
+    "tiktok-normal": "テックトック",
+    "tiktok-lite": "テックトックライト",
     "reset": "カウントダウンをリセット",
     "group-coc": "カエルリンク 🐸",
+    "coc-tiktok-lite": "テックトックライト",
+    "coc-tiktok-regular": "テックトック",
     "group-tuyet": "雪リンク ❄",
     "group-sumo": "相撲リンク 🤼",
     "group-khobau": "宝箱解放💎",
@@ -1174,6 +1406,13 @@
   document.getElementById('info1').textContent = t["info1"];
   document.getElementById('info2').textContent = t["info2"];
   document.getElementById('info3').textContent = t["info3"];
+
+  if (document.getElementById('coc-tiktok-lite')) {
+    document.getElementById('coc-tiktok-lite').textContent = t["coc-tiktok-lite"];
+  }
+  if (document.getElementById('coc-tiktok-regular')) {
+    document.getElementById('coc-tiktok-regular').textContent = t["coc-tiktok-regular"];
+  }
 
   if (document.getElementById('modal-text')) {
     document.getElementById('modal-text').innerHTML = t["modal-text"];
