@@ -389,91 +389,50 @@
     #floatingMenuButton img {
       animation: spin-logo 10s linear infinite;
     }
+    
+    body.dark-mode {
+      background-color: #121212;
+      color: #f1f1f1;
+    }
 
+    body.dark-mode .section {
+      background-color: #1e1e1e;
+      border-color: #333;
+    }
 
+    body.dark-mode .section-title {
+      background-color: #333;
+      color: #f1f1f1;
+    }
 
+    body.dark-mode .link-button {
+      background-color: #333;
+      color: #fff;
+    }
 
+    body.dark-mode .link-button:hover {
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    }
 
+    body.dark-mode .fixed-header {
+      background-color: #1a1a1a;
+      color: #f1f1f1;
+      border-bottom: 1px solid #333;
+    }
 
+    body.dark-mode .modal {
+      background-color: #1e1e1e;
+      color: #fff;
+    }
 
+    body.dark-mode .feature-modal {
+      background-color: #1e1e1e;
+      color: #fff;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-body.dark-mode {
-  background-color: #121212;
-  color: #f1f1f1;
-}
-
-body.dark-mode .section {
-  background-color: #1e1e1e;
-  border-color: #333;
-}
-
-body.dark-mode .section-title {
-  background-color: #333;
-  color: #f1f1f1;
-}
-
-body.dark-mode .link-button {
-  background-color: #333;
-  color: #fff;
-}
-
-body.dark-mode .link-button:hover {
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-}
-
-body.dark-mode .fixed-header {
-  background-color: #1a1a1a;
-  color: #f1f1f1;
-  border-bottom: 1px solid #333;
-}
-
-body.dark-mode .modal {
-  background-color: #1e1e1e;
-  color: #fff;
-}
-
-body.dark-mode .feature-modal {
-  background-color: #1e1e1e;
-  color: #fff;
-}
-
-body.dark-mode .contact-info {
-  color: #ccc;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
+    body.dark-mode .contact-info {
+      color: #ccc;
+    }
 
   </style>
 </head>
@@ -560,13 +519,13 @@ body.dark-mode .contact-info {
         ● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:
       </p>
       <p id="modal-line3" style="text-align: left; font-style: italic; font-size: 14px;">
-        👉 60phut.xyz (Link mới)
+        👉 video60phut.com (Link mới)
       </p>
       <p id="modal-line4" style="text-align: left; font-style: italic; font-size: 14px;">
-        ● Website cũ vẫn có thể truy cập bình thường.
+        ● Website cũ đã dừng hoạt động.
       </p>
       <p id="modal-line5" style="text-align: left; font-style: italic; font-size: 14px;">
-        👉 soaicasancho.github.io/tiktok-lite-links (Link cũ)
+        👉 ...........
       </p>
 
       <p id="modal-line6" style="text-align: left; font-weight: bold; font-size: 16px;">
@@ -1206,23 +1165,6 @@ body.dark-mode .contact-info {
       }
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // ✅ Giao diện sáng/tối
     function toggleDarkMode() {
       const body = document.body;
@@ -1241,24 +1183,6 @@ body.dark-mode .contact-info {
         if (btn) btn.textContent = '🌞 Chế độ Sáng';
       }
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Ưu tiên ngôn ngữ người dùng đã chọn
     let currentLanguage = localStorage.getItem('appLang');
@@ -1311,9 +1235,9 @@ body.dark-mode .contact-info {
     "modal-title": "🔔 Thông báo",
     "modal-line1": "➤ Thay đổi tên miền:",
     "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
-    "modal-line3": "👉 60phut.xyz (Link mới)",
-    "modal-line4": "● Website cũ vẫn có thể truy cập bình thường.",
-    "modal-line5": "👉 soaicasancho.github.io/tiktok-lite-links (Link cũ)",
+    "modal-line3": "👉 video60min.com",
+    "modal-line4": "● Website không thể truy cập.",
+    "modal-line5": "👉 .............",
     "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
     "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
     "modal-line8": "● Hãy chọn video khác để xem.",
@@ -1345,9 +1269,9 @@ body.dark-mode .contact-info {
     "modal-title": "🔔 Notification",
     "modal-line1": "➤ Domain Name Change:",
     "modal-line2": "● From May 26, 2025, the website address will change to:",
-    "modal-line3": "👉 60phut.xyz (New link)",
+    "modal-line3": "👉 video60min.com",
     "modal-line4": "● The old website will still be accessible.",
-    "modal-line5": "👉 soaicasancho.github.io/tiktok-lite-links (Old link)",
+    "modal-line5": "👉 ..........",
     "modal-line6": "➤ Anti-Detection Feature for Phone Fram:",
     "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.",
     "modal-line8": "● Please select another video to watch.",
@@ -1378,9 +1302,9 @@ body.dark-mode .contact-info {
     "modal-title": "🔔 お知らせ",
     "modal-line1": "➤ ドメイン変更:",
     "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更されます:",
-    "modal-line3": "👉 60phut.xyz（新しいリンク）",
-    "modal-line4": "● 旧ウェブサイトも引き続き利用可能です。",
-    "modal-line5": "👉 soaicasancho.github.io/tiktok-lite-links（旧リンク）",
+    "modal-line3": "👉 video60min.com",
+    "modal-line4": "● 旧ウェブサイト利用不可です。",
+    "modal-line5": "👉 ............... ",
     "modal-line6": "➤ Phone Fram検出防止機能:",
     "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。",
     "modal-line8": "● 別の動画を選択してください。",
