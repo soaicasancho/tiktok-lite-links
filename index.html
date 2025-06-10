@@ -1382,25 +1382,42 @@ function refreshApp() {
   location.reload();
 }
 
-// ✅ Tuỳ chọn: hiển thị hiệu ứng "Đang làm mới..."
 function showRefreshIndicator() {
-  const refreshText = document.createElement('div');
-  refreshText.textContent = '🔄 Đang cập nhật...';
-  refreshText.style.position = 'fixed';
-  refreshText.style.top = '20px';
-  refreshText.style.left = '50%';
-  refreshText.style.transform = 'translateX(-50%)';
-  refreshText.style.backgroundColor = '#f0f0f0';
-  refreshText.style.padding = '8px 16px';
-  refreshText.style.borderRadius = '20px';
-  refreshText.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
-  refreshText.style.zIndex = '9999';
-  refreshText.style.fontWeight = 'bold';
-  document.body.appendChild(refreshText);
+  // 👉 Tạo overlay toàn màn hình màu trắng
+  const overlay = document.createElement('div');
+  overlay.style.position = 'fixed';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.backgroundColor = '#ffffff';
+  overlay.style.zIndex = '9999';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
 
-  setTimeout(() => {
-    refreshText.remove();
-  }, 2000);
+  // 👉 Vòng tròn loading (CSS spinner)
+  const spinner = document.createElement('div');
+  spinner.style.border = '8px solid #f3f3f3';
+  spinner.style.borderTop = '8px solid #3498db';
+  spinner.style.borderRadius = '50%';
+  spinner.style.width = '60px';
+  spinner.style.height = '60px';
+  spinner.style.animation = 'spin 1s linear infinite';
+
+  // 👉 Gắn spinner vào overlay
+  overlay.appendChild(spinner);
+  document.body.appendChild(overlay);
+
+  // 👉 CSS animation cho vòng tròn quay
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 
