@@ -635,9 +635,9 @@
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Giới Thiệu 📢
     const enableGioiThieu = false;
 
-    // ✅ Dữ liệu link cụ thể
+    // ✅ Dữ liệu link cụ thể. protected: true khóa pass, highlight: true nhấp nháy chữ trong nút, hidden: true ẩn nút.
     const linkCocLite = [
-      { url: "https://lite.tiktok.com/t/ZSh3cudbp/", label: "GL 4" },
+      { url: "https://lite.tiktok.com/t/ZSh3cudbp/", label: "GL 4", hidden: true },
       { url: "https://lite.tiktok.com/t/ZSh33xQVq/", label: "GL 5" },
       { url: "https://lite.tiktok.com/t/ZSh33Yjob/", label: "GL 6" },
       { url: "https://lite.tiktok.com/t/ZShcngr3k/", label: "GL 9+" }
@@ -647,11 +647,11 @@
       { url: "https://vt.tiktok.com/ZSkSN7puy/", label: "16PRM" },
       { url: "https://vt.tiktok.com/ZSkkegXK9/", label: "Máy Rút Tiền" },
       { url: "https://vt.tiktok.com/ZSkSU9NFW/", label: "Sony 1" },
-      { url: "https://vt.tiktok.com/ZSkSUToee/", label: "Sony 2" }
+      { url: "https://vt.tiktok.com/ZSkSUToee/", label: "Sony 2", hidden: true }
     ];
 
     const linkTuyet = [
-      { url: "https://lite.tiktok.com/t/ZShxvepxY/", label: "Máy Rút Tiền", protected: true },
+      { url: "https://lite.tiktok.com/t/ZShxvepxY/", label: "Máy Rút Tiền", protected: true, hidden: true },
       { url: "https://lite.tiktok.com/t/ZSkBQQwbU/", label: "Bấm nút này (S9+)", highlight: true },
       { url: "https://lite.tiktok.com/t/ZSkBXC7yU/", label: "GL5" },
       { url: "https://lite.tiktok.com/t/ZSkUe9btj/", label: "GL6" }
@@ -1015,6 +1015,7 @@
     function renderLinks(containerId, links, type, prefix, allowMultiple = false) {
       const container = document.getElementById(containerId);
       links.forEach((link, i) => {
+        if (link.hidden) return; // 👈 bỏ qua nếu có hidden: true
         const btn = createButton(
           link.url || link,
           link.label || `${prefix} ${i + 1}`,
