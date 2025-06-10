@@ -442,9 +442,9 @@
 
     /* Nhấp nháy nhẹ cho chữ trong nút */
     .blink-text {
-      animation: strongBlink 0.8s ease-in-out infinite;
+      animation: strongBlink 1.2s ease-in-out infinite;
       display: inline-block;
-      color: #ff5722; /* Màu chữ nổi bật hơn */
+      color: #ff0000; /* Màu chữ nổi bật hơn */
       font-weight: bold;
     }
 
@@ -454,7 +454,7 @@
         transform: scale(1);
       }
       50% {
-        opacity: 0.1;
+        opacity: 1;
         transform: scale(1.5); /* Phóng to nhẹ */
       }
     }
@@ -893,7 +893,7 @@
         }
       } else {
         if (highlight) {
-          btn.innerHTML = `<span class="blink-text">${label}</span> ${clickCount > 0 ? `(${clickCount} lượt)` : ''}`;
+          btn.innerHTML = `<span class="blink-text">${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}</span>`;
         } else {
           btn.textContent = `${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}`;
         }
