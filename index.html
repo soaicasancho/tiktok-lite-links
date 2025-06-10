@@ -1383,7 +1383,7 @@ function refreshApp() {
 }
 
 function showRefreshIndicator() {
-  // 👉 Tạo overlay toàn màn hình màu trắng
+  // 👉 Tạo lớp phủ trắng mờ dần
   const overlay = document.createElement('div');
   overlay.style.position = 'fixed';
   overlay.style.top = '0';
@@ -1395,29 +1395,38 @@ function showRefreshIndicator() {
   overlay.style.display = 'flex';
   overlay.style.alignItems = 'center';
   overlay.style.justifyContent = 'center';
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity 0.5s ease';
 
-  // 👉 Vòng tròn loading (CSS spinner)
+  // 👉 Vòng tròn loading
   const spinner = document.createElement('div');
   spinner.style.border = '8px solid #f3f3f3';
   spinner.style.borderTop = '8px solid #3498db';
   spinner.style.borderRadius = '50%';
   spinner.style.width = '60px';
   spinner.style.height = '60px';
-  spinner.style.animation = 'spin 1s linear infinite';
+  spinner.style.animation = 'spin 1s linear';
 
-  // 👉 Gắn spinner vào overlay
   overlay.appendChild(spinner);
   document.body.appendChild(overlay);
 
-  // 👉 CSS animation cho vòng tròn quay
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
+  // 👉 Chèn keyframes nếu chưa có
+  if (!document.getElementById('refresh-style')) {
+    const style = document.createElement('style');
+    style.id = 'refresh-style';
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // 👉 Bắt đầu hiệu ứng mờ dần
+  setTimeout(() => {
+    overlay.style.opacity = '1';
+  }, 10);
 }
 
 
