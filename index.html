@@ -11,7 +11,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <!-- Logo khi thêm vào iPhone -->
-  <link rel="apple-touch-icon" href="apple-touch-icon-180x180-no-background.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon-180x180.png" />
   <!-- Mở toàn màn hình như ứng dụng -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
@@ -922,14 +922,26 @@
 
     // ✅ Mở link và lưu lịch sử click
     function openLinkAndSave(link, label, key, allowMultiple, clickCount, btn) {
-      window.open(link, '_blank');
-      clickedLinks[key] = Date.now(); // cập nhật mốc thời gian
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches || // iOS, Android PWA
+        window.navigator.standalone === true; // iOS Safari riêng
+
+      // 👉 Dùng location.href nếu chạy như app (PWA), ngược lại mở tab mới
+      if (isStandalone) {
+        window.location.href = link;
+      } else {
+        window.open(link, '_blank');
+      }
+
+      // 👉 Cập nhật thời gian và số lượt click
+      const now = Date.now();
+      clickedLinks[key] = now;
       clickedLinks[key + '_count'] = clickCount + 1;
       localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
 
-      // Không xử lý đếm ngược tại đây nữa – để createButton đảm nhiệm khi reload hoặc rerender
-      btn.textContent = `⏳ Đang cập nhật...`; // Tuỳ ý
-      location.reload(); // ép tải lại để hiển thị đúng thời gian
+      // 👉 Tạo lại nút mới để hiển thị đếm ngược mà không cần reload
+      const newBtn = createButton(link, label, key.split('_')[1], allowMultiple, false, false);
+      btn.replaceWith(newBtn);
     }
 
     // ✅ Hiện modal nhập mật khẩu nếu link có bảo vệ
