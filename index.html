@@ -11,7 +11,7 @@
   <meta name="theme-color" content="#ffffff">
 
   <!-- Logo khi thêm vào iPhone -->
-  <link rel="apple-touch-icon" href="Logo.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <!-- Mở toàn màn hình như ứng dụng -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
@@ -922,14 +922,41 @@
 
     // ✅ Mở link và lưu lịch sử click
     function openLinkAndSave(link, label, key, allowMultiple, clickCount, btn) {
+      // Mở link
       window.open(link, '_blank');
-      clickedLinks[key] = Date.now(); // cập nhật mốc thời gian
+
+      // Cập nhật localStorage
+      clickedLinks[key] = Date.now();
       clickedLinks[key + '_count'] = clickCount + 1;
       localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
 
-      // Không xử lý đếm ngược tại đây nữa – để createButton đảm nhiệm khi reload hoặc rerender
-      btn.textContent = `⏳ Đang cập nhật...`; // Tuỳ ý
-      location.reload(); // ép tải lại để hiển thị đúng thời gian
+      // Cập nhật nút ngay tại chỗ (không reload)
+      btn.disabled = true;
+      btn.classList.add('clicked');
+
+      const unlockDays = 15; // hoặc lấy từ biến toàn cục nếu có
+      const end = Date.now() + unlockDays * 24 * 60 * 60 * 1000;
+
+      const updateCountdown = () => {
+        const now = Date.now();
+        const diff = end - now;
+
+        if (diff <= 0) {
+          clearInterval(interval);
+          btn.textContent = `${label} (${clickCount + 1} lượt)`;
+          btn.disabled = false;
+          btn.classList.remove('clicked');
+        } else {
+          const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((diff % (1000 * 60)) / 1000);
+          btn.textContent = `⏳ ${d}日${h}時${m.toString().padStart(2, '0')}分${s.toString().padStart(2, '0')}秒`;
+        }
+      };
+
+      updateCountdown(); // cập nhật lần đầu
+      const interval = setInterval(updateCountdown, 1000); // cập nhật mỗi giây
     }
 
     // ✅ Hiện modal nhập mật khẩu nếu link có bảo vệ
