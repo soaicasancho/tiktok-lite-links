@@ -1328,6 +1328,121 @@
       }
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let startY = 0;
+let isPulling = false;
+const threshold = 60; // khoảng cách kéo tối thiểu để làm mới
+
+document.addEventListener('touchstart', (e) => {
+  if (window.scrollY === 0) {
+    startY = e.touches[0].clientY;
+    isPulling = true;
+  }
+});
+
+document.addEventListener('touchmove', (e) => {
+  if (!isPulling) return;
+
+  const currentY = e.touches[0].clientY;
+  const diffY = currentY - startY;
+
+  if (diffY > threshold) {
+    // 👉 Kéo đủ sâu → thực hiện cập nhật
+    isPulling = false;
+    showRefreshIndicator(); // tuỳ chọn, có thể bỏ
+    refreshApp();
+  }
+});
+
+document.addEventListener('touchend', () => {
+  isPulling = false;
+});
+
+// ✅ Hàm thực hiện làm mới lại toàn bộ app
+function refreshApp() {
+  location.reload();
+}
+
+// ✅ Tuỳ chọn: hiển thị hiệu ứng "Đang làm mới..."
+function showRefreshIndicator() {
+  const refreshText = document.createElement('div');
+  refreshText.textContent = '🔄 Đang cập nhật...';
+  refreshText.style.position = 'fixed';
+  refreshText.style.top = '20px';
+  refreshText.style.left = '50%';
+  refreshText.style.transform = 'translateX(-50%)';
+  refreshText.style.backgroundColor = '#f0f0f0';
+  refreshText.style.padding = '8px 16px';
+  refreshText.style.borderRadius = '20px';
+  refreshText.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+  refreshText.style.zIndex = '9999';
+  refreshText.style.fontWeight = 'bold';
+  document.body.appendChild(refreshText);
+
+  setTimeout(() => {
+    refreshText.remove();
+  }, 2000);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Ưu tiên ngôn ngữ người dùng đã chọn
     let currentLanguage = localStorage.getItem('appLang');
 
