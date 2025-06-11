@@ -623,6 +623,24 @@
     </div>
   </div>
 
+  <!-- Modal Thêm vào Màn hình Chính cho iOS -->
+  <div id="iosInstallModal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <h3 id="ios-modal-title">Hướng Dẫn Tạo Phím Tắt</h3>
+      <p id="ios-line1" style="text-align: center;">(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)</p>
+      <p id="ios-line2" style="text-align: left;">1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.</p>
+      <p id="ios-line3" style="text-align: left;">2. Chọn <strong>"Thêm vào Màn hình chính"</strong>.</p>
+      <p id="ios-line4" style="text-align: left;">3. Nhấn <strong>"Thêm"</strong> để hoàn tất.</p>
+
+      <div class="buttons" style="margin-top: 10px;">
+        <button id="ios-ok-btn">Đã hiểu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Văn bản dịch cho trạng thái đã sao chép -->
+  <span id="copied-success-text" style="display: none;">Đã sao chép liên kết</span>
+
   <script>
 
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
@@ -641,10 +659,13 @@
     const enableSumo = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Mở Kho Báu 💎
-    const enableKhoBau = false;
+    const enableKhoBau = true;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Giới Thiệu 📢
     const enableGioiThieu = true;
+
+    // ✅ Đổi thành true/false để hiện/ẩn lại hướng dẫn cài phím tắt
+    const enable_ios_modal = true; 
 
     // ✅ Dữ liệu link cụ thể. protected: true khóa pass, highlight: true nhấp nháy chữ trong nút, hidden: true ẩn nút.
     const linkCocLite = [
@@ -673,7 +694,10 @@
     ];
 
     const linkKhoBau = [
-      { url: "", label: "🔓", protected: true }
+      { url: "https://lite.tiktok.com/t/ZSkaCMXmG/", label: "GL05 2m5", copyOnly: true },
+      { url: "https://lite.tiktok.com/t/ZSkaCubrm/", label: "GL06 2m5", copyOnly: true },
+      { url: "https://lite.tiktok.com/t/ZSkaCb2ex/", label: "GL07 2m5", copyOnly: true },
+      { url: "https://lite.tiktok.com/t/ZSkaQTBj1/", label: "Sy14 2m5", copyOnly: true }
     ];
 
     const linkGioiThieu = [
@@ -911,10 +935,24 @@
       }
 
       btn.onclick = () => {
-        if (isProtected) {
+        if (link.copyOnly) {
+          navigator.clipboard.writeText(link.url)
+            .then(() => {
+              const oldText = btn.textContent;
+              btn.textContent = document.getElementById('copied-success-text').textContent;
+              btn.disabled = true;
+              setTimeout(() => {
+                btn.textContent = oldText;
+                btn.disabled = false;
+              }, 2000);
+            })
+            .catch(() => {
+              alert("❌ Sao chép thất bại. Dùng trình duyệt khác và thử lại");
+            });
+        } else if (isProtected) {
           showPasswordModal(link, label, key, allowMultiple, clickCount, btn);
         } else {
-          openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
+          openLinkAndSave(link.url, label, key, allowMultiple, clickCount, btn);
         }
       };
       return btn;
@@ -1030,7 +1068,7 @@
 
         document.body.removeChild(overlay);
         document.body.classList.remove('no-scroll');
-        openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
+        openLinkAndSave(link.url, label, key, allowMultiple, clickCount, btn);
       });
     }
 
@@ -1040,7 +1078,7 @@
       links.forEach((link, i) => {
         if (link.hidden) return; // 👈 bỏ qua nếu có hidden: true
         const btn = createButton(
-          link.url || link,
+          link,
           link.label || `${prefix} ${i + 1}`,
           type,
           allowMultiple,
@@ -1191,25 +1229,52 @@
       location.reload();
     }
 
-    // ✅ Modal thông báo tính năng mới – chỉ hiển thị 5 lần
-    (function() {
-      const modalKey = 'featureModalShownCount';
-      let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
+    // ✅ Modal thêm phím tắt – chỉ hiển thị 1 lần
+    function triggerIOSModalIfNeeded() {
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
+      const iosModalKey = 'iosInstallModalShownCount';
+      let count = parseInt(localStorage.getItem(iosModalKey) || '0', 10);
 
-      if (count < 1) {
-        const modal = document.getElementById('featureModal');
-        const okBtn = document.getElementById('featureModal-ok');
+      if (enable_ios_modal && isIOS && !isInStandaloneMode && count < 1) {
+        const modal = document.getElementById('iosInstallModal');
+        if (modal) {
+          modal.style.display = 'flex';
+          document.body.classList.add('no-scroll');
 
-        modal.style.display = 'flex';
-        document.body.classList.add('no-scroll');
-
-        okBtn.addEventListener('click', () => {
-          modal.style.display = 'none';
-          document.body.classList.remove('no-scroll');
-          localStorage.setItem(modalKey, (count +1).toString());
-        });
+          const okBtn = document.getElementById('ios-ok-btn');
+          okBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            document.body.classList.remove('no-scroll');
+            localStorage.setItem(iosModalKey, (count + 1).toString());
+          });
+        }
       }
-    })();
+    }
+
+
+    // ✅ Modal thông báo tính năng mới – chỉ hiển thị 5 lần
+(function() {
+  const modalKey = 'featureModalShownCount';
+  let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
+
+  if (count < 1) {
+    const modal = document.getElementById('featureModal');
+    const okBtn = document.getElementById('featureModal-ok');
+
+    modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+
+    okBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      document.body.classList.remove('no-scroll');
+      localStorage.setItem(modalKey, (count +1).toString());
+
+      triggerIOSModalIfNeeded(); // ✅ Chỉ gọi sau khi ấn "Đã hiểu"
+    });
+  } 
+})();
+
 
     // ✅ Reset vô hiệu hóa Pass mở link
     (function() {
@@ -1328,6 +1393,7 @@
       }
     });
 
+    // ✅ Kéo xuống làm mới app
     let startY = 0;
     let isPulling = false;
     const threshold = 60; // khoảng cách kéo tối thiểu để làm mới
@@ -1432,7 +1498,14 @@
     "contact-title": "📞 Thông Tin Liên Hệ",
     "contact-line1": "Zalo: 0979-518-322",
     "contact-line2": "Email: chichchoehoa001@gmail.com",
-    "contact-close": "Đóng"
+    "contact-close": "Đóng",
+    "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt",
+    "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)",
+    "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.",
+    "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.",
+    "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
+    "ios-ok-btn": "Đã hiểu",
+    "copied-success-text": "Đã sao chép liên kết"
   },
   en: {
     title: "60-Minute Videos by Dang Giap",
@@ -1471,7 +1544,14 @@
     "contact-title": "Contact the administrator.",
     "contact-line1": "Zalo: 0979-518-322",
     "contact-line2": "Email: chichchoehoa001@gmail.com",
-    "contact-close": "Close"
+    "contact-close": "Close",
+    "ios-modal-title": "How to Add to Home Screen",
+    "ios-line1": "(To optimize your experience, we recommend following the steps below)",
+    "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.",
+    "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.",
+    "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.",
+    "ios-ok-btn": "Got it",
+    "copied-success-text": "Link copied successfully"
   },
   ja: {
     title: "Đăng Giápの60分無音動画",
@@ -1510,7 +1590,14 @@
     "contact-title": "管理者の問い合わせ：",
     "contact-line1": "Zalo: 0979-518-322",
     "contact-line2": "メール: chichchoehoa001@gmail.com",
-    "contact-close": "OK"
+    "contact-close": "OK",
+    "ios-modal-title": "ホーム画面に追加する方法",
+    "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）",
+    "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。",
+    "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。",
+    "ios-line4": "3. <strong>「追加」</strong>をタップして完了。",
+    "ios-ok-btn": "了解",
+    "copied-success-text": "リンクをコピーしました"
     }
   };
   const t = translations[lang];
@@ -1570,6 +1657,17 @@
   document.getElementById('contactLine1').textContent = t["contact-line1"];
   document.getElementById('contactLine2').textContent = t["contact-line2"];
   document.getElementById('closeContactBtn').textContent = t["contact-close"];
+
+  if (document.getElementById('ios-modal-title')) {
+  document.getElementById('ios-modal-title').textContent = t["ios-modal-title"];
+  document.getElementById('ios-line1').innerHTML = t["ios-line1"];
+  document.getElementById('ios-line2').innerHTML = t["ios-line2"];
+  document.getElementById('ios-line3').innerHTML = t["ios-line3"];
+  document.getElementById('ios-ok-btn').textContent = t["ios-ok-btn"];
+  }
+
+  document.getElementById('info1').textContent = t["info1"];
+  document.getElementById('copied-success-text').textContent = t["copied-success-text"];
 
   document.getElementById('modal-title').textContent = t["modal-title"];
   document.getElementById('featureModal-ok').textContent = t["modal-ok-confirm"];
