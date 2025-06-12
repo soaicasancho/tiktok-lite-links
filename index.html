@@ -935,11 +935,13 @@
       }
 
       btn.onclick = () => {
+        const realUrl = typeof link === 'string' ? link : link.url;
+
         if (link.copyOnly) {
-          navigator.clipboard.writeText(link.url)
+          navigator.clipboard.writeText(realUrl)
             .then(() => {
               const oldText = btn.textContent;
-              btn.textContent = document.getElementById('copied-success-text').textContent;
+              btn.textContent = "✅ Đã sao chép";
               btn.disabled = true;
               setTimeout(() => {
                 btn.textContent = oldText;
@@ -947,12 +949,12 @@
               }, 2000);
             })
             .catch(() => {
-              alert("❌ Sao chép thất bại. Dùng trình duyệt khác và thử lại");
+              alert("❌ Không thể sao chép. Vui lòng thử lại.");
             });
         } else if (isProtected) {
           showPasswordModal(link, label, key, allowMultiple, clickCount, btn);
         } else {
-          openLinkAndSave(link.url, label, key, allowMultiple, clickCount, btn);
+          openLinkAndSave(realUrl, label, key, allowMultiple, clickCount, btn);
         }
       };
       return btn;
