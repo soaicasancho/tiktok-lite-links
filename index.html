@@ -656,7 +656,7 @@
     const enableTuyet = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Sumo 🤼
-    const enableSumo = false;
+    const enableSumo = true;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Mở Kho Báu 💎
     const enableKhoBau = true;
@@ -843,7 +843,8 @@
     function createButton(link, label, type, allowMultiple = false, isProtected = false, highlight = false) {
       const btn = document.createElement('button');
       btn.className = 'link-button';
-      const key = link + '_' + type;
+      const realUrl = typeof link === 'string' ? link : link.url;
+      const key = realUrl + '_' + type;
       const clickTimestamp = clickedLinks[key];
 
       // Kiểm tra nếu đã bị khóa do nhập sai mật khẩu
@@ -941,7 +942,7 @@
           navigator.clipboard.writeText(realUrl)
             .then(() => {
               const oldText = btn.textContent;
-              btn.textContent = "✅ Đã sao chép";
+              btn.textContent = document.getElementById('copied-success-text').textContent;
               btn.disabled = true;
               setTimeout(() => {
                 btn.textContent = oldText;
@@ -949,39 +950,48 @@
               }, 2000);
             })
             .catch(() => {
-              alert("❌ Không thể sao chép. Vui lòng thử lại.");
+              alert("❌ Sao chép thất bại. Dùng trình duyệt khác và thử lại");
             });
         } else if (isProtected) {
           showPasswordModal(link, label, key, allowMultiple, clickCount, btn);
         } else {
-          openLinkAndSave(realUrl, label, key, allowMultiple, clickCount, btn);
+          openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
         }
       };
       return btn;
     }
 
     // ✅ Mở link và lưu lịch sử click
-    function openLinkAndSave(link, label, key, allowMultiple, clickCount, btn) {
-      const isStandalone =
-        window.matchMedia('(display-mode: standalone)').matches || // iOS, Android PWA
-        window.navigator.standalone === true; // iOS Safari riêng
+    function openLinkAndSave(linkObj, label, _key, allowMultiple, clickCount, btn) {
+      const realUrl = typeof linkObj === 'string' ? linkObj : linkObj.url;
+      const type = _key.split('_')[1]; // lấy type từ key ban đầu
+      const key = realUrl + '_' + type;
 
-      // 👉 Dùng location.href nếu chạy như app (PWA), ngược lại mở tab mới
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+
       if (isStandalone) {
-        window.location.href = link;
+        window.location.href = realUrl;
       } else {
-        window.open(link, '_blank');
+        window.open(realUrl, '_blank');
       }
 
-      // 👉 Cập nhật thời gian và số lượt click
       const now = Date.now();
       clickedLinks[key] = now;
-      clickedLinks[key + '_count'] = clickCount + 1;
+      clickedLinks[key + '_count'] = (clickedLinks[key + '_count'] || 0) + 1;
       localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
 
-      // 👉 Tạo lại nút mới để hiển thị đếm ngược mà không cần reload
-      const newBtn = createButton(link, label, key.split('_')[1], allowMultiple, false, false);
-      btn.replaceWith(newBtn);
+      // Tạo lại nút mới để cập nhật giao diện ngay
+      const newBtn = createButton(
+        linkObj,
+        label,
+        type,
+        allowMultiple,
+        linkObj.protected || false,
+        linkObj.highlight || false
+       );
+     btn.replaceWith(newBtn);
     }
 
     // ✅ Hiện modal nhập mật khẩu nếu link có bảo vệ
@@ -991,7 +1001,7 @@
       overlay.innerHTML = `
         <div class="modal">
           <div id="modal-text">Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
-          <input type="password" id="modal-password" autocomplete="off" />
+          <input type="password" id="modal-password" autocomplete="new-password" />
           <div class="buttons">
             <button id="modal-cancel">Hủy</button>
             <button id="modal-ok" disabled>OK</button>
@@ -1179,7 +1189,7 @@
       overlay.innerHTML = `
         <div class="modal">
           <div id="modal-text-reset">Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
-          <input type="password" id="modal-password-reset" autocomplete="off" />
+          <input type="password" id="modal-password-reset" autocomplete="new-password" />
           <div class="buttons">
             <button id="modal-cancel-reset">Hủy</button>
             <button id="modal-ok-reset" disabled>OK</button>
@@ -1254,29 +1264,27 @@
       }
     }
 
-
     // ✅ Modal thông báo tính năng mới – chỉ hiển thị 5 lần
-(function() {
-  const modalKey = 'featureModalShownCount';
-  let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
+    (function() {
+      const modalKey = 'featureModalShownCount';
+      let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
 
-  if (count < 1) {
-    const modal = document.getElementById('featureModal');
-    const okBtn = document.getElementById('featureModal-ok');
+      if (count < 1) {
+        const modal = document.getElementById('featureModal');
+        const okBtn = document.getElementById('featureModal-ok');
 
-    modal.style.display = 'flex';
-    document.body.classList.add('no-scroll');
+        modal.style.display = 'flex';
+        document.body.classList.add('no-scroll');
 
-    okBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
-      document.body.classList.remove('no-scroll');
-      localStorage.setItem(modalKey, (count +1).toString());
+        okBtn.addEventListener('click', () => {
+          modal.style.display = 'none';
+          document.body.classList.remove('no-scroll');
+          localStorage.setItem(modalKey, (count +1).toString());
 
-      triggerIOSModalIfNeeded(); // ✅ Chỉ gọi sau khi ấn "Đã hiểu"
-    });
-  } 
-})();
-
+          triggerIOSModalIfNeeded(); // ✅ Chỉ gọi sau khi ấn "Đã hiểu"
+        });
+      } 
+    })();
 
     // ✅ Reset vô hiệu hóa Pass mở link
     (function() {
@@ -1487,7 +1495,7 @@
     "modal-line1": "➤ Thay đổi tên miền:",
     "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
     "modal-line3": "👉 video60min.com",
-    "modal-line4": "● Website không thể truy cập.",
+    "modal-line4": "● Website cũ không thể truy cập.",
     "modal-line5": "👉 .............",
     "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
     "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
