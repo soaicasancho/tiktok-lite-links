@@ -1214,10 +1214,9 @@
     // Hàm reset thực sự
     function resetCountdown() {
         localStorage.removeItem('clickedLinks');
-        // Xóa cả lịch sử nhập sai của chính nút reset khi thành công
         localStorage.removeItem('wrongAttempts_resetBtn_lock');
         localStorage.removeItem('lockStartTime_resetBtn_lock');
-        alert('Đã reset thành công thời gian đến ngược Video.');
+        alert(translations[currentLanguage]['reset-success']);
         location.reload();
     }
 
@@ -1347,7 +1346,8 @@
         const body = document.body;
         body.classList.toggle('dark-mode');
         const isDark = body.classList.contains('dark-mode');
-        document.getElementById('darkModeBtn').textContent = isDark ? '🌞 Chế độ Sáng' : '🌙 Chế độ Tối';
+        const t = translations[currentLanguage];
+        document.getElementById('darkModeBtn').textContent = isDark ? t['dark-mode-off'] : t['dark-mode-on'];
         localStorage.setItem('darkMode', isDark ? 'yes' : 'no');
     }
 
@@ -1391,11 +1391,11 @@
     window.addEventListener('DOMContentLoaded', () => {
         if (localStorage.getItem('darkMode') === 'yes') {
             document.body.classList.add('dark-mode');
-            const btn = document.getElementById('darkModeBtn');
-            if (btn) btn.textContent = '🌞 Chế độ Sáng';
         }
         applyResetButtonLock(); // Gọi hàm kiểm tra khóa nút Reset
+        applyLanguage(currentLanguage); // Áp dụng ngôn ngữ khi tải trang
     });
+
 
     // Kéo xuống làm mới app
     let startY = 0;
@@ -1419,6 +1419,165 @@
     });
 
     // Đa ngôn ngữ
+    const translations = {
+        vi: {
+            title: "Video 60 Phút by Đăng Giáp",
+            "tiktok-normal": "TikTok",
+            "tiktok-lite": "TikTok Lite",
+            "reset": "Reset Đếm Ngược",
+            "group-coc": "Link Cóc 🐸",
+            "coc-tiktok-lite": "TikTok Lite",
+            "coc-tiktok-regular": "TikTok",
+            "group-tuyet": "Link Tuyết ❄",
+            "group-sumo": "Link Sumo 🤼",
+            "group-khobau": "Mở Kho Báu 💎",
+            "group-cauca": "🎣  Câu Cá  🎣",
+            "group-500like": "🧡 500 Tim 🧡",
+            "group-gt": "Link Giới Thiệu 📢",
+            "info1": "Mọi người cho Admin 1 lượt follow Video đang xem nhé!",
+            "info2": "",
+            "info3": "",
+            "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
+            "modal-cancel": "Hủy",
+            "modal-ok": "OK",
+            "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.",
+            "modal-ok-confirm": "Đã hiểu",
+            "modal-title": "🔔 Thông báo",
+            "modal-line1": "➤ Thay đổi tên miền:",
+            "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
+            "modal-line3": "👉 video60min.com",
+            "modal-line4": "● Website cũ không thể truy cập.",
+            "modal-line5": "👉 .............",
+            "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
+            "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
+            "modal-line8": "● Hãy chọn video khác để xem.",
+            "modal-line9": "➤ Lưu ý:",
+            "modal-line10": "● Tất cả video có nội dung giống nhau.",
+            "modal-line11": "● Âm thanh Video đã được loại bỏ.",
+            "modal-line12": "Admin Đăng Giáp!",
+            "contact": "Thông Tin Liên Hệ",
+            "contact-title": "📞 Thông Tin Liên Hệ",
+            "contact-line1": "Zalo: 0979-518-322",
+            "contact-line2": "Email: chichchoehoa001@gmail.com",
+            "contact-close": "Đóng",
+            "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt",
+            "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)",
+            "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.",
+            "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.",
+            "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
+            "ios-ok-btn": "Đã hiểu",
+            "copied-success-text": "Đã sao chép liên kết",
+            "dark-mode-on": "🌙 Chế độ Tối",
+            "dark-mode-off": "🌞 Chế độ Sáng",
+            "reset-success": "Đã reset thành công thời gian đến ngược Video.",
+            "lang-changed": "Ngôn ngữ đã chuyển sang: Tiếng Việt"
+        },
+        en: {
+            title: "60-Minute Videos by Dang Giap",
+            "tiktok-normal": "TikTok",
+            "tiktok-lite": "TikTok Lite",
+            "reset": "Reset Countdown",
+            "group-coc": "Frog Links 🐸",
+            "coc-tiktok-lite": "TikTok Lite",
+            "coc-tiktok-regular": "TikTok",
+            "group-tuyet": "Snow Links ❄",
+            "group-sumo": "Sumo Links 🤼",
+            "group-khobau": "Treasure Chest 💎",
+            "group-cauca": "🎣  Fishing  🎣",
+            "group-500like": "🧡 500 Like 🧡",
+            "group-gt": "Intro Links 📢",
+            "info1": "We’d appreciate your support with a follow!",
+            "info2": "",
+            "info3": "",
+            "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:",
+            "modal-cancel": "Cancel",
+            "modal-ok": "OK",
+            "modal-error": "Incorrect password. Please try again.",
+            "modal-ok-confirm": "Got it",
+            "modal-title": "🔔 Notification",
+            "modal-line1": "➤ Domain Name Change:",
+            "modal-line2": "● From May 26, 2025, the website address will change to:",
+            "modal-line3": "👉 video60min.com",
+            "modal-line4": "● The old website will still be accessible.",
+            "modal-line5": "👉 ..........",
+            "modal-line6": "➤ Anti-Detection Feature for Phone Fram:",
+            "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.",
+            "modal-line8": "● Please select another video to watch.",
+            "modal-line9": "➤ Note:",
+            "modal-line10": "● All videos have the same content.",
+            "modal-line11": "● Video audio has been removed.",
+            "modal-line12": "Admin Dang Giap!",
+            "contact": "Contact Info",
+            "contact-title": "Contact the administrator.",
+            "contact-line1": "Zalo: 0979-518-322",
+            "contact-line2": "Email: chichchoehoa001@gmail.com",
+            "contact-close": "Close",
+            "ios-modal-title": "How to Add to Home Screen",
+            "ios-line1": "(To optimize your experience, we recommend following the steps below)",
+            "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.",
+            "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.",
+            "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.",
+            "ios-ok-btn": "Got it",
+            "copied-success-text": "Link copied successfully",
+            "dark-mode-on": "🌙 Dark Mode",
+            "dark-mode-off": "🌞 Light Mode",
+            "reset-success": "Video countdown has been reset successfully.",
+            "lang-changed": "Language has been switched to: English"
+        },
+        ja: {
+            title: "Đăng Giápの60分無音動画",
+            "tiktok-normal": "テックトック",
+            "tiktok-lite": "テックトックライト",
+            "reset": "初期化",
+            "group-coc": "カエルリンク 🐸",
+            "coc-tiktok-lite": "テックトックライト",
+            "coc-tiktok-regular": "テックトック",
+            "group-tuyet": "雪リンク ❄",
+            "group-sumo": "相撲リンク 🤼",
+            "group-khobau": "宝箱解放 💎",
+            "group-cauca": "🎣  釣り  🎣",
+            "group-500like": "🧡 500 Like 🧡",
+            "group-gt": "紹介リンク 📢",
+            "info1": "ぜひテックトックフォローをお願いします！",
+            "info2": "",
+            "info3": "",
+            "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。",
+            "modal-cancel": "キャンセル",
+            "modal-ok": "OK",
+            "modal-error": "パスワードが間違っています。もう一度お試しください。",
+            "modal-ok-confirm": "了解",
+            "modal-title": "🔔 お知らせ",
+            "modal-line1": "➤ ドメイン変更:",
+            "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更された:",
+            "modal-line3": "👉 video60min.com",
+            "modal-line4": "● 旧ウェブサイト利用不可です。",
+            "modal-line5": "👉 ............... ",
+            "modal-line6": "➤ Phone Fram検出防止機能:",
+            "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。",
+            "modal-line8": "● 別の動画を選択してください。",
+            "modal-line9": "➤ 注意:",
+            "modal-line10": "● すべての動画の内容は同じです。",
+            "modal-line11": "● 動画の音声は削除されています。",
+            "modal-line12": "管理者 Đăng Giáp!",
+            "contact": "問い合わせ",
+            "contact-title": "管理者の問い合わせ：",
+            "contact-line1": "Zalo: 0979-518-322",
+            "contact-line2": "メール: chichchoehoa001@gmail.com",
+            "contact-close": "OK",
+            "ios-modal-title": "ホーム画面に追加する方法",
+            "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）",
+            "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。",
+            "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。",
+            "ios-line4": "3. <strong>「追加」</strong>をタップして完了。",
+            "ios-ok-btn": "了解",
+            "copied-success-text": "リンクをコピーしました",
+            "dark-mode-on": "🌙 ダークモード",
+            "dark-mode-off": "🌞 ライトモード",
+            "reset-success": "動画のカウントダウンが正常にリセットされました。",
+            "lang-changed": "言語が日本語に切り替わりました。"
+        }
+    };
+    
     let currentLanguage = localStorage.getItem('appLang');
     if (!currentLanguage) {
         const browserLang = navigator.language || navigator.userLanguage;
@@ -1429,157 +1588,11 @@
 
     function changeLanguage(lang) {
         localStorage.setItem('appLang', lang);
-        alert('Ngôn ngữ đã chuyển sang: ' + (lang === 'vi' ? 'Tiếng Việt' : lang === 'en' ? 'English' : '日本語'));
+        alert(translations[lang]['lang-changed']);
         location.reload();
     }
 
     function applyLanguage(lang) {
-        const translations = {
-            vi: {
-                title: "Video 60 Phút by Đăng Giáp",
-                "tiktok-normal": "TikTok",
-                "tiktok-lite": "TikTok Lite",
-                "reset": "Reset Đếm Ngược",
-                "group-coc": "Link Cóc 🐸",
-                "coc-tiktok-lite": "TikTok Lite",
-                "coc-tiktok-regular": "TikTok",
-                "group-tuyet": "Link Tuyết ❄",
-                "group-sumo": "Link Sumo 🤼",
-                "group-khobau": "Mở Kho Báu 💎",
-                "group-cauca": "🎣  Câu Cá  🎣",
-                "group-500like": "🧡 500 Tim 🧡",
-                "group-gt": "Link Giới Thiệu 📢",
-                "info1": "Admin đang xây kênh Tiktok.",
-                "info2": "Mọi người cho Admin 1 lượt follow nhé!",
-                "info3": "Thu mua Point giá cao. Zalo: 0906-008-238",
-                "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
-                "modal-cancel": "Hủy",
-                "modal-ok": "OK",
-                "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.",
-                "modal-ok-confirm": "Đã hiểu",
-                "modal-title": "🔔 Thông báo",
-                "modal-line1": "➤ Thay đổi tên miền:",
-                "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
-                "modal-line3": "👉 video60min.com",
-                "modal-line4": "● Website cũ không thể truy cập.",
-                "modal-line5": "👉 .............",
-                "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
-                "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
-                "modal-line8": "● Hãy chọn video khác để xem.",
-                "modal-line9": "➤ Lưu ý:",
-                "modal-line10": "● Tất cả video có nội dung giống nhau.",
-                "modal-line11": "● Âm thanh Video đã được loại bỏ.",
-                "modal-line12": "Admin Đăng Giáp!",
-                "contact": "Thông Tin Liên Hệ",
-                "contact-title": "📞 Thông Tin Liên Hệ",
-                "contact-line1": "Zalo: 0979-518-322",
-                "contact-line2": "Email: chichchoehoa001@gmail.com",
-                "contact-close": "Đóng",
-                "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt",
-                "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)",
-                "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.",
-                "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.",
-                "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
-                "ios-ok-btn": "Đã hiểu",
-                "copied-success-text": "Đã sao chép liên kết"
-            },
-            en: {
-                title: "60-Minute Videos by Dang Giap",
-                "tiktok-normal": "TikTok",
-                "tiktok-lite": "TikTok Lite",
-                "reset": "Reset Countdown",
-                "group-coc": "Frog Links 🐸",
-                "coc-tiktok-lite": "TikTok Lite",
-                "coc-tiktok-regular": "TikTok",
-                "group-tuyet": "Snow Links ❄",
-                "group-sumo": "Sumo Links 🤼",
-                "group-khobau": "Treasure Chest 💎",
-                "group-cauca": "🎣  Fishing  🎣",
-                "group-500like": "🧡 500 Like 🧡",
-                "group-gt": "Intro Links 📢",
-                "info1": "Admin is building a TikTok channel.",
-                "info2": "We’d appreciate your support with a follow!",
-                "info3": "Buying points. Contact via Zalo: 0906-008-238",
-                "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:",
-                "modal-cancel": "Cancel",
-                "modal-ok": "OK",
-                "modal-error": "Incorrect password. Please try again.",
-                "modal-ok-confirm": "Got it",
-                "modal-title": "🔔 Notification",
-                "modal-line1": "➤ Domain Name Change:",
-                "modal-line2": "● From May 26, 2025, the website address will change to:",
-                "modal-line3": "👉 video60min.com",
-                "modal-line4": "● The old website will still be accessible.",
-                "modal-line5": "👉 ..........",
-                "modal-line6": "➤ Anti-Detection Feature for Phone Fram:",
-                "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.",
-                "modal-line8": "● Please select another video to watch.",
-                "modal-line9": "➤ Note:",
-                "modal-line10": "● All videos have the same content.",
-                "modal-line11": "● Video audio has been removed.",
-                "modal-line12": "Admin Dang Giap!",
-                "contact": "Contact Info",
-                "contact-title": "Contact the administrator.",
-                "contact-line1": "Zalo: 0979-518-322",
-                "contact-line2": "Email: chichchoehoa001@gmail.com",
-                "contact-close": "Close",
-                "ios-modal-title": "How to Add to Home Screen",
-                "ios-line1": "(To optimize your experience, we recommend following the steps below)",
-                "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.",
-                "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.",
-                "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.",
-                "ios-ok-btn": "Got it",
-                "copied-success-text": "Link copied successfully"
-            },
-            ja: {
-                title: "Đăng Giápの60分無音動画",
-                "tiktok-normal": "テックトック",
-                "tiktok-lite": "テックトックライト",
-                "reset": "初期化",
-                "group-coc": "カエルリンク 🐸",
-                "coc-tiktok-lite": "テックトックライト",
-                "coc-tiktok-regular": "テックトック",
-                "group-tuyet": "雪リンク ❄",
-                "group-sumo": "相撲リンク 🤼",
-                "group-khobau": "宝箱解放 💎",
-                "group-cauca": "🎣  釣り  🎣",
-                "group-500like": "🧡 500 Like 🧡",
-                "group-gt": "紹介リンク 📢",
-                "info1": "管理者はTikTokチャンネルを開設中です。",
-                "info2": "ぜひフォローをお願いします！",
-                "info3": "テックトックのポイント買取。zalo：0906-008-238",
-                "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。",
-                "modal-cancel": "キャンセル",
-                "modal-ok": "OK",
-                "modal-error": "パスワードが間違っています。もう一度お試しください。",
-                "modal-ok-confirm": "了解",
-                "modal-title": "🔔 お知らせ",
-                "modal-line1": "➤ ドメイン変更:",
-                "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更されます:",
-                "modal-line3": "👉 video60min.com",
-                "modal-line4": "● 旧ウェブサイト利用不可です。",
-                "modal-line5": "👉 ............... ",
-                "modal-line6": "➤ Phone Fram検出防止機能:",
-                "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。",
-                "modal-line8": "● 別の動画を選択してください。",
-                "modal-line9": "➤ 注意:",
-                "modal-line10": "● すべての動画の内容は同じです。",
-                "modal-line11": "● 動画の音声は削除されています。",
-                "modal-line12": "管理者 Đăng Giáp!",
-                "contact": "問い合わせ",
-                "contact-title": "管理者の問い合わせ：",
-                "contact-line1": "Zalo: 0979-518-322",
-                "contact-line2": "メール: chichchoehoa001@gmail.com",
-                "contact-close": "OK",
-                "ios-modal-title": "ホーム画面に追加する方法",
-                "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）",
-                "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。",
-                "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。",
-                "ios-line4": "3. <strong>「追加」</strong>をタップして完了。",
-                "ios-ok-btn": "了解",
-                "copied-success-text": "リンクをコピーしました"
-            }
-        };
         const t = translations[lang];
 
         document.title = t.title.split(' by ')[0];
@@ -1587,7 +1600,6 @@
         document.getElementById('tiktok-normal').textContent = t["tiktok-normal"];
         document.getElementById('tiktok-lite').textContent = t["tiktok-lite"];
 
-        // Chỉ thay đổi text của nút Reset nếu nó không bị khóa
         const resetBtn = document.getElementById('resetBtn');
         if (!resetBtn.disabled) {
             resetBtn.textContent = '🔄 ' + t["reset"];
@@ -1634,12 +1646,16 @@
             const el = document.getElementById('modal-line' + i);
             if (el && t['modal-line' + i]) el.innerHTML = t['modal-line' + i];
         }
+
+        const isDark = document.body.classList.contains('dark-mode');
+        document.getElementById('darkModeBtn').textContent = isDark ? t['dark-mode-off'] : t['dark-mode-on'];
     }
 
     document.getElementById('lang-vi').style.display = (currentLanguage === 'vi') ? 'none' : 'block';
     document.getElementById('lang-en').style.display = (currentLanguage === 'en') ? 'none' : 'block';
     document.getElementById('lang-ja').style.display = (currentLanguage === 'ja') ? 'none' : 'block';
-    applyLanguage(currentLanguage);
+    
+    // Đã chuyển lệnh gọi applyLanguage vào sự kiện DOMContentLoaded
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
