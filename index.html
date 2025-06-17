@@ -1,607 +1,606 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Video 60 Phút</title>
-  <link rel="icon" type="image/png" href="Logo.png" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Video 60 Phút</title>
+    <link rel="icon" type="image/png" href="Logo.png"/>
 
-  <!-- PWA Support -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
 
-  <!-- Logo khi thêm vào iPhone -->
-  <link rel="apple-touch-icon" href="apple-touch-icon-180x180.png" />
-  <!-- Mở toàn màn hình như ứng dụng -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
-  <meta name="apple-mobile-web-app-title" content="Video 60 Phút">
+    <link rel="apple-touch-icon" href="apple-touch-icon-180x180.png"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
+    <meta name="apple-mobile-web-app-title" content="Video 60 Phút">
 
-  <style>
-    /* ✅ Style tổng thể cho trang */
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding-top: 70px; /* để chừa không gian cho header cố định */
-    }
+    <style>
+        /* ✅ Style tổng thể cho trang */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding-top: 70px; /* để chừa không gian cho header cố định */
+        }
 
-    /* ✅ Phần header cố định trên đầu trang */
-    .fixed-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: white;
-      z-index: 1000;
-      padding: 15px 4px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      border-bottom: 1px solid #ccc;
-    }
+        /* ✅ Phần header cố định trên đầu trang */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            z-index: 1000;
+            padding: 15px 4px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+        }
 
-    /* ✅ Các phần chứa nhóm nút ở trên */
-    .top-section {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 10px 4px;
-    }
+        /* ✅ Các phần chứa nhóm nút ở trên */
+        .top-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 4px;
+        }
 
-    /* ✅ Ô hiển thị từng nhóm nút */
-    .section {
-      border: 1px solid #ddd;
-      padding: 2px;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-    }
+        /* ✅ Ô hiển thị từng nhóm nút */
+        .section {
+            border: 1px solid #ddd;
+            padding: 2px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
 
-    /* ✅ Tiêu đề cho mỗi nhóm link, có thể bấm để ẩn/hiện */
-    .section-title {
-      font-weight: bold;
-      margin-bottom: 1px;
-      text-align: center;
-      cursor: pointer;
-      padding: 5px;
-      background-color: #eee;
-      border-radius: 6px;
-      transition: background-color 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-    .section-title:hover {
-      background-color: #ddd;
-    }
+        /* ✅ Tiêu đề cho mỗi nhóm link, có thể bấm để ẩn/hiện */
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 1px;
+            text-align: center;
+            cursor: pointer;
+            padding: 5px;
+            background-color: #eee;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
 
-    /* ✅ Nút bấm link */
-    .link-button {
-      width: 100%;
-      text-align: center;
-      border: none;
-      border-radius: 8px;
-      background-color: #1da1f2;
-      color: white;
-      font-size: 14px;
-      padding: 12px 2px;
-      cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-      margin-top: 10px;
-    }
-    .link-button:hover {
-      box-shadow: 0 0 12px rgba(29, 161, 242, 0.6), 0 0 24px rgba(29, 161, 242, 0.4);
-      transform: scale(1.01);
-    }
-    .link-button:active {
-      background-color: #0d8ddb;
-      transform: scale(0.96);
-      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    }
-    .clicked {
-      background-color: gray !important;
-      color: #eee;
-      cursor: default;
-    }
-    .link-button:disabled {
-      cursor: not-allowed;
-    }
+        .section-title:hover {
+            background-color: #ddd;
+        }
 
-    /* ✅ Khu vực chứa nút bấm, có thể bị ẩn/hiện */
-    .link-container {
-      display: block;
-      transition: all 0.3s ease;
-    }
-    .collapsed {
-      display: none;
-    }
+        /* ✅ Nút bấm link */
+        .link-button {
+            width: 100%;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            background-color: #1da1f2;
+            color: white;
+            font-size: 14px;
+            padding: 12px 2px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+            /* Thêm các thuộc tính từ khối bị trùng lặp để đảm bảo giao diện */
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+        }
 
-    /* ✅ Biểu tượng +/− */
-    .toggle-icon {
-      font-size: 14px;
-    }
+        .link-button:hover {
+            box-shadow: 0 0 12px rgba(29, 161, 242, 0.6), 0 0 24px rgba(29, 161, 242, 0.4);
+            transform: scale(1.01);
+        }
 
-    /* ✅ Giao diện cột Link Cóc chia đều */
-    .linkCoc-wrapper {
-      display: flex;
-      gap: 4px;
-      margin-top: 10px;
-      align-items: stretch;
-    }
+        .link-button:active {
+            background-color: #0d8ddb;
+            transform: scale(0.96);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
 
-    /* ✅ Mỗi cột có khung + cùng chiều cao */
-    .coc-column {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background-color: #f9f9f9;
-      padding: 2px 2px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      box-sizing: border-box;
-    }
+        .clicked {
+            background-color: gray !important;
+            color: #eee;
+            cursor: default;
+        }
 
-    /* ✅ Nút bấm đồng bộ chiều cao + căn giữa nội dung */
-    .link-button {
-      width: 100%;
-      height: 42px;
-      margin-top: 10px;
-      padding: 0;
-      border: none;
-      border-radius: 8px;
-      background-color: #1da1f2;
-      color: white;
-      font-size: 14px;
-      line-height: 1.2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    }
+        .link-button:disabled {
+            cursor: not-allowed;
+        }
 
-    .link-button:hover {
-      box-shadow: 0 0 12px rgba(29, 161, 242, 0.6), 0 0 24px rgba(29, 161, 242, 0.4);
-      transform: scale(1.01);
-    }
+        /* ✅ Khu vực chứa nút bấm, có thể bị ẩn/hiện */
+        .link-container {
+            display: block;
+            transition: all 0.3s ease;
+        }
 
-    .link-button:active {
-      background-color: #0d8ddb;
-      transform: scale(0.96);
-      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    }
+        .collapsed {
+            display: none;
+        }
 
-    .link-button:disabled {
-      cursor: not-allowed;
-    }
+        /* ✅ Biểu tượng +/− */
+        .toggle-icon {
+            font-size: 14px;
+        }
 
-    .clicked {
-      background-color: gray !important;
-      color: #eee;
-      cursor: default;
-    }
+        /* ✅ Giao diện cột Link Cóc chia đều */
+        .linkCoc-wrapper {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+            align-items: stretch;
+        }
 
-    /* ✅ Các cột link TikTok dưới cùng */
-    .bottom-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 4px;
-      padding: 12px 4px;
-    }
+        /* ✅ Mỗi cột có khung + cùng chiều cao */
+        .coc-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #f9f9f9;
+            padding: 2px 2px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
 
-    /* ✅ Giao diện modal nhập mật khẩu */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      overflow: auto;
-    }
-    .modal {
-      background: white;
-      padding: 20px 20px;
-      border-radius: 10px;
-      width: 95%;
-      max-width: 500px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
-    .modal input[type="password"] {
-      width: 100%;
-      padding: 8px 4px;
-      font-size: 16px;
-      margin-top: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    .modal .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 10px;
-    }
-    .modal .buttons button {
-      padding: 8px 24px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .modal #modal-ok {
-      background-color: #1da1f2;
-      color: white;
-    }
-    .modal #modal-ok:disabled {
-      background-color: #a5d1fb;
-      cursor: not-allowed;
-    }
-    .modal #modal-cancel {
-      background-color: #ddd;
-      color: #333;
-    }
-    .modal #modal-cancel:hover {
-      background-color: #bbb;
-    }
-    .modal #modal-ok:hover:enabled {
-      background-color: #0d8ddb;
-    }
-    .modal .error {
-      color: red;
-      font-size: 14px;
-      margin-top: 10px;
-      display: none;
-    }
-    .contact-info {
-      width: 90%;               /* Chiếm 90% chiều rộng */
-      margin: 0 auto;           /* Tự động căn giữa theo chiều ngang */
-      text-align: center;
-      font-size: 14px;
-      font-style: italic;
-      margin-top: 0px;
-      margin-bottom: 10px;
-      color: #444;
-    }
+        /* ✅ Các cột link TikTok dưới cùng */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 4px;
+            padding: 12px 4px;
+        }
 
-    /* ✅ Giao diện modal thông báo tính năng mới*/
-    .feature-modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      overflow: auto;
-    }
+        /* ✅ Giao diện modal nhập mật khẩu */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            overflow: auto;
+        }
 
-    .feature-modal {
-      background: white;
-      padding: 20px 20px;
-      border-radius: 25px;
-      width: 95%;
-      max-width: 500px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
-    .feature-modal .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 10px;
-    }
-    .feature-modal .buttons button {
-      background-color: #80BFFF;
-      padding: 8px 24px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
+        .modal {
+            background: white;
+            padding: 20px 20px;
+            border-radius: 10px;
+            width: 95%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
 
-    /* ✅ Hiệu ứng nhấp nháy cho đoạn thông báo */
-    .blinking-text {
-      animation: pulseBlinkSmooth 2s ease-in-out infinite;
-      display: inline-block;
-    }
+        .modal input[type="password"] {
+            width: 100%;
+            padding: 8px 4px;
+            font-size: 16px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
 
-    @keyframes pulseBlinkSmooth {
-      0% {
-        color: #444;
-        transform: scale(1);
-      }
-      25% {
-        color: red;
-        transform: scale(1.05);
-      }
-      50% {
-        color: #444;
-        transform: scale(1);
-      }
-      75% {
-        color: red;
-        transform: scale(1.05);
-      }
-      100% {
-        color: #444;
-        transform: scale(1);
-      }
-    }
+        .modal .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
 
-    #floatingMenuButton {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 60px;          /* tùy kích thước nút menu mong muốn */
-      height: 60px;         /* tùy kích thước nút menu mong muốn */
-      background-color: white;
-      border-radius: 50%;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      cursor: pointer;
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        .modal .buttons button {
+            padding: 8px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
 
-    #floatingMenuOptions {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      padding: 10px;
-      z-index: 998;
-    }
+        .modal #modal-ok {
+            background-color: #1da1f2;
+            color: white;
+        }
 
-    #floatingMenuOptions button {
-      display: block;
-      width: 160px;
-      margin: 5px 0;
-      padding: 8px 4px;
-      border: none;
-      background: #f0f0f0;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: left;
-    }
+        .modal #modal-ok:disabled {
+            background-color: #a5d1fb;
+            cursor: not-allowed;
+        }
 
-    #floatingMenuOptions hr {
-      margin: 8px 10;
-      border: none;
-      border-top: 1px solid #ccc;
-    }
+        .modal #modal-cancel {
+            background-color: #ddd;
+            color: #333;
+        }
 
-    .hidden {
-      display: none;
-    }
+        .modal #modal-cancel:hover {
+            background-color: #bbb;
+        }
 
-    #floatingMenuButton img {
-      width: 95%;
-      height: 95%;
-      object-fit: contain;
-    }
+        .modal #modal-ok:hover:enabled {
+            background-color: #0d8ddb;
+        }
 
-    /* ✅ Logo quay tròn */
-    @keyframes spin-logo {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
+        .modal .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
 
-    #floatingMenuButton img {
-      animation: spin-logo 10s linear infinite;
-    }
-    
-    body.dark-mode {
-      background-color: #121212;
-      color: #f1f1f1;
-    }
+        .contact-info {
+            width: 90%; /* Chiếm 90% chiều rộng */
+            margin: 0 auto; /* Tự động căn giữa theo chiều ngang */
+            text-align: center;
+            font-size: 14px;
+            font-style: italic;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            color: #444;
+        }
 
-    body.dark-mode .section {
-      background-color: #1e1e1e;
-      border-color: #333;
-    }
+        /* ✅ Giao diện modal thông báo tính năng mới*/
+        .feature-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            overflow: auto;
+        }
 
-    body.dark-mode .section-title {
-      background-color: #333;
-      color: #f1f1f1;
-    }
+        .feature-modal {
+            background: white;
+            padding: 20px 20px;
+            border-radius: 25px;
+            width: 95%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
 
-    body.dark-mode .link-button {
-      background-color: #333;
-      color: #fff;
-    }
+        .feature-modal .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
 
-    body.dark-mode .link-button:hover {
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-    }
+        .feature-modal .buttons button {
+            background-color: #80BFFF;
+            padding: 8px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
 
-    body.dark-mode .fixed-header {
-      background-color: #1a1a1a;
-      color: #f1f1f1;
-      border-bottom: 1px solid #333;
-    }
+        /* ✅ Hiệu ứng nhấp nháy cho đoạn thông báo */
+        .blinking-text {
+            animation: pulseBlinkSmooth 2s ease-in-out infinite;
+            display: inline-block;
+        }
 
-    body.dark-mode .modal {
-      background-color: #1e1e1e;
-      color: #fff;
-    }
+        @keyframes pulseBlinkSmooth {
+            0% {
+                color: #444;
+                transform: scale(1);
+            }
+            25% {
+                color: red;
+                transform: scale(1.05);
+            }
+            50% {
+                color: #444;
+                transform: scale(1);
+            }
+            75% {
+                color: red;
+                transform: scale(1.05);
+            }
+            100% {
+                color: #444;
+                transform: scale(1);
+            }
+        }
 
-    body.dark-mode .feature-modal {
-      background-color: #1e1e1e;
-      color: #fff;
-    }
+        #floatingMenuButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px; /* tùy kích thước nút menu mong muốn */
+            height: 60px; /* tùy kích thước nút menu mong muốn */
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    body.dark-mode .contact-info {
-      color: #ccc;
-    }
+        #floatingMenuOptions {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 998;
+        }
 
-    body.no-scroll {
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-    }
+        #floatingMenuOptions button {
+            display: block;
+            width: 160px;
+            margin: 5px 0;
+            padding: 8px 4px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+        }
 
-    /* Nhấp nháy nhẹ cho chữ trong nút */
-    .blink-text {
-      animation: strongBlink 1.2s ease-in-out infinite;
-      display: inline-block;
-      color: #ff0000; /* Màu chữ nổi bật hơn */
-      font-weight: bold;
-    }
+        #floatingMenuOptions hr {
+            margin: 8px 10;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
 
-    @keyframes strongBlink {
-      0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-      50% {
-        opacity: 1;
-        transform: scale(1.5); /* Phóng to nhẹ */
-      }
-    }
+        .hidden {
+            display: none;
+        }
 
-  </style>
+        #floatingMenuButton img {
+            width: 95%;
+            height: 95%;
+            object-fit: contain;
+        }
+
+        /* ✅ Logo quay tròn */
+        @keyframes spin-logo {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #floatingMenuButton img {
+            animation: spin-logo 10s linear infinite;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #f1f1f1;
+        }
+
+        body.dark-mode .section {
+            background-color: #1e1e1e;
+            border-color: #333;
+        }
+
+        body.dark-mode .section-title {
+            background-color: #333;
+            color: #f1f1f1;
+        }
+
+        body.dark-mode .link-button {
+            background-color: #333;
+            color: #fff;
+        }
+
+        body.dark-mode .link-button:hover {
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        }
+
+        body.dark-mode .fixed-header {
+            background-color: #1a1a1a;
+            color: #f1f1f1;
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .modal {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        body.dark-mode .feature-modal {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        body.dark-mode .contact-info {
+            color: #ccc;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        /* Nhấp nháy nhẹ cho chữ trong nút */
+        .blink-text {
+            animation: strongBlink 1.2s ease-in-out infinite;
+            display: inline-block;
+            color: #ff0000; /* Màu chữ nổi bật hơn */
+            font-weight: bold;
+        }
+
+        @keyframes strongBlink {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5); /* Phóng to nhẹ */
+            }
+        }
+
+    </style>
 </head>
 <body>
-  <!-- ✅ Tiêu đề cố định -->
-  <div class="fixed-header" id="title"></div>
+<div class="fixed-header" id="title"></div>
 
-  <!-- ✅ Mục Thông tin liên hệ -->
-  <div class="contact-info">
+<div class="contact-info">
     <div class="blinking-text">
-      <div id="info1"></div>
-      <div id="info2"></div>
-      <div id="info3"></div>
+        <div id="info1"></div>
+        <div id="info2"></div>
+        <div id="info3"></div>
     </div>
-  </div>
+</div>
 
-  <!-- ✅ Các nhóm link ở phần trên -->
-  <div class="top-section">
+<div class="top-section">
     <div class="section">
-      <div class="section-title" onclick="toggleSection('linkCoc')">
-        <span class="toggle-icon" id="icon-linkCoc">+</span> <span id="group-coc"></span>
-      </div>
-
-      <div id="linkCoc" class="link-container collapsed">
-        <div class="linkCoc-wrapper">
-          <div class="section coc-column" id="linkCoc-regular">
-            <div class="section-title" id="coc-tiktok-regular">TikTok Thường</div>
-         </div>
-          <div class="section coc-column" id="linkCoc-lite">
-            <div class="section-title" id="coc-tiktok-lite">TikTok Lite</div>
-          </div>
+        <div class="section-title" onclick="toggleSection('linkCoc')">
+            <span class="toggle-icon" id="icon-linkCoc">+</span> <span id="group-coc"></span>
         </div>
-      </div>
+
+        <div id="linkCoc" class="link-container collapsed">
+            <div class="linkCoc-wrapper">
+                <div class="section coc-column" id="linkCoc-regular">
+                    <div class="section-title" id="coc-tiktok-regular">TikTok Thường</div>
+                </div>
+                <div class="section coc-column" id="linkCoc-lite">
+                    <div class="section-title" id="coc-tiktok-lite">TikTok Lite</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="section">
-      <div class="section-title" onclick="toggleSection('linkTuyet')">
-        <span class="toggle-icon" id="icon-linkTuyet">+</span> <span id="group-tuyet"></span>
-      </div>
-      <div id="linkTuyet" class="link-container collapsed"></div>
+        <div class="section-title" onclick="toggleSection('linkTuyet')">
+            <span class="toggle-icon" id="icon-linkTuyet">+</span> <span id="group-tuyet"></span>
+        </div>
+        <div id="linkTuyet" class="link-container collapsed"></div>
     </div>
 
     <div class="section">
-      <div class="section-title" onclick="toggleSection('linkSumo')">
-        <span class="toggle-icon" id="icon-linkSumo">+</span> <span id="group-sumo"></span>
-      </div>
-      <div id="linkSumo" class="link-container collapsed"></div>
+        <div class="section-title" onclick="toggleSection('linkSumo')">
+            <span class="toggle-icon" id="icon-linkSumo">+</span> <span id="group-sumo"></span>
+        </div>
+        <div id="linkSumo" class="link-container collapsed"></div>
     </div>
 
     <div class="section">
-      <div class="section-title" onclick="toggleSection('linkKhoBau')">
-        <span class="toggle-icon" id="icon-linkKhoBau">+</span> <span id="group-khobau">Mở Kho Báu 💎</span>
-      </div>
-      <div id="linkKhoBau" class="link-container collapsed"></div>
+        <div class="section-title" onclick="toggleSection('linkKhoBau')">
+            <span class="toggle-icon" id="icon-linkKhoBau">+</span> <span id="group-khobau">Mở Kho Báu 💎</span>
+        </div>
+        <div id="linkKhoBau" class="link-container collapsed"></div>
     </div>
 
     <div class="section">
-      <div class="section-title" onclick="toggleSection('linkGioiThieu')">
-        <span class="toggle-icon" id="icon-linkGioiThieu">+</span> <span id="group-gt"></span>
-      </div>
-      <div id="linkGioiThieu" class="link-container collapsed"></div>
+        <div class="section-title" onclick="toggleSection('linkCauCa')">
+            <span class="toggle-icon" id="icon-linkCauCa">+</span> <span id="group-cauca">Câu Cá 🎣</span>
+        </div>
+        <div id="linkCauCa" class="link-container collapsed"></div>
     </div>
-  </div>
 
-  <!-- ✅ Các cột TikTok ở dưới cùng -->
-  <div class="bottom-section">
+    <div class="section">
+        <div class="section-title" onclick="toggleSection('link500Like')">
+            <span class="toggle-icon" id="icon-link500Like">+</span> <span id="group-500like">🧡  500  🧡</span>
+        </div>
+        <div id="link500Like" class="link-container collapsed"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title" onclick="toggleSection('linkGioiThieu')">
+            <span class="toggle-icon" id="icon-linkGioiThieu">+</span> <span id="group-gt"></span>
+        </div>
+        <div id="linkGioiThieu" class="link-container collapsed"></div>
+    </div>
+</div>
+
+<div class="bottom-section">
     <div class="section" id="regularColumn">
-      <div class="section-title" id="tiktok-normal">TikTok Thường</div>
+        <div class="section-title" id="tiktok-normal">TikTok Thường</div>
     </div>
     <div class="section" id="liteColumn">
-      <div class="section-title" id="tiktok-lite">TikTok Lite</div>
+        <div class="section-title" id="tiktok-lite">TikTok Lite</div>
     </div>
-  </div>
+</div>
 
-  <!-- ✅🔔 Thông báo hiển thị 5 lần -->
-  <div id="featureModal" class="feature-modal-overlay" style="display: none;">
+<div id="featureModal" class="feature-modal-overlay" style="display: none;">
     <div class="feature-modal" style="text-align: center;">
-      <h3><strong id="modal-title" style="font-size: 18px;">🔔 Thông báo</strong></h3>
+        <h3><strong id="modal-title" style="font-size: 18px;">🔔 Thông báo</strong></h3>
 
-      <p id="modal-line1" style="text-align: left; font-weight: bold; font-size: 16px;">
-        ➤ Thay đổi tên miền:
-     </p>
-      <p id="modal-line2" style="text-align: left; font-style: italic; font-size: 14px;">
-        ● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:
-      </p>
-      <p id="modal-line3" style="text-align: left; font-style: italic; font-size: 14px;">
-        👉 video60phut.com (Link mới)
-      </p>
-      <p id="modal-line4" style="text-align: left; font-style: italic; font-size: 14px;">
-        ● Website cũ đã dừng hoạt động.
-      </p>
-      <p id="modal-line5" style="text-align: left; font-style: italic; font-size: 14px;">
-        👉 ...........
-      </p>
+        <p id="modal-line1" style="text-align: left; font-weight: bold; font-size: 16px;">
+            ➤ Thay đổi tên miền:
+        </p>
+        <p id="modal-line2" style="text-align: left; font-style: italic; font-size: 14px;">
+            ● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:
+        </p>
+        <p id="modal-line3" style="text-align: left; font-style: italic; font-size: 14px;">
+            👉 video60phut.com (Link mới)
+        </p>
+        <p id="modal-line4" style="text-align: left; font-style: italic; font-size: 14px;">
+            ● Website cũ đã dừng hoạt động.
+        </p>
+        <p id="modal-line5" style="text-align: left; font-style: italic; font-size: 14px;">
+            👉 ...........
+        </p>
 
-      <p id="modal-line6" style="text-align: left; font-weight: bold; font-size: 16px;">
-        ➤ Tính năng chống bị phát hiện Phone Fram:
-      </p>
-      <p id="modal-line7" style="text-align: left; font-style: italic; font-size: 14px;">
-        ● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định
-      </p>
-      <p id="modal-line8" style="text-align: left; font-style: italic; font-size: 14px;">
-        ● Hãy chọn video khác để xem
-      </p>
+        <p id="modal-line6" style="text-align: left; font-weight: bold; font-size: 16px;">
+            ➤ Tính năng chống bị phát hiện Phone Fram:
+        </p>
+        <p id="modal-line7" style="text-align: left; font-style: italic; font-size: 14px;">
+            ● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định
+        </p>
+        <p id="modal-line8" style="text-align: left; font-style: italic; font-size: 14px;">
+            ● Hãy chọn video khác để xem
+        </p>
 
-      <p id="modal-line9" style="text-align: left; font-weight: bold; font-size: 16px;">
-        ➤ Lưu ý:
-      </p>
-      <p id="modal-line10" style="text-align: left; font-style: italic; font-size: 14px;">
-        ● Tất cả video có nội dung giống nhau
-      </p>
-      <p id="modal-line11" style="text-align: left; font-style: italic; font-size: 14px;">
-        ● Âm thanh Video đã được loại bỏ
-      </p>
+        <p id="modal-line9" style="text-align: left; font-weight: bold; font-size: 16px;">
+            ➤ Lưu ý:
+        </p>
+        <p id="modal-line10" style="text-align: left; font-style: italic; font-size: 14px;">
+            ● Tất cả video có nội dung giống nhau
+        </p>
+        <p id="modal-line11" style="text-align: left; font-style: italic; font-size: 14px;">
+            ● Âm thanh Video đã được loại bỏ
+        </p>
 
-      <p id="modal-line12" style="text-align: right; font-style: italic; font-size: 12px;">
-        Admin Đăng Giáp!
-      </p>
+        <p id="modal-line12" style="text-align: right; font-style: italic; font-size: 12px;">
+            Admin Đăng Giáp!
+        </p>
 
-      <div class="buttons">
-        <button id="featureModal-ok">Đã hiểu</button>
-      </div>
+        <div class="buttons">
+            <button id="featureModal-ok">Đã hiểu</button>
+        </div>
     </div>
-  </div>
+</div>
 
 
-  <!-- ✅ Nút bong bóng menu -->
-  <div id="floatingMenuButton">
-    <img src="Logo.png" alt="Menu" id="menuIcon" />
-  </div>
+<div id="floatingMenuButton">
+    <img src="Logo.png" alt="Menu" id="menuIcon"/>
+</div>
 
-  <!-- ✅ Menu nổi -->
-  <div id="floatingMenuOptions" class="hidden">
+<div id="floatingMenuOptions" class="hidden">
     <button id="lang-vi" onclick="changeLanguage('vi')">Việt Nam</button>
     <button id="lang-en" onclick="changeLanguage('en')">English</button>
     <button id="lang-ja" onclick="changeLanguage('ja')">日本語</button>
@@ -609,42 +608,38 @@
     <button onclick="toggleDarkMode()" id="darkModeBtn">🌙 Chế độ Tối</button>
     <button id="resetBtn">🔄 Reset Đếm Ngược</button>
     <button onclick="showContactInfo()" id="contactInfoBtn">📞 Thông Tin Liên Hệ</button>
-  </div>
+</div>
 
-  <!-- ✅ Modal Thông Tin Liên Hệ -->
-  <div id="contactModal" class="modal-overlay" style="display: none;">
+<div id="contactModal" class="modal-overlay" style="display: none;">
     <div class="modal">
-      <h3 id="contactModalTitle">📞 Thông Tin Liên Hệ</h3>
-      <p id="contactLine1">Zalo: 0979-518-322</p>
-      <p id="contactLine2">Email: chichchoehoa001@gmail.com</p>
-      <div class="buttons">
-        <button onclick="closeContactModal()" id="closeContactBtn">Đóng</button>
-      </div>
+        <h3 id="contactModalTitle">📞 Thông Tin Liên Hệ</h3>
+        <p id="contactLine1">Zalo: 0979-518-322</p>
+        <p id="contactLine2">Email: chichchoehoa001@gmail.com</p>
+        <div class="buttons">
+            <button onclick="closeContactModal()" id="closeContactBtn">Đóng</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <!-- Modal Thêm vào Màn hình Chính cho iOS -->
-  <div id="iosInstallModal" class="modal-overlay" style="display: none;">
+<div id="iosInstallModal" class="modal-overlay" style="display: none;">
     <div class="modal">
-      <h3 id="ios-modal-title">Hướng Dẫn Tạo Phím Tắt</h3>
-      <p id="ios-line1" style="text-align: center;">(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)</p>
-      <p id="ios-line2" style="text-align: left;">1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.</p>
-      <p id="ios-line3" style="text-align: left;">2. Chọn <strong>"Thêm vào Màn hình chính"</strong>.</p>
-      <p id="ios-line4" style="text-align: left;">3. Nhấn <strong>"Thêm"</strong> để hoàn tất.</p>
+        <h3 id="ios-modal-title">Hướng Dẫn Tạo Phím Tắt</h3>
+        <p id="ios-line1" style="text-align: center;">(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)</p>
+        <p id="ios-line2" style="text-align: left;">1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.</p>
+        <p id="ios-line3" style="text-align: left;">2. Chọn <strong>"Thêm vào Màn hình chính"</strong>.</p>
+        <p id="ios-line4" style="text-align: left;">3. Nhấn <strong>"Thêm"</strong> để hoàn tất.</p>
 
-      <div class="buttons" style="margin-top: 10px;">
-        <button id="ios-ok-btn">Đã hiểu</button>
-      </div>
+        <div class="buttons" style="margin-top: 10px;">
+            <button id="ios-ok-btn">Đã hiểu</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <!-- ✅ Văn bản dịch cho trạng thái đã sao chép -->
-  <span id="copied-success-text" style="display: none;">Đã sao chép liên kết</span>
+<span id="copied-success-text" style="display: none;">Đã sao chép liên kết</span>
 
-  <script>
-
+<script>
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
-    const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai 
+    const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai
 
     // ✅ Chỉnh số ngày bị khóa sau khi bấm xem video
     const unlockDays = 15; // 👈 Số ngày đếm ngược khi xem video
@@ -661,179 +656,193 @@
     // ✅ Đổi thành true/false để hiện/ẩn lại Mở Kho Báu 💎
     const enableKhoBau = false;
 
+    // ✅ Đổi thành true/false để hiện/ẩn lại Câu Cá 🎣
+    const enableCauCa = true;
+
+    // ✅ Đổi thành true/false để hiện/ẩn lại 🧡 500 Like 🧡
+    const enable500Like = true;
+
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Giới Thiệu 📢
     const enableGioiThieu = true;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại hướng dẫn cài phím tắt
-    const enable_ios_modal = true; 
+    const enable_ios_modal = true;
 
     // ✅ Dữ liệu link cụ thể. protected: true khóa pass, highlight: true nhấp nháy chữ trong nút, hidden: true ẩn nút.
     const linkCocLite = [
-      { url: "https://lite.tiktok.com/t/ZSh3cudbp/", label: "GL 4", hidden: true },
-      { url: "https://lite.tiktok.com/t/ZSh33xQVq/", label: "GL 5" },
-      { url: "https://lite.tiktok.com/t/ZSh33Yjob/", label: "GL 6" },
-      { url: "https://lite.tiktok.com/t/ZShcngr3k/", label: "GL 9+" }
+        {url: "https://lite.tiktok.com/t/ZSh3cudbp/", label: "GL 4", hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSh33xQVq/", label: "GL 5"},
+        {url: "https://lite.tiktok.com/t/ZSh33Yjob/", label: "GL 6"},
+        {url: "https://lite.tiktok.com/t/ZShcngr3k/", label: "GL 9+"}
     ];
 
     const linkCocRegular = [
-      { url: "https://vt.tiktok.com/ZSkSN7puy/", label: "16PRM" },
-      { url: "https://vt.tiktok.com/ZSkkegXK9/", label: "Máy Rút Tiền" },
-      { url: "https://vt.tiktok.com/ZSkSU9NFW/", label: "Sony 1" },
-      { url: "https://vt.tiktok.com/ZSkSUToee/", label: "Sony 2", hidden: true }
+        {url: "https://vt.tiktok.com/ZSkSN7puy/", label: "16PRM"},
+        {url: "https://vt.tiktok.com/ZSkkegXK9/", label: "Máy Rút Tiền"},
+        {url: "https://vt.tiktok.com/ZSkSU9NFW/", label: "Sony 1"},
+        {url: "https://vt.tiktok.com/ZSkSUToee/", label: "Sony 2", hidden: true}
     ];
 
     const linkTuyet = [
-      { url: "https://lite.tiktok.com/t/ZShxvepxY/", label: "Máy Rút Tiền", hidden: true },
-      { url: "https://lite.tiktok.com/t/ZSkBQQwbU/", label: "Bấm nút này (S9+)", highlight: true },
-      { url: "https://lite.tiktok.com/t/ZSkBXC7yU/", label: "GL5", hidden: true },
-      { url: "https://lite.tiktok.com/t/ZSkUe9btj/", label: "GL6", hidden: true }
+        {url: "https://lite.tiktok.com/t/ZShxvepxY/", label: "Máy Rút Tiền", hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSkBQQwbU/", label: "Bấm nút này (S9+)", highlight: true},
+        {url: "https://lite.tiktok.com/t/ZSkBXC7yU/", label: "GL5", hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSkUe9btj/", label: "GL6", hidden: true}
     ];
 
     const linkSumo = [
-      { url: "https://lite.tiktok.com/t/ZShKhA1Lb/", label: "GL 8", protected: true }
+        {url: "https://lite.tiktok.com/t/ZShKhA1Lb/", label: "GL 8", protected: true}
     ];
 
     const linkKhoBau = [
-      { url: "https://lite.tiktok.com/t/ZSkaCMXmG/", label: "GL05 2m5", copyOnly: true, hidden: true },
-      { url: "https://lite.tiktok.com/t/ZSkaCubrm/", label: "GL06 2m5", copyOnly: true, hidden: true },
-      { url: "https://lite.tiktok.com/t/ZSkaCb2ex/", label: "GL07 2m5", copyOnly: true, hidden: true },
-      { url: "https://lite.tiktok.com/t/ZSkaQTBj1/", label: "Sy14 2m5", copyOnly: true }
+        {url: "https://lite.tiktok.com/t/ZSkaCMXmG/", label: "GL05 2m5", copyOnly: true, hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSkaCubrm/", label: "GL06 2m5", copyOnly: true, hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSkaCb2ex/", label: "GL07 2m5", copyOnly: true, hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSkaQTBj1/", label: "Sy14 2m5", copyOnly: true}
+    ];
+
+    const linkCauCa = [
+        {url: "https://www.google.com/", label: "🔓", protected: true}
+    ];
+
+    const link500Like = [
+        {url: "https://www.google.com/", label: "🔓", protected: true}
     ];
 
     const linkGioiThieu = [
-      { url: "https://vt.tiktok.com/ZSh4FAKfk/", label: "Máy Rút Tiền" }
+        {url: "https://vt.tiktok.com/ZSh4FAKfk/", label: "Máy Rút Tiền"}
     ];
 
     const regularLinks = [
-      // 🔗 CỘT 2: Link TikTok Thường
-      "https://www.tiktok.com/t/ZShX3eRCj/",
-      "https://www.tiktok.com/t/ZShXcKW3P/",
-      "https://www.tiktok.com/t/ZShXc3L2o/",
-      "https://www.tiktok.com/t/ZShXcExWh/",
-      "https://www.tiktok.com/t/ZShX3d43H/",
-      "https://www.tiktok.com/t/ZShX3Foyh/",
-      "https://www.tiktok.com/t/ZShX3LwP9/",
-      "https://www.tiktok.com/t/ZShX369Gc/",
-      "https://www.tiktok.com/t/ZShX3dsXg/",
-      "https://www.tiktok.com/t/ZShX3Y8xT/",
-      "https://www.tiktok.com/t/ZShX3FC6d/",
-      "https://www.tiktok.com/t/ZShX3dBSB/",
-      "https://www.tiktok.com/t/ZShX3JS5A/",
-      "https://www.tiktok.com/t/ZShXcchx5/",
-      "https://www.tiktok.com/t/ZShXc73Q4/",
-      "https://www.tiktok.com/t/ZShX3LfhJ/",
-      "https://www.tiktok.com/t/ZShX3rboA/",
-      "https://www.tiktok.com/t/ZShX32oh2/",
-      "https://www.tiktok.com/t/ZShX3r8nT/",
-      "https://www.tiktok.com/t/ZShX31BGF/",
-      "https://www.tiktok.com/t/ZShX3Joh4/",
-      "https://www.tiktok.com/t/ZShX3jMpj/",
-      "https://www.tiktok.com/t/ZShX3LBP9/",
-      "https://www.tiktok.com/t/ZShX3jMwr/",
-      "https://www.tiktok.com/t/ZShX3mVat/",
-      "https://www.tiktok.com/t/ZShX3J2w4/",
-      "https://www.tiktok.com/t/ZShX3xF6M/",
-      "https://www.tiktok.com/t/ZShX3NSco/",
-      "https://www.tiktok.com/t/ZShX3Sokr/",
-      "https://www.tiktok.com/t/ZShXcTehY/",
-      "https://www.tiktok.com/t/ZShX3Vgfy/",
-      "https://www.tiktok.com/t/ZShXcwNQo/",
-      "https://www.tiktok.com/t/ZShX3u1VL/",
-      "https://www.tiktok.com/t/ZShX3D8AK/",
-      "https://www.tiktok.com/t/ZShX3P3pW/",
-      "https://www.tiktok.com/t/ZShX3Bvye/",
-      "https://www.tiktok.com/t/ZShX39aop/",
-      "https://www.tiktok.com/t/ZShX3SarT/",
-      "https://www.tiktok.com/t/ZShX35XEe/",
-      "https://www.tiktok.com/t/ZShX3uuY8/",
-      "https://www.tiktok.com/t/ZShX3P15U/",
-      "https://www.tiktok.com/t/ZShX3pXUY/",
-      "https://www.tiktok.com/t/ZShX3sdvH/",
-      "https://www.tiktok.com/t/ZShX3H5aa/",
-      "https://www.tiktok.com/t/ZShX3HAWx/",
-      "https://www.tiktok.com/t/ZShX3qXTB/",
-      "https://www.tiktok.com/t/ZShX3qduV/",
-      "https://www.tiktok.com/t/ZShX3Xmj2/",
-      "https://www.tiktok.com/t/ZShX3uerD/",
-      "https://www.tiktok.com/t/ZShX3CRbr/",
-      "https://www.tiktok.com/t/ZShX3B9Pm/",
-      "https://www.tiktok.com/t/ZShX3HY5H/",
-      "https://www.tiktok.com/t/ZShX3gh7E/",
-      "https://www.tiktok.com/t/ZShX391vc/",
-      "https://www.tiktok.com/t/ZShX3PK5E/",
-      "https://www.tiktok.com/t/ZShX3xCq2/",
-      "https://www.tiktok.com/t/ZShX3aLMV/",
-      "https://www.tiktok.com/t/ZShX3fMtu/",
-      "https://www.tiktok.com/t/ZShX3Avve/",
-      "https://www.tiktok.com/t/ZShX3V7RM/",
-      "https://www.tiktok.com/t/ZShX3HuRn/",
-      "https://www.tiktok.com/t/ZShX3mVTD/"
+        // 🔗 CỘT 2: Link TikTok Thường
+        "https://www.tiktok.com/t/ZShX3eRCj/",
+        "https://www.tiktok.com/t/ZShXcKW3P/",
+        "https://www.tiktok.com/t/ZShXc3L2o/",
+        "https://www.tiktok.com/t/ZShXcExWh/",
+        "https://www.tiktok.com/t/ZShX3d43H/",
+        "https://www.tiktok.com/t/ZShX3Foyh/",
+        "https://www.tiktok.com/t/ZShX3LwP9/",
+        "https://www.tiktok.com/t/ZShX369Gc/",
+        "https://www.tiktok.com/t/ZShX3dsXg/",
+        "https://www.tiktok.com/t/ZShX3Y8xT/",
+        "https://www.tiktok.com/t/ZShX3FC6d/",
+        "https://www.tiktok.com/t/ZShX3dBSB/",
+        "https://www.tiktok.com/t/ZShX3JS5A/",
+        "https://www.tiktok.com/t/ZShXcchx5/",
+        "https://www.tiktok.com/t/ZShXc73Q4/",
+        "https://www.tiktok.com/t/ZShX3LfhJ/",
+        "https://www.tiktok.com/t/ZShX3rboA/",
+        "https://www.tiktok.com/t/ZShX32oh2/",
+        "https://www.tiktok.com/t/ZShX3r8nT/",
+        "https://www.tiktok.com/t/ZShX31BGF/",
+        "https://www.tiktok.com/t/ZShX3Joh4/",
+        "https://www.tiktok.com/t/ZShX3jMpj/",
+        "https://www.tiktok.com/t/ZShX3LBP9/",
+        "https://www.tiktok.com/t/ZShX3jMwr/",
+        "https://www.tiktok.com/t/ZShX3mVat/",
+        "https://www.tiktok.com/t/ZShX3J2w4/",
+        "https://www.tiktok.com/t/ZShX3xF6M/",
+        "https://www.tiktok.com/t/ZShX3NSco/",
+        "https://www.tiktok.com/t/ZShX3Sokr/",
+        "https://www.tiktok.com/t/ZShXcTehY/",
+        "https://www.tiktok.com/t/ZShX3Vgfy/",
+        "https://www.tiktok.com/t/ZShXcwNQo/",
+        "https://www.tiktok.com/t/ZShX3u1VL/",
+        "https://www.tiktok.com/t/ZShX3D8AK/",
+        "https://www.tiktok.com/t/ZShX3P3pW/",
+        "https://www.tiktok.com/t/ZShX3Bvye/",
+        "https://www.tiktok.com/t/ZShX39aop/",
+        "https://www.tiktok.com/t/ZShX3SarT/",
+        "https://www.tiktok.com/t/ZShX35XEe/",
+        "https://www.tiktok.com/t/ZShX3uuY8/",
+        "https://www.tiktok.com/t/ZShX3P15U/",
+        "https://www.tiktok.com/t/ZShX3pXUY/",
+        "https://www.tiktok.com/t/ZShX3sdvH/",
+        "https://www.tiktok.com/t/ZShX3H5aa/",
+        "https://www.tiktok.com/t/ZShX3HAWx/",
+        "https://www.tiktok.com/t/ZShX3qXTB/",
+        "https://www.tiktok.com/t/ZShX3qduV/",
+        "https://www.tiktok.com/t/ZShX3Xmj2/",
+        "https://www.tiktok.com/t/ZShX3uerD/",
+        "https://www.tiktok.com/t/ZShX3CRbr/",
+        "https://www.tiktok.com/t/ZShX3B9Pm/",
+        "https://www.tiktok.com/t/ZShX3HY5H/",
+        "https://www.tiktok.com/t/ZShX3gh7E/",
+        "https://www.tiktok.com/t/ZShX391vc/",
+        "https://www.tiktok.com/t/ZShX3PK5E/",
+        "https://www.tiktok.com/t/ZShX3xCq2/",
+        "https://www.tiktok.com/t/ZShX3aLMV/",
+        "https://www.tiktok.com/t/ZShX3fMtu/",
+        "https://www.tiktok.com/t/ZShX3Avve/",
+        "https://www.tiktok.com/t/ZShX3V7RM/",
+        "https://www.tiktok.com/t/ZShX3HuRn/",
+        "https://www.tiktok.com/t/ZShX3mVTD/"
     ];
 
     const liteLinks = [
-      // 🔗 CỘT 3: Link TikTok Lite
-      "https://lite.tiktok.com/t/ZShX3eRCj/",
-      "https://lite.tiktok.com/t/ZShXcKW3P/",
-      "https://lite.tiktok.com/t/ZShXc3L2o/",
-      "https://lite.tiktok.com/t/ZShXcExWh/",
-      "https://lite.tiktok.com/t/ZShX3d43H/",
-      "https://lite.tiktok.com/t/ZShX3Foyh/",
-      "https://lite.tiktok.com/t/ZShX3LwP9/",
-      "https://lite.tiktok.com/t/ZShX369Gc/",
-      "https://lite.tiktok.com/t/ZShX3dsXg/",
-      "https://lite.tiktok.com/t/ZShX3Y8xT/",
-      "https://lite.tiktok.com/t/ZShX3FC6d/",
-      "https://lite.tiktok.com/t/ZShX3dBSB/",
-      "https://lite.tiktok.com/t/ZShX3JS5A/",
-      "https://lite.tiktok.com/t/ZShXcchx5/",
-      "https://lite.tiktok.com/t/ZShXc73Q4/",
-      "https://lite.tiktok.com/t/ZShX3LfhJ/",
-      "https://lite.tiktok.com/t/ZShX3rboA/",
-      "https://lite.tiktok.com/t/ZShX32oh2/",
-      "https://lite.tiktok.com/t/ZShX3r8nT/",
-      "https://lite.tiktok.com/t/ZShX31BGF/",
-      "https://lite.tiktok.com/t/ZShX3Joh4/",
-      "https://lite.tiktok.com/t/ZShX3jMpj/",
-      "https://lite.tiktok.com/t/ZShX3LBP9/",
-      "https://lite.tiktok.com/t/ZShX3jMwr/",
-      "https://lite.tiktok.com/t/ZShX3mVat/",
-      "https://lite.tiktok.com/t/ZShX3J2w4/",
-      "https://lite.tiktok.com/t/ZShX3xF6M/",
-      "https://lite.tiktok.com/t/ZShX3NSco/",
-      "https://lite.tiktok.com/t/ZShX3Sokr/",
-      "https://lite.tiktok.com/t/ZShXcTehY/",
-      "https://lite.tiktok.com/t/ZShX3Vgfy/",
-      "https://lite.tiktok.com/t/ZShXcwNQo/",
-      "https://lite.tiktok.com/t/ZShX3u1VL/",
-      "https://lite.tiktok.com/t/ZShX3D8AK/",
-      "https://lite.tiktok.com/t/ZShX3P3pW/",
-      "https://lite.tiktok.com/t/ZShX3Bvye/",
-      "https://lite.tiktok.com/t/ZShX39aop/",
-      "https://lite.tiktok.com/t/ZShX3SarT/",
-      "https://lite.tiktok.com/t/ZShX35XEe/",
-      "https://lite.tiktok.com/t/ZShX3uuY8/",
-      "https://lite.tiktok.com/t/ZShX3P15U/",
-      "https://lite.tiktok.com/t/ZShX3pXUY/",
-      "https://lite.tiktok.com/t/ZShX3sdvH/",
-      "https://lite.tiktok.com/t/ZShX3H5aa/",
-      "https://lite.tiktok.com/t/ZShX3HAWx/",
-      "https://lite.tiktok.com/t/ZShX3qXTB/",
-      "https://lite.tiktok.com/t/ZShX3qduV/",
-      "https://lite.tiktok.com/t/ZShX3Xmj2/",
-      "https://lite.tiktok.com/t/ZShX3uerD/",
-      "https://lite.tiktok.com/t/ZShX3CRbr/",
-      "https://lite.tiktok.com/t/ZShX3B9Pm/",
-      "https://lite.tiktok.com/t/ZShX3HY5H/",
-      "https://lite.tiktok.com/t/ZShX3gh7E/",
-      "https://lite.tiktok.com/t/ZShX391vc/",
-      "https://lite.tiktok.com/t/ZShX3PK5E/",
-      "https://lite.tiktok.com/t/ZShX3xCq2/",
-      "https://lite.tiktok.com/t/ZShX3aLMV/",
-      "https://lite.tiktok.com/t/ZShX3fMtu/",
-      "https://lite.tiktok.com/t/ZShX3Avve/",
-      "https://lite.tiktok.com/t/ZShX3V7RM/",
-      "https://lite.tiktok.com/t/ZShX3HuRn/",
-      "https://lite.tiktok.com/t/ZShX3mVTD/"
+        // 🔗 CỘT 3: Link TikTok Lite
+        "https://lite.tiktok.com/t/ZShX3eRCj/",
+        "https://lite.tiktok.com/t/ZShXcKW3P/",
+        "https://lite.tiktok.com/t/ZShXc3L2o/",
+        "https://lite.tiktok.com/t/ZShXcExWh/",
+        "https://lite.tiktok.com/t/ZShX3d43H/",
+        "https://lite.tiktok.com/t/ZShX3Foyh/",
+        "https://lite.tiktok.com/t/ZShX3LwP9/",
+        "https://lite.tiktok.com/t/ZShX369Gc/",
+        "https://lite.tiktok.com/t/ZShX3dsXg/",
+        "https://lite.tiktok.com/t/ZShX3Y8xT/",
+        "https://lite.tiktok.com/t/ZShX3FC6d/",
+        "https://lite.tiktok.com/t/ZShX3dBSB/",
+        "https://lite.tiktok.com/t/ZShX3JS5A/",
+        "https://lite.tiktok.com/t/ZShXcchx5/",
+        "https://lite.tiktok.com/t/ZShXc73Q4/",
+        "https://lite.tiktok.com/t/ZShX3LfhJ/",
+        "https://lite.tiktok.com/t/ZShX3rboA/",
+        "https://lite.tiktok.com/t/ZShX32oh2/",
+        "https://lite.tiktok.com/t/ZShX3r8nT/",
+        "https://lite.tiktok.com/t/ZShX31BGF/",
+        "https://lite.tiktok.com/t/ZShX3Joh4/",
+        "https://lite.tiktok.com/t/ZShX3jMpj/",
+        "https://lite.tiktok.com/t/ZShX3LBP9/",
+        "https://lite.tiktok.com/t/ZShX3jMwr/",
+        "https://lite.tiktok.com/t/ZShX3mVat/",
+        "https://lite.tiktok.com/t/ZShX3J2w4/",
+        "https://lite.tiktok.com/t/ZShX3xF6M/",
+        "https://lite.tiktok.com/t/ZShX3NSco/",
+        "https://lite.tiktok.com/t/ZShX3Sokr/",
+        "https://lite.tiktok.com/t/ZShXcTehY/",
+        "https://lite.tiktok.com/t/ZShX3Vgfy/",
+        "https://lite.tiktok.com/t/ZShXcwNQo/",
+        "https://lite.tiktok.com/t/ZShX3u1VL/",
+        "https://lite.tiktok.com/t/ZShX3D8AK/",
+        "https://lite.tiktok.com/t/ZShX3P3pW/",
+        "https://lite.tiktok.com/t/ZShX3Bvye/",
+        "https://lite.tiktok.com/t/ZShX39aop/",
+        "https://lite.tiktok.com/t/ZShX3SarT/",
+        "https://lite.tiktok.com/t/ZShX35XEe/",
+        "https://lite.tiktok.com/t/ZShX3uuY8/",
+        "https://lite.tiktok.com/t/ZShX3P15U/",
+        "https://lite.tiktok.com/t/ZShX3pXUY/",
+        "https://lite.tiktok.com/t/ZShX3sdvH/",
+        "https://lite.tiktok.com/t/ZShX3H5aa/",
+        "https://lite.tiktok.com/t/ZShX3HAWx/",
+        "https://lite.tiktok.com/t/ZShX3qXTB/",
+        "https://lite.tiktok.com/t/ZShX3qduV/",
+        "https://lite.tiktok.com/t/ZShX3Xmj2/",
+        "https://lite.tiktok.com/t/ZShX3uerD/",
+        "https://lite.tiktok.com/t/ZShX3CRbr/",
+        "https://lite.tiktok.com/t/ZShX3B9Pm/",
+        "https://lite.tiktok.com/t/ZShX3HY5H/",
+        "https://lite.tiktok.com/t/ZShX3gh7E/",
+        "https://lite.tiktok.com/t/ZShX391vc/",
+        "https://lite.tiktok.com/t/ZShX3PK5E/",
+        "https://lite.tiktok.com/t/ZShX3xCq2/",
+        "https://lite.tiktok.com/t/ZShX3aLMV/",
+        "https://lite.tiktok.com/t/ZShX3fMtu/",
+        "https://lite.tiktok.com/t/ZShX3Avve/",
+        "https://lite.tiktok.com/t/ZShX3V7RM/",
+        "https://lite.tiktok.com/t/ZShX3HuRn/",
+        "https://lite.tiktok.com/t/ZShX3mVTD/"
     ];
 
     // ✅ Dữ liệu đã lưu lịch sử click trong localStorage
@@ -841,321 +850,336 @@
 
     // ✅ Tạo nút link cho mỗi mục
     function createButton(link, label, type, allowMultiple = false, isProtected = false, highlight = false) {
-      const btn = document.createElement('button');
-      btn.className = 'link-button';
-      const realUrl = typeof link === 'string' ? link : link.url;
-      const key = realUrl + '_' + type;
-      const clickTimestamp = clickedLinks[key];
-
-      // Kiểm tra nếu đã bị khóa do nhập sai mật khẩu
-      const lockStartTime = parseInt(localStorage.getItem('lockStartTime_' + key));
-      if (!isNaN(lockStartTime)) {
-        const lockDuration = lockDays * 24 * 60 * 60 * 1000; // ms
-        const newLockUntil = lockStartTime + lockDuration;
-
-        if (Date.now() < newLockUntil) {
-          btn.disabled = true;
-          btn.classList.add('clicked');
-
-        const updateCountdown = () => {
-          const remaining = newLockUntil - Date.now();
-          if (remaining <= 0) {
-            clearInterval(interval);
-            localStorage.removeItem('lockStartTime_' + key);
-            btn.textContent = `${label} (${clickCount} lượt)`;
-            btn.disabled = false;
-            btn.classList.remove('clicked');
-          } else {
-            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-            btn.textContent = `🔓 ${days}日${hours}時${minutes.toString().padStart(2, '0')}分${seconds.toString().padStart(2, '0')}秒`;
-          }
-        };
-
-          updateCountdown(); // Gọi lần đầu
-          const interval = setInterval(updateCountdown, 1000); // Cập nhật mỗi giây
-
-          return btn;
-        } else {
-          // Đã hết thời gian khóa → xóa key
-          localStorage.removeItem('lockStartTime_' + key);
-        }
-      }
-
-      // Chỉnh thời gian đếm ngược khi xem video
-      const now = Date.now();
-      const clickCount = clickedLinks[key + '_count'] || 0;
-
-      if (!allowMultiple && clickTimestamp) {
-        const clickedDate = new Date(clickTimestamp);
-        const unlockDate = new Date(clickedDate);
-        unlockDate.setDate(clickedDate.getDate() + unlockDays);
-        unlockDate.setHours(0, 0, 0, 0);
-
-        const timeLeft = unlockDate - now;
-
-        if (timeLeft > 0) {
-          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-          btn.textContent = `⏳ ${days}日${hours}時${minutes.toString().padStart(2, '0')}分${seconds.toString().padStart(2, '0')}秒`;
-          btn.classList.add('clicked');
-          btn.disabled = true;
-
-          // Cập nhật đếm ngược theo thời gian thực cho nút bấm Video
-          const interval = setInterval(() => {
-            const nowUpdate = Date.now();
-            const timeLeftUpdate = unlockDate - nowUpdate;
-
-            if (timeLeftUpdate <= 0) {
-              clearInterval(interval);
-              btn.textContent = `${label} (${clickCount} lượt)`;
-              btn.classList.remove('clicked');
-              btn.disabled = false;
-            } else {
-            const d = Math.floor(timeLeftUpdate / (1000 * 60 * 60 * 24));
-            const h = Math.floor((timeLeftUpdate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((timeLeftUpdate % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((timeLeftUpdate % (1000 * 60)) / 1000);
-            btn.textContent = `⏳ ${d}日${h}時${m.toString().padStart(2, '0')}分${s.toString().padStart(2, '0')}秒`;
-           }
-          }, 1000); // cập nhật mỗi giây, nếu muốn cập nhật mỗi phút đổi thành 60*1000
-        } else {
-          // Đã hết thời gian khóa
-          btn.textContent = `${label} (${clickCount} lượt)`;
-        }
-      } else {
-        if (highlight) {
-          btn.innerHTML = `<span class="blink-text">${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}</span>`;
-        } else {
-          btn.textContent = `${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}`;
-        }
-      }
-
-      btn.onclick = () => {
+        const btn = document.createElement('button');
+        btn.className = 'link-button';
         const realUrl = typeof link === 'string' ? link : link.url;
+        const key = realUrl + '_' + type;
+        const clickTimestamp = clickedLinks[key];
 
-        if (link.copyOnly) {
-          navigator.clipboard.writeText(realUrl)
-            .then(() => {
-              const oldText = btn.textContent;
-              btn.textContent = document.getElementById('copied-success-text').textContent;
-              btn.disabled = true;
-              setTimeout(() => {
-                btn.textContent = oldText;
-                btn.disabled = false;
-              }, 2000);
-            })
-            .catch(() => {
-              alert("❌ Sao chép thất bại. Dùng trình duyệt khác và thử lại");
-            });
-        } else if (isProtected) {
-          showPasswordModal(link, label, key, allowMultiple, clickCount, btn);
-        } else {
-          openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
+        // Kiểm tra nếu đã bị khóa do nhập sai mật khẩu
+        const lockStartTime = parseInt(localStorage.getItem('lockStartTime_' + key));
+        if (!isNaN(lockStartTime)) {
+            const lockDuration = lockDays * 24 * 60 * 60 * 1000; // ms
+            const newLockUntil = lockStartTime + lockDuration;
+
+            if (Date.now() < newLockUntil) {
+                btn.disabled = true;
+                btn.classList.add('clicked');
+
+                const updateCountdown = () => {
+                    const remaining = newLockUntil - Date.now();
+                    if (remaining <= 0) {
+                        clearInterval(interval);
+                        localStorage.removeItem('lockStartTime_' + key);
+                        localStorage.removeItem('wrongAttempts_' + key);
+                        btn.textContent = `${label} (${clickCount} lượt)`;
+                        btn.disabled = false;
+                        btn.classList.remove('clicked');
+                    } else {
+                        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+                        btn.textContent = `🔓 ${days}日${hours}時${minutes.toString().padStart(2, '0')}分${seconds.toString().padStart(2, '0')}秒`;
+                    }
+                };
+
+                updateCountdown(); // Gọi lần đầu
+                const interval = setInterval(updateCountdown, 1000); // Cập nhật mỗi giây
+
+                return btn;
+            } else {
+                // Đã hết thời gian khóa → xóa key
+                localStorage.removeItem('lockStartTime_' + key);
+                localStorage.removeItem('wrongAttempts_' + key);
+            }
         }
-      };
-      return btn;
+
+        // Chỉnh thời gian đếm ngược khi xem video
+        const now = Date.now();
+        const clickCount = clickedLinks[key + '_count'] || 0;
+
+        if (!allowMultiple && clickTimestamp) {
+            const clickedDate = new Date(clickTimestamp);
+            const unlockDate = new Date(clickedDate);
+            unlockDate.setDate(clickedDate.getDate() + unlockDays);
+            unlockDate.setHours(0, 0, 0, 0);
+
+            const timeLeft = unlockDate - now;
+
+            if (timeLeft > 0) {
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                btn.textContent = `⏳ ${days}日${hours}時${minutes.toString().padStart(2, '0')}分${seconds.toString().padStart(2, '0')}秒`;
+                btn.classList.add('clicked');
+                btn.disabled = true;
+
+                // Cập nhật đếm ngược theo thời gian thực cho nút bấm Video
+                const interval = setInterval(() => {
+                    const nowUpdate = Date.now();
+                    const timeLeftUpdate = unlockDate - nowUpdate;
+
+                    if (timeLeftUpdate <= 0) {
+                        clearInterval(interval);
+                        btn.textContent = `${label} (${clickCount} lượt)`;
+                        btn.classList.remove('clicked');
+                        btn.disabled = false;
+                    } else {
+                        const d = Math.floor(timeLeftUpdate / (1000 * 60 * 60 * 24));
+                        const h = Math.floor((timeLeftUpdate % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const m = Math.floor((timeLeftUpdate % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((timeLeftUpdate % (1000 * 60)) / 1000);
+                        btn.textContent = `⏳ ${d}日${h}時${m.toString().padStart(2, '0')}分${s.toString().padStart(2, '0')}秒`;
+                    }
+                }, 1000);
+            } else {
+                btn.textContent = `${label} (${clickCount} lượt)`;
+            }
+        } else {
+            if (highlight) {
+                btn.innerHTML = `<span class="blink-text">${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}</span>`;
+            } else {
+                btn.textContent = `${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}`;
+            }
+        }
+
+        btn.onclick = () => {
+            const realUrl = typeof link === 'string' ? link : link.url;
+
+            if (link.copyOnly) {
+                navigator.clipboard.writeText(realUrl)
+                    .then(() => {
+                        const oldText = btn.textContent;
+                        btn.textContent = document.getElementById('copied-success-text').textContent;
+                        btn.disabled = true;
+                        setTimeout(() => {
+                            btn.textContent = oldText;
+                            btn.disabled = false;
+                        }, 2000);
+                    })
+                    .catch(() => {
+                        alert("❌ Sao chép thất bại. Dùng trình duyệt khác và thử lại");
+                    });
+            } else if (isProtected) {
+                showPasswordPrompt({
+                    title: "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
+                    link: link,
+                    key: key,
+                    label: label,
+                    btn: btn,
+                    onSuccess: () => openLinkAndSave(link, label, key, allowMultiple, clickCount, btn)
+                });
+            } else {
+                openLinkAndSave(link, label, key, allowMultiple, clickCount, btn);
+            }
+        };
+        return btn;
     }
 
     // ✅ Mở link và lưu lịch sử click
     function openLinkAndSave(linkObj, label, _key, allowMultiple, clickCount, btn) {
-      const realUrl = typeof linkObj === 'string' ? linkObj : linkObj.url;
-      const type = _key.split('_')[1]; // lấy type từ key ban đầu
-      const key = realUrl + '_' + type;
+        const realUrl = typeof linkObj === 'string' ? linkObj : linkObj.url;
+        const type = _key.split('_')[1];
+        const key = realUrl + '_' + type;
 
-      const isStandalone =
-        window.matchMedia('(display-mode: standalone)').matches ||
-        window.navigator.standalone === true;
+        const isStandalone =
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
 
-      if (isStandalone) {
-        window.location.href = realUrl;
-      } else {
-        window.open(realUrl, '_blank');
-      }
-
-      const now = Date.now();
-      clickedLinks[key] = now;
-      clickedLinks[key + '_count'] = (clickedLinks[key + '_count'] || 0) + 1;
-      localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
-
-      // Tạo lại nút mới để cập nhật giao diện ngay
-      const newBtn = createButton(
-        linkObj,
-        label,
-        type,
-        allowMultiple,
-        linkObj.protected || false,
-        linkObj.highlight || false
-       );
-     btn.replaceWith(newBtn);
-    }
-
-    // ✅ Hiện modal nhập mật khẩu nếu link có bảo vệ
-    function showPasswordModal(link, label, key, allowMultiple, clickCount, btn) {
-      const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
-      overlay.innerHTML = `
-        <div class="modal">
-          <div id="modal-text">Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
-          <input type="password" id="modal-password" autocomplete="new-password" />
-          <div class="buttons">
-            <button id="modal-cancel">Hủy</button>
-            <button id="modal-ok" disabled>OK</button>
-          </div>
-          <div class="error" id="modal-error">Mật khẩu không đúng. Vui lòng thử lại.</div>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-      document.body.classList.add('no-scroll');
-      applyLanguage(currentLanguage); // 🔁 Gọi lại hàm dịch sau khi modal được thêm vào DOM
-
-      const input = overlay.querySelector('#modal-password');
-      const btnOk = overlay.querySelector('#modal-ok');
-      const btnCancel = overlay.querySelector('#modal-cancel');
-      const errorMsg = overlay.querySelector('#modal-error');
-
-      input.addEventListener('input', () => {
-        errorMsg.style.display = 'none';
-        btnOk.disabled = input.value.trim().length === 0;
-      });
-
-      btnCancel.addEventListener('click', () => {
-        document.body.removeChild(overlay);
-        document.body.classList.remove('no-scroll');
-      });
-
-      btnOk.addEventListener('click', () => {
-        if (input.value !== '8322') {
-          const failKey = 'wrongAttempts_' + key;
-          const currentFail = parseInt(localStorage.getItem(failKey)) || 0;
-          const newFail = currentFail + 1;
-          localStorage.setItem(failKey, newFail);
-
-          if (newFail >= 5) {
-            localStorage.setItem('lockStartTime_' + key, Date.now());
-            document.body.removeChild(overlay); // ❌ Đóng modal luôn
-            document.body.classList.remove('no-scroll');
-
-            // ✅ Cập nhật nút luôn: disable và hiển thị thời gian khóa
-            const lockDuration = lockDays * 24 * 60 * 60 * 1000;
-            const newLockUntil = Date.now() + lockDuration;
-            btn.disabled = true;
-            btn.classList.add('clicked');
-
-            const updateCountdown = () => {
-              const remaining = newLockUntil - Date.now();
-              if (remaining <= 0) {
-                clearInterval(interval);
-                localStorage.removeItem('lockStartTime_' + key);
-                btn.textContent = `${label} (${clickCount} lượt)`;
-                btn.disabled = false;
-                btn.classList.remove('clicked');
-              } else {
-                const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-                btn.textContent = `🔓 ${days}日${hours}時${minutes.toString().padStart(2, '0')}分${seconds.toString().padStart(2, '0')}秒`;
-              }
-            };
-
-            updateCountdown();
-            const interval = setInterval(updateCountdown, 1000);
-
-            return;
-          }
-
-          errorMsg.style.display = 'block';
-          input.focus();
-          return;
+        if (isStandalone) {
+            window.location.href = realUrl;
+        } else {
+            window.open(realUrl, '_blank');
         }
 
-        // Nhập đúng → xóa lịch sử sai và tiếp tục
+        const now = Date.now();
+        clickedLinks[key] = now;
+        clickedLinks[key + '_count'] = (clickedLinks[key + '_count'] || 0) + 1;
+        localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
+
         localStorage.removeItem('wrongAttempts_' + key);
         localStorage.removeItem('lockStartTime_' + key);
 
-        document.body.removeChild(overlay);
-        document.body.classList.remove('no-scroll');
-        openLinkAndSave(link.url, label, key, allowMultiple, clickCount, btn);
-      });
+        const newBtn = createButton(
+            linkObj, label, type, allowMultiple,
+            linkObj.protected || false,
+            linkObj.highlight || false
+        );
+        btn.replaceWith(newBtn);
+    }
+
+    // ✅ [CẬP NHẬT] Hàm hiển thị modal mật khẩu, giờ có thể khóa cả nút Reset
+    function showPasswordPrompt(options) {
+        const {title, onSuccess, link, key, label, btn} = options;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal">
+            <div id="modal-text">${title}</div>
+            <input type="password" id="modal-password" autocomplete="new-password" />
+            <div class="buttons">
+              <button id="modal-cancel">Hủy</button>
+              <button id="modal-ok" disabled>OK</button>
+            </div>
+            <div class="error" id="modal-error">Mật khẩu không đúng. Vui lòng thử lại.</div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        document.body.classList.add('no-scroll');
+        applyLanguage(currentLanguage);
+
+        const input = overlay.querySelector('#modal-password');
+        const btnOk = overlay.querySelector('#modal-ok');
+        const btnCancel = overlay.querySelector('#modal-cancel');
+        const errorMsg = overlay.querySelector('#modal-error');
+
+        const closeModal = () => {
+            document.body.removeChild(overlay);
+            document.body.classList.remove('no-scroll');
+        };
+
+        input.addEventListener('input', () => {
+            errorMsg.style.display = 'none';
+            btnOk.disabled = input.value.trim().length === 0;
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !btnOk.disabled) btnOk.click();
+        });
+
+        btnCancel.addEventListener('click', closeModal);
+
+        btnOk.addEventListener('click', () => {
+            if (input.value !== '8322') {
+                // Áp dụng cho cả link được bảo vệ và nút reset
+                if (key) {
+                    const failKey = 'wrongAttempts_' + key;
+                    const currentFail = parseInt(localStorage.getItem(failKey)) || 0;
+                    const newFail = currentFail + 1;
+                    localStorage.setItem(failKey, newFail);
+
+                    if (newFail >= 5) {
+                        localStorage.setItem('lockStartTime_' + key, Date.now());
+                        closeModal();
+
+                        // Nếu là nút động (link sumo), thay thế nút. Nếu là nút reset, tải lại trang.
+                        if (btn && link) {
+                            const newBtn = createButton(
+                                link, label, key.split('_')[1], true, true, link.highlight || false
+                            );
+                            btn.replaceWith(newBtn);
+                        } else {
+                            location.reload();
+                        }
+                        return;
+                    }
+                }
+                errorMsg.style.display = 'block';
+                input.focus();
+                return;
+            }
+
+            // Nhập đúng, xóa lịch sử nhập sai nếu có
+            if (key) {
+                localStorage.removeItem('wrongAttempts_' + key);
+                localStorage.removeItem('lockStartTime_' + key);
+            }
+
+            closeModal();
+            onSuccess(); // Chạy hàm callback khi thành công
+        });
+
+        input.focus();
     }
 
     // ✅ Hiển thị danh sách các link trong mỗi nhóm
     function renderLinks(containerId, links, type, prefix, allowMultiple = false) {
-      const container = document.getElementById(containerId);
-      links.forEach((link, i) => {
-        if (link.hidden) return; // 👈 bỏ qua nếu có hidden: true
-        const btn = createButton(
-          link,
-          link.label || `${prefix} ${i + 1}`,
-          type,
-          allowMultiple,
-          link.protected || false,
-          link.highlight || false
-        );
-        container.appendChild(btn);
-      });
+        const container = document.getElementById(containerId);
+        links.forEach((link, i) => {
+            if (link.hidden) return; // 👈 bỏ qua nếu có hidden: true
+            const btn = createButton(
+                link,
+                link.label || `${prefix} ${i + 1}`,
+                type,
+                allowMultiple,
+                link.protected || false,
+                link.highlight || false
+            );
+            container.appendChild(btn);
+        });
     }
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
-      const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkKhoBau', 'linkGioiThieu'];
+        const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkGioiThieu'];
 
-      allSections.forEach(sectionId => {
-        const container = document.getElementById(sectionId);
-        const icon = document.getElementById('icon-' + sectionId);
-        if (sectionId === id) {
-          const isCollapsed = container.classList.contains('collapsed');
-          // Nếu đang đóng thì mở nó và đóng các cái khác
-          container.classList.toggle('collapsed');
-          icon.textContent = container.classList.contains('collapsed') ? '+' : '−';
-        } else {
-          container.classList.add('collapsed');
-          if (icon) icon.textContent = '+';
-        }
-      });
-    }
+        allSections.forEach(sectionId => {
+            const container = document.getElementById(sectionId);
+            const icon = document.getElementById('icon-' + sectionId);
+            if (sectionId === id) {
+                const isCollapsed = container.classList.contains('collapsed');
+                container.classList.toggle('collapsed');
+                icon.textContent = container.classList.contains('collapsed') ? '+' : '−';
+            } else {
+                container.classList.add('collapsed');
+                if (icon) icon.textContent = '+';
+            }
+        });
+    }
     //___________________________________________________________
 
     // ✅ Hiển thị các nhóm link
     if (enableCoc) {
-      renderLinks('linkCoc-lite', linkCocLite, 'coc-lite', 'Lite', true);
-      renderLinks('linkCoc-regular', linkCocRegular, 'coc-regular', 'Thường', true);
-      document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = '';
+        renderLinks('linkCoc-lite', linkCocLite, 'coc-lite', 'Lite', true);
+        renderLinks('linkCoc-regular', linkCocRegular, 'coc-regular', 'Thường', true);
+        document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = '';
     } else {
-      document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = 'none';
+        document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = 'none';
     }
 
     if (enableTuyet) {
-      renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
-      document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = '';
+        renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
+        document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = '';
     } else {
-      document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = 'none';
+        document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = 'none';
     }
 
     if (enableSumo) {
-      renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true);
-      document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = '';
+        renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true);
+        document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = '';
     } else {
-      document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = 'none';
+        document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = 'none';
     }
 
     if (enableKhoBau) {
-      renderLinks('linkKhoBau', linkKhoBau, 'khobau', 'Kho Báu', true);
-      document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = '';
+        renderLinks('linkKhoBau', linkKhoBau, 'khobau', 'Kho Báu', true);
+        document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = '';
     } else {
-      document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = 'none';
+        document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = 'none';
+    }
+
+    if (enableCauCa) {
+        renderLinks('linkCauCa', linkCauCa, 'cauca', 'Câu Cá', true);
+        document.querySelector('[onclick="toggleSection(\'linkCauCa\')"]').parentElement.style.display = '';
+    } else {
+        document.querySelector('[onclick="toggleSection(\'linkCauCa\')"]').parentElement.style.display = 'none';
+    }
+
+    if (enable500Like) {
+        renderLinks('link500Like', link500Like, '500like', 'Video', true);
+        document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = '';
+    } else {
+        document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = 'none';
     }
 
     if (enableGioiThieu) {
-      renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true);
-      document.querySelector('[onclick="toggleSection(\'linkGioiThieu\')"]').parentElement.style.display = '';
+        renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true);
+        document.querySelector('[onclick="toggleSection(\'linkGioiThieu\')"]').parentElement.style.display = '';
     } else {
-      document.querySelector('[onclick="toggleSection(\'linkGioiThieu\')"]').parentElement.style.display = 'none';
+        document.querySelector('[onclick="toggleSection(\'linkGioiThieu\')"]').parentElement.style.display = 'none';
     }
     //___________________________________________________________
 
@@ -1166,537 +1190,463 @@
 
     // ✅ Hiển thị và ẩn modal thông tin liên hệ
     function showContactInfo() {
-      menu.classList.add('hidden'); // ✅ đóng menu khi mở modal
-      document.getElementById('contactModal').style.display = 'flex';
-      document.body.classList.add('no-scroll');
+        menu.classList.add('hidden');
+        document.getElementById('contactModal').style.display = 'flex';
+        document.body.classList.add('no-scroll');
     }
 
     function closeContactModal() {
-      document.getElementById('contactModal').style.display = 'none';
-      document.body.classList.remove('no-scroll');
+        document.getElementById('contactModal').style.display = 'none';
+        document.body.classList.remove('no-scroll');
     }
     //___________________________________________________________
 
-    // Hàm gọi khi bấm nút reset
+    // ✅ [CẬP NHẬT] Event listener cho nút reset, truyền thêm key để theo dõi
     document.getElementById('resetBtn').addEventListener('click', () => {
-      // Sử dụng lại hàm showPasswordModal để nhập mật khẩu
-      showPasswordModalForReset();
+        menu.classList.add('hidden');
+        showPasswordPrompt({
+            title: "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
+            key: 'resetBtn_lock', // Key duy nhất để theo dõi lượt nhập sai
+            onSuccess: () => resetCountdown()
+        });
     });
-
-    function showPasswordModalForReset() {
-      const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
-      overlay.innerHTML = `
-        <div class="modal">
-          <div id="modal-text-reset">Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:</div>
-          <input type="password" id="modal-password-reset" autocomplete="new-password" />
-          <div class="buttons">
-            <button id="modal-cancel-reset">Hủy</button>
-            <button id="modal-ok-reset" disabled>OK</button>
-          </div>
-          <div class="error" id="modal-error-reset">Mật khẩu không đúng. Vui lòng thử lại.</div>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-      menu.classList.add('hidden'); // ✅ đóng menu khi mở modal
-      document.body.classList.add('no-scroll');
-      applyLanguage(currentLanguage); // 🔁 Thêm dòng này sau khi tạo modal
-
-      const input = overlay.querySelector('#modal-password-reset');
-      const btnOk = overlay.querySelector('#modal-ok-reset');
-      const btnCancel = overlay.querySelector('#modal-cancel-reset');
-      const errorMsg = overlay.querySelector('#modal-error-reset');
-
-      input.addEventListener('input', () => {
-        errorMsg.style.display = 'none';
-        btnOk.disabled = input.value.trim().length === 0;
-      });
-
-      btnCancel.addEventListener('click', () => {
-        document.body.removeChild(overlay);
-        document.body.classList.remove('no-scroll');
-      });
-
-      btnOk.addEventListener('click', () => {
-        if (input.value !== '8322') {
-          errorMsg.style.display = 'block';
-          input.focus();
-          return;
-        }
-        document.body.removeChild(overlay);
-        document.body.classList.remove('no-scroll');
-        resetCountdown();
-      });
-
-      input.focus();
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !btnOk.disabled) btnOk.click();
-      });
-    }
 
     // Hàm reset thực sự
     function resetCountdown() {
-      localStorage.removeItem('clickedLinks');
-      alert('Đã reset thành công thời gian đến ngược Video.');
-      location.reload();
+        localStorage.removeItem('clickedLinks');
+        // Xóa cả lịch sử nhập sai của chính nút reset khi thành công
+        localStorage.removeItem('wrongAttempts_resetBtn_lock');
+        localStorage.removeItem('lockStartTime_resetBtn_lock');
+        alert('Đã reset thành công thời gian đến ngược Video.');
+        location.reload();
     }
 
     // ✅ Modal thêm phím tắt – chỉ hiển thị 1 lần
     function triggerIOSModalIfNeeded() {
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-      const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
-      const iosModalKey = 'iosInstallModalShownCount';
-      let count = parseInt(localStorage.getItem(iosModalKey) || '0', 10);
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
+        const iosModalKey = 'iosInstallModalShownCount';
+        let count = parseInt(localStorage.getItem(iosModalKey) || '0', 10);
 
-      if (enable_ios_modal && isIOS && !isInStandaloneMode && count < 1) {
-        const modal = document.getElementById('iosInstallModal');
-        if (modal) {
-          modal.style.display = 'flex';
-          document.body.classList.add('no-scroll');
+        if (enable_ios_modal && isIOS && !isInStandaloneMode && count < 1) {
+            const modal = document.getElementById('iosInstallModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.classList.add('no-scroll');
 
-          const okBtn = document.getElementById('ios-ok-btn');
-          okBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-            document.body.classList.remove('no-scroll');
-            localStorage.setItem(iosModalKey, (count + 1).toString());
-          });
+                const okBtn = document.getElementById('ios-ok-btn');
+                okBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                    document.body.classList.remove('no-scroll');
+                    localStorage.setItem(iosModalKey, (count + 1).toString());
+                });
+            }
         }
-      }
     }
 
-    // ✅ Modal thông báo tính năng mới – chỉ hiển thị 5 lần
-    (function() {
-      const modalKey = 'featureModalShownCount';
-      let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
+    // ✅ Modal thông báo tính năng mới
+    (function () {
+        const modalKey = 'featureModalShownCount';
+        let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
 
-      if (count < 1) {
-        const modal = document.getElementById('featureModal');
-        const okBtn = document.getElementById('featureModal-ok');
+        if (count < 1) {
+            const modal = document.getElementById('featureModal');
+            const okBtn = document.getElementById('featureModal-ok');
 
-        modal.style.display = 'flex';
-        document.body.classList.add('no-scroll');
+            modal.style.display = 'flex';
+            document.body.classList.add('no-scroll');
 
-        okBtn.addEventListener('click', () => {
-          modal.style.display = 'none';
-          document.body.classList.remove('no-scroll');
-          localStorage.setItem(modalKey, (count +1).toString());
-
-          triggerIOSModalIfNeeded(); // ✅ Chỉ gọi sau khi ấn "Đã hiểu"
-        });
-      } 
+            okBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.classList.remove('no-scroll');
+                localStorage.setItem(modalKey, (count + 1).toString());
+                triggerIOSModalIfNeeded();
+            });
+        }
     })();
 
     // ✅ Reset vô hiệu hóa Pass mở link
-    (function() {
-      let clickCount = 0;
-      let lastClickTime = 0;
-      const maxInterval = 1000; // ms, 1 giây
+    (function () {
+        let clickCount = 0;
+        let lastClickTime = 0;
+        const maxInterval = 1000;
 
-      const el = document.getElementById('tiktok-lite');
-      if (!el) return;
+        const el = document.getElementById('tiktok-lite');
+        if (!el) return;
 
-      el.addEventListener('click', () => {
-        const now = Date.now();
-        if (now - lastClickTime > maxInterval) {
-          clickCount = 1;
-        } else {
-          clickCount++;
-        }
-        lastClickTime = now;
-
-        if (clickCount >= 5) {
-          // Xóa các khóa sai mật khẩu
-          for (const key in localStorage) {
-            if (key.startsWith("wrongAttempts_") || key.startsWith("lockStartTime_")) {
-              localStorage.removeItem(key);
+        el.addEventListener('click', () => {
+            const now = Date.now();
+            if (now - lastClickTime > maxInterval) {
+                clickCount = 1;
+            } else {
+                clickCount++;
             }
-          }
-          alert("✅ Mục nhập mật khẩu đã được mở khóa!");
-          clickCount = 0;
-        }
-      });
+            lastClickTime = now;
+
+            if (clickCount >= 5) {
+                for (const key in localStorage) {
+                    if (key.startsWith("wrongAttempts_") || key.startsWith("lockStartTime_")) {
+                        localStorage.removeItem(key);
+                    }
+                }
+                alert("✅ Tất cả các mục nhập mật khẩu đã được mở khóa!");
+                clickCount = 0;
+                location.reload();
+            }
+        });
     })();
-    
+
     // ✅ reset số lần hiển thị thông báo tính năng mới
     let tapCount = 0;
     let tapTimeout;
 
     const tiktokText = document.getElementById('tiktok-normal');
-
     if (tiktokText) {
-      tiktokText.addEventListener('click', () => {
-        tapCount++;
-
-        if (tapCount >= 5) {
-          localStorage.removeItem('featureModalShownCount');
-          alert('✅ Đã reset số lần hiển thị thông báo lúc truy cập trang!');
-          tapCount = 0;
-          clearTimeout(tapTimeout);
-          return;
-        }
-
-        clearTimeout(tapTimeout);
-        tapTimeout = setTimeout(() => {
-          tapCount = 0;
-        }, 2000); // reset nếu không bấm đủ 5 lần trong 3 giây
-      });
+        tiktokText.addEventListener('click', () => {
+            tapCount++;
+            if (tapCount >= 5) {
+                localStorage.removeItem('featureModalShownCount');
+                alert('✅ Đã reset số lần hiển thị thông báo lúc truy cập trang!');
+                tapCount = 0;
+                clearTimeout(tapTimeout);
+                return;
+            }
+            clearTimeout(tapTimeout);
+            tapTimeout = setTimeout(() => {
+                tapCount = 0;
+            }, 2000);
+        });
     }
 
-    // Toggle menu nổi tự động đóng nếu ấn bên ngoài nút menu
+    // Toggle menu nổi
     const menuButton = document.getElementById('floatingMenuButton');
     const menu = document.getElementById('floatingMenuOptions');
 
-    // ✅ Nhấn nút menu: toggle hiển thị
     menuButton.addEventListener('click', (e) => {
-      e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
-
-      // Nếu menu đang ẩn thì mở ra, nếu đang hiện thì đóng lại
-      if (menu.classList.contains('hidden')) {
-        menu.classList.remove('hidden');
-      } else {
-        menu.classList.add('hidden');
-      }
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
     });
 
-    // Ngăn click trong menu lan ra ngoài (không bị đóng menu)
     menu.addEventListener('click', (e) => {
-      e.stopPropagation();
+        e.stopPropagation();
     });
-
-    // Bất kỳ click nào bên ngoài menu sẽ đóng menu (nếu đang mở)
-    document.addEventListener('click', (e) => {
-      if (!menu.classList.contains('hidden')) {
+    document.addEventListener('click', () => {
         menu.classList.add('hidden');
-      }
     });
-
-    // ➕ Chạm tay ngoài menu để đóng (cho mobile)
     document.addEventListener('touchstart', (e) => {
-      if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== menuButton) {
-        menu.classList.add('hidden');
-      }
+        if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== menuButton) {
+            menu.classList.add('hidden');
+        }
     });
-
-    // ➕ Cuộn trang sẽ tự đóng menu
     window.addEventListener('scroll', () => {
-      if (!menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
-      }
     });
 
-    // ✅ Giao diện sáng/tối
+    // Giao diện sáng/tối
     function toggleDarkMode() {
-      const body = document.body;
-      body.classList.toggle('dark-mode');
-
-      const isDark = body.classList.contains('dark-mode');
-      document.getElementById('darkModeBtn').textContent = isDark ? '🌞 Chế độ Sáng' : '🌙 Chế độ Tối';
-      localStorage.setItem('darkMode', isDark ? 'yes' : 'no');
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        document.getElementById('darkModeBtn').textContent = isDark ? '🌞 Chế độ Sáng' : '🌙 Chế độ Tối';
+        localStorage.setItem('darkMode', isDark ? 'yes' : 'no');
     }
 
-    // ✅ Tự động bật chế độ cũ khi tải lại
+    // ✅ [HÀM MỚI] Áp dụng trạng thái khóa cho nút Reset khi tải trang
+    function applyResetButtonLock() {
+        const btn = document.getElementById('resetBtn');
+        const lockKey = 'resetBtn_lock';
+        const lockStartTime = parseInt(localStorage.getItem('lockStartTime_' + lockKey));
+
+        if (isNaN(lockStartTime)) return; // Không bị khóa thì thoát
+
+        const lockUntil = lockStartTime + (lockDays * 24 * 60 * 60 * 1000);
+        if (Date.now() < lockUntil) {
+            btn.disabled = true;
+
+            const interval = setInterval(() => {
+                const remaining = lockUntil - Date.now();
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    localStorage.removeItem('lockStartTime_' + lockKey);
+                    localStorage.removeItem('wrongAttempts_' + lockKey);
+                    // Phục hồi lại text gốc của nút sau khi hết khóa
+                    applyLanguage(currentLanguage);
+                } else {
+                    const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((remaining % (1000 * 60)) / 1000);
+                    btn.textContent = `🔓 ${d}日${h}時${m}分${s}秒`;
+                }
+            }, 1000);
+        } else {
+            // Khóa đã hết hạn
+            localStorage.removeItem('lockStartTime_' + lockKey);
+            localStorage.removeItem('wrongAttempts_' + lockKey);
+        }
+    }
+
+    // ✅ [CẬP NHẬT] Tự động kiểm tra trạng thái khóa khi tải trang
     window.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('darkMode') === 'yes') {
-        document.body.classList.add('dark-mode');
-        const btn = document.getElementById('darkModeBtn');
-        if (btn) btn.textContent = '🌞 Chế độ Sáng';
-      }
+        if (localStorage.getItem('darkMode') === 'yes') {
+            document.body.classList.add('dark-mode');
+            const btn = document.getElementById('darkModeBtn');
+            if (btn) btn.textContent = '🌞 Chế độ Sáng';
+        }
+        applyResetButtonLock(); // Gọi hàm kiểm tra khóa nút Reset
     });
 
-    // ✅ Kéo xuống làm mới app
+    // Kéo xuống làm mới app
     let startY = 0;
     let isPulling = false;
-    const threshold = 60; // khoảng cách kéo tối thiểu để làm mới
+    const threshold = 60;
 
     document.addEventListener('touchstart', (e) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-        isPulling = true;
-      }
+        if (window.scrollY === 0) {
+            startY = e.touches[0].clientY;
+            isPulling = true;
+        }
     });
-
     document.addEventListener('touchmove', (e) => {
-      if (!isPulling) return;
-
-      const currentY = e.touches[0].clientY;
-      const diffY = currentY - startY;
-
-      if (diffY > threshold) {
-        // 👉 Kéo đủ sâu → thực hiện cập nhật
-        isPulling = false;
-        showRefreshIndicator(); // tuỳ chọn, có thể bỏ
-        refreshApp();
-      }
+        if (isPulling && (e.touches[0].clientY - startY) > threshold) {
+            isPulling = false;
+            location.reload();
+        }
     });
-
     document.addEventListener('touchend', () => {
-      isPulling = false;
+        isPulling = false;
     });
 
-    // ✅ Hàm thực hiện làm mới lại toàn bộ app
-    function refreshApp() {
-      location.reload();
-    } 
-
-    // Ưu tiên ngôn ngữ người dùng đã chọn
+    // Đa ngôn ngữ
     let currentLanguage = localStorage.getItem('appLang');
+    if (!currentLanguage) {
+        const browserLang = navigator.language || navigator.userLanguage;
+        if (browserLang.startsWith('ja')) currentLanguage = 'ja';
+        else if (browserLang.startsWith('vi')) currentLanguage = 'vi';
+        else currentLanguage = 'en';
+    }
 
-    // ✅ Ẩn nút ngôn ngữ đang chọn
+    function changeLanguage(lang) {
+        localStorage.setItem('appLang', lang);
+        alert('Ngôn ngữ đã chuyển sang: ' + (lang === 'vi' ? 'Tiếng Việt' : lang === 'en' ? 'English' : '日本語'));
+        location.reload();
+    }
+
+    function applyLanguage(lang) {
+        const translations = {
+            vi: {
+                title: "Video 60 Phút by Đăng Giáp",
+                "tiktok-normal": "TikTok",
+                "tiktok-lite": "TikTok Lite",
+                "reset": "Reset Đếm Ngược",
+                "group-coc": "Link Cóc 🐸",
+                "coc-tiktok-lite": "TikTok Lite",
+                "coc-tiktok-regular": "TikTok",
+                "group-tuyet": "Link Tuyết ❄",
+                "group-sumo": "Link Sumo 🤼",
+                "group-khobau": "Mở Kho Báu 💎",
+                "group-cauca": "🎣  Câu Cá  🎣",
+                "group-500like": "🧡 500 Tim 🧡",
+                "group-gt": "Link Giới Thiệu 📢",
+                "info1": "Admin đang xây kênh Tiktok.",
+                "info2": "Mọi người cho Admin 1 lượt follow nhé!",
+                "info3": "Thu mua Point giá cao. Zalo: 0906-008-238",
+                "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
+                "modal-cancel": "Hủy",
+                "modal-ok": "OK",
+                "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.",
+                "modal-ok-confirm": "Đã hiểu",
+                "modal-title": "🔔 Thông báo",
+                "modal-line1": "➤ Thay đổi tên miền:",
+                "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
+                "modal-line3": "👉 video60min.com",
+                "modal-line4": "● Website cũ không thể truy cập.",
+                "modal-line5": "👉 .............",
+                "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
+                "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
+                "modal-line8": "● Hãy chọn video khác để xem.",
+                "modal-line9": "➤ Lưu ý:",
+                "modal-line10": "● Tất cả video có nội dung giống nhau.",
+                "modal-line11": "● Âm thanh Video đã được loại bỏ.",
+                "modal-line12": "Admin Đăng Giáp!",
+                "contact": "Thông Tin Liên Hệ",
+                "contact-title": "📞 Thông Tin Liên Hệ",
+                "contact-line1": "Zalo: 0979-518-322",
+                "contact-line2": "Email: chichchoehoa001@gmail.com",
+                "contact-close": "Đóng",
+                "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt",
+                "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)",
+                "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.",
+                "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.",
+                "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
+                "ios-ok-btn": "Đã hiểu",
+                "copied-success-text": "Đã sao chép liên kết"
+            },
+            en: {
+                title: "60-Minute Videos by Dang Giap",
+                "tiktok-normal": "TikTok",
+                "tiktok-lite": "TikTok Lite",
+                "reset": "Reset Countdown",
+                "group-coc": "Frog Links 🐸",
+                "coc-tiktok-lite": "TikTok Lite",
+                "coc-tiktok-regular": "TikTok",
+                "group-tuyet": "Snow Links ❄",
+                "group-sumo": "Sumo Links 🤼",
+                "group-khobau": "Treasure Chest 💎",
+                "group-cauca": "🎣  Fishing  🎣",
+                "group-500like": "🧡 500 Like 🧡",
+                "group-gt": "Intro Links 📢",
+                "info1": "Admin is building a TikTok channel.",
+                "info2": "We’d appreciate your support with a follow!",
+                "info3": "Buying points. Contact via Zalo: 0906-008-238",
+                "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:",
+                "modal-cancel": "Cancel",
+                "modal-ok": "OK",
+                "modal-error": "Incorrect password. Please try again.",
+                "modal-ok-confirm": "Got it",
+                "modal-title": "🔔 Notification",
+                "modal-line1": "➤ Domain Name Change:",
+                "modal-line2": "● From May 26, 2025, the website address will change to:",
+                "modal-line3": "👉 video60min.com",
+                "modal-line4": "● The old website will still be accessible.",
+                "modal-line5": "👉 ..........",
+                "modal-line6": "➤ Anti-Detection Feature for Phone Fram:",
+                "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.",
+                "modal-line8": "● Please select another video to watch.",
+                "modal-line9": "➤ Note:",
+                "modal-line10": "● All videos have the same content.",
+                "modal-line11": "● Video audio has been removed.",
+                "modal-line12": "Admin Dang Giap!",
+                "contact": "Contact Info",
+                "contact-title": "Contact the administrator.",
+                "contact-line1": "Zalo: 0979-518-322",
+                "contact-line2": "Email: chichchoehoa001@gmail.com",
+                "contact-close": "Close",
+                "ios-modal-title": "How to Add to Home Screen",
+                "ios-line1": "(To optimize your experience, we recommend following the steps below)",
+                "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.",
+                "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.",
+                "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.",
+                "ios-ok-btn": "Got it",
+                "copied-success-text": "Link copied successfully"
+            },
+            ja: {
+                title: "Đăng Giápの60分無音動画",
+                "tiktok-normal": "テックトック",
+                "tiktok-lite": "テックトックライト",
+                "reset": "初期化",
+                "group-coc": "カエルリンク 🐸",
+                "coc-tiktok-lite": "テックトックライト",
+                "coc-tiktok-regular": "テックトック",
+                "group-tuyet": "雪リンク ❄",
+                "group-sumo": "相撲リンク 🤼",
+                "group-khobau": "宝箱解放 💎",
+                "group-cauca": "🎣  釣り  🎣",
+                "group-500like": "🧡 500 Like 🧡",
+                "group-gt": "紹介リンク 📢",
+                "info1": "管理者はTikTokチャンネルを開設中です。",
+                "info2": "ぜひフォローをお願いします！",
+                "info3": "テックトックのポイント買取。zalo：0906-008-238",
+                "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。",
+                "modal-cancel": "キャンセル",
+                "modal-ok": "OK",
+                "modal-error": "パスワードが間違っています。もう一度お試しください。",
+                "modal-ok-confirm": "了解",
+                "modal-title": "🔔 お知らせ",
+                "modal-line1": "➤ ドメイン変更:",
+                "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更されます:",
+                "modal-line3": "👉 video60min.com",
+                "modal-line4": "● 旧ウェブサイト利用不可です。",
+                "modal-line5": "👉 ............... ",
+                "modal-line6": "➤ Phone Fram検出防止機能:",
+                "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。",
+                "modal-line8": "● 別の動画を選択してください。",
+                "modal-line9": "➤ 注意:",
+                "modal-line10": "● すべての動画の内容は同じです。",
+                "modal-line11": "● 動画の音声は削除されています。",
+                "modal-line12": "管理者 Đăng Giáp!",
+                "contact": "問い合わせ",
+                "contact-title": "管理者の問い合わせ：",
+                "contact-line1": "Zalo: 0979-518-322",
+                "contact-line2": "メール: chichchoehoa001@gmail.com",
+                "contact-close": "OK",
+                "ios-modal-title": "ホーム画面に追加する方法",
+                "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）",
+                "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。",
+                "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。",
+                "ios-line4": "3. <strong>「追加」</strong>をタップして完了。",
+                "ios-ok-btn": "了解",
+                "copied-success-text": "リンクをコピーしました"
+            }
+        };
+        const t = translations[lang];
+
+        document.title = t.title.split(' by ')[0];
+        document.getElementById('title').textContent = t.title;
+        document.getElementById('tiktok-normal').textContent = t["tiktok-normal"];
+        document.getElementById('tiktok-lite').textContent = t["tiktok-lite"];
+
+        // Chỉ thay đổi text của nút Reset nếu nó không bị khóa
+        const resetBtn = document.getElementById('resetBtn');
+        if (!resetBtn.disabled) {
+            resetBtn.textContent = '🔄 ' + t["reset"];
+        }
+
+        document.getElementById('group-coc').textContent = t["group-coc"];
+        document.getElementById('group-tuyet').textContent = t["group-tuyet"];
+        document.getElementById('group-sumo').textContent = t["group-sumo"];
+        document.getElementById('group-khobau').textContent = t["group-khobau"];
+        document.getElementById('group-cauca').textContent = t["group-cauca"];
+        document.getElementById('group-500like').textContent = t["group-500like"];
+        document.getElementById('group-gt').textContent = t["group-gt"];
+        document.getElementById('info1').textContent = t["info1"];
+        document.getElementById('info2').textContent = t["info2"];
+        document.getElementById('info3').textContent = t["info3"];
+        if (document.getElementById('coc-tiktok-lite')) document.getElementById('coc-tiktok-lite').textContent = t["coc-tiktok-lite"];
+        if (document.getElementById('coc-tiktok-regular')) document.getElementById('coc-tiktok-regular').textContent = t["coc-tiktok-regular"];
+
+        const modalText = document.querySelector('.modal-overlay #modal-text');
+        if (modalText) modalText.innerHTML = t["modal-text"];
+        const modalCancel = document.querySelector('.modal-overlay #modal-cancel');
+        if (modalCancel) modalCancel.textContent = t["modal-cancel"];
+        const modalOk = document.querySelector('.modal-overlay #modal-ok');
+        if (modalOk) modalOk.textContent = t["modal-ok"];
+        const modalError = document.querySelector('.modal-overlay #modal-error');
+        if (modalError) modalError.textContent = t["modal-error"];
+
+        if (document.getElementById('contactInfoBtn')) document.getElementById('contactInfoBtn').textContent = '📞 ' + t["contact"];
+        document.getElementById('contactModalTitle').textContent = t["contact-title"];
+        document.getElementById('contactLine1').textContent = t["contact-line1"];
+        document.getElementById('contactLine2').textContent = t["contact-line2"];
+        document.getElementById('closeContactBtn').textContent = t["contact-close"];
+        if (document.getElementById('ios-modal-title')) {
+            document.getElementById('ios-modal-title').textContent = t["ios-modal-title"];
+            document.getElementById('ios-line1').innerHTML = t["ios-line1"];
+            document.getElementById('ios-line2').innerHTML = t["ios-line2"];
+            document.getElementById('ios-line3').innerHTML = t["ios-line3"];
+            document.getElementById('ios-ok-btn').textContent = t["ios-ok-btn"];
+        }
+        document.getElementById('copied-success-text').textContent = t["copied-success-text"];
+        document.getElementById('modal-title').textContent = t["modal-title"];
+        document.getElementById('featureModal-ok').textContent = t["modal-ok-confirm"];
+        for (let i = 1; i <= 13; i++) {
+            const el = document.getElementById('modal-line' + i);
+            if (el && t['modal-line' + i]) el.innerHTML = t['modal-line' + i];
+        }
+    }
+
     document.getElementById('lang-vi').style.display = (currentLanguage === 'vi') ? 'none' : 'block';
     document.getElementById('lang-en').style.display = (currentLanguage === 'en') ? 'none' : 'block';
     document.getElementById('lang-ja').style.display = (currentLanguage === 'ja') ? 'none' : 'block';
-
-    if (!currentLanguage) {
-      const browserLang = navigator.language || navigator.userLanguage;
-
-      if (browserLang.startsWith('ja')) {
-        currentLanguage = 'ja';
-      } else if (browserLang.startsWith('vi')) {
-        currentLanguage = 'vi';
-      } else {
-        currentLanguage = 'en';
-      }
-    }
-
     applyLanguage(currentLanguage);
 
-    // Hàm đổi ngôn ngữ
-    function changeLanguage(lang) {
-      localStorage.setItem('appLang', lang);
-      applyLanguage(lang);
-      alert('Ngôn ngữ đã chuyển sang: ' + (lang === 'vi' ? 'Tiếng Việt' : lang === 'en' ? 'English' : '日本語'));
-      location.reload(); // Reload để áp dụng ngôn ngữ mới
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("✅ Service Worker registered."))
+            .catch((error) => console.log("❌ Service Worker registration failed:", error));
     }
 
-    // Hàm áp dụng ngôn ngữ (thay thế văn bản tại chỗ)
-    function applyLanguage(lang) {
-     const translations = {
-  vi: {
-    title: "Video 60 Phút by Đăng Giáp",
-    "tiktok-normal": "TikTok",
-    "tiktok-lite": "TikTok Lite",
-    "reset": "Reset Đếm Ngược",
-    "group-coc": "Link Cóc 🐸",
-    "coc-tiktok-lite": "TikTok Lite",
-    "coc-tiktok-regular": "TikTok",
-    "group-tuyet": "Link Tuyết ❄",
-    "group-sumo": "Link Sumo 🤼",
-    "group-khobau": "Mở Kho Báu 💎",
-    "group-gt": "Link Giới Thiệu 📢",
-    "info1": "Admin đang xây kênh Tiktok.",
-    "info2": "Mọi người cho Admin 1 lượt follow nhé!",
-    "info3": "Thu mua Point giá cao. Zalo: 0906-008-238",
-    "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
-    "modal-cancel": "Hủy",
-    "modal-ok": "OK",
-    "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.",
-    "modal-ok-confirm": "Đã hiểu",
-    "modal-title": "🔔 Thông báo",
-    "modal-line1": "➤ Thay đổi tên miền:",
-    "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
-    "modal-line3": "👉 video60min.com",
-    "modal-line4": "● Website cũ không thể truy cập.",
-    "modal-line5": "👉 .............",
-    "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
-    "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
-    "modal-line8": "● Hãy chọn video khác để xem.",
-    "modal-line9": "➤ Lưu ý:",
-    "modal-line10": "● Tất cả video có nội dung giống nhau.",
-    "modal-line11": "● Âm thanh Video đã được loại bỏ.",
-    "modal-line12": "Admin Đăng Giáp!",
-    "contact": "Thông Tin Liên Hệ",
-    "contact-title": "📞 Thông Tin Liên Hệ",
-    "contact-line1": "Zalo: 0979-518-322",
-    "contact-line2": "Email: chichchoehoa001@gmail.com",
-    "contact-close": "Đóng",
-    "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt",
-    "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)",
-    "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.",
-    "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.",
-    "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
-    "ios-ok-btn": "Đã hiểu",
-    "copied-success-text": "Đã sao chép liên kết"
-  },
-  en: {
-    title: "60-Minute Videos by Dang Giap",
-    "tiktok-normal": "TikTok",
-    "tiktok-lite": "TikTok Lite",
-    "reset": "Reset Countdown",
-    "group-coc": "Frog Links 🐸",
-    "coc-tiktok-lite": "TikTok Lite",
-    "coc-tiktok-regular": "TikTok",
-    "group-tuyet": "Snow Links ❄",
-    "group-sumo": "Sumo Links 🤼",
-    "group-khobau": "Treasure Chest 💎",
-    "group-gt": "Intro Links 📢",
-    "info1": "Admin is building a TikTok channel.",
-    "info2": "We’d appreciate your support with a follow!",
-    "info3": "Buying points. Contact via Zalo: 0906-008-238",
-    "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:",
-    "modal-cancel": "Cancel",
-    "modal-ok": "OK",
-    "modal-error": "Incorrect password. Please try again.",
-    "modal-ok-confirm": "Got it",
-    "modal-title": "🔔 Notification",
-    "modal-line1": "➤ Domain Name Change:",
-    "modal-line2": "● From May 26, 2025, the website address will change to:",
-    "modal-line3": "👉 video60min.com",
-    "modal-line4": "● The old website will still be accessible.",
-    "modal-line5": "👉 ..........",
-    "modal-line6": "➤ Anti-Detection Feature for Phone Fram:",
-    "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.",
-    "modal-line8": "● Please select another video to watch.",
-    "modal-line9": "➤ Note:",
-    "modal-line10": "● All videos have the same content.",
-    "modal-line11": "● Video audio has been removed.",
-    "modal-line12": "Admin Dang Giap!",
-    "contact": "Contact Info",
-    "contact-title": "Contact the administrator.",
-    "contact-line1": "Zalo: 0979-518-322",
-    "contact-line2": "Email: chichchoehoa001@gmail.com",
-    "contact-close": "Close",
-    "ios-modal-title": "How to Add to Home Screen",
-    "ios-line1": "(To optimize your experience, we recommend following the steps below)",
-    "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.",
-    "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.",
-    "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.",
-    "ios-ok-btn": "Got it",
-    "copied-success-text": "Link copied successfully"
-  },
-  ja: {
-    title: "Đăng Giápの60分無音動画",
-    "tiktok-normal": "テックトック",
-    "tiktok-lite": "テックトックライト",
-    "reset": "初期化",
-    "group-coc": "カエルリンク 🐸",
-    "coc-tiktok-lite": "テックトックライト",
-    "coc-tiktok-regular": "テックトック",
-    "group-tuyet": "雪リンク ❄",
-    "group-sumo": "相撲リンク 🤼",
-    "group-khobau": "宝箱解放💎",
-    "group-gt": "紹介リンク 📢",
-    "info1": "管理者はTikTokチャンネルを開設中です。",
-    "info2": "ぜひフォローをお願いします！",
-    "info3": "テックトックのポイント買取。zalo：0906-008-238",
-    "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。",
-    "modal-cancel": "キャンセル",
-    "modal-ok": "OK",
-    "modal-error": "パスワードが間違っています。もう一度お試しください。",
-    "modal-ok-confirm": "了解",
-    "modal-title": "🔔 お知らせ",
-    "modal-line1": "➤ ドメイン変更:",
-    "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更されます:",
-    "modal-line3": "👉 video60min.com",
-    "modal-line4": "● 旧ウェブサイト利用不可です。",
-    "modal-line5": "👉 ............... ",
-    "modal-line6": "➤ Phone Fram検出防止機能:",
-    "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。",
-    "modal-line8": "● 別の動画を選択してください。",
-    "modal-line9": "➤ 注意:",
-    "modal-line10": "● すべての動画の内容は同じです。",
-    "modal-line11": "● 動画の音声は削除されています。",
-    "modal-line12": "管理者 Đăng Giáp!",
-    "contact": "問い合わせ",
-    "contact-title": "管理者の問い合わせ：",
-    "contact-line1": "Zalo: 0979-518-322",
-    "contact-line2": "メール: chichchoehoa001@gmail.com",
-    "contact-close": "OK",
-    "ios-modal-title": "ホーム画面に追加する方法",
-    "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）",
-    "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。",
-    "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。",
-    "ios-line4": "3. <strong>「追加」</strong>をタップして完了。",
-    "ios-ok-btn": "了解",
-    "copied-success-text": "リンクをコピーしました"
-    }
-  };
-  const t = translations[lang];
-
-  document.getElementById('title').textContent = t.title;
-  document.getElementById('tiktok-normal').textContent = t["tiktok-normal"];
-  document.getElementById('tiktok-lite').textContent = t["tiktok-lite"];
-  document.getElementById('resetBtn').textContent = '🔄 ' + t["reset"];
-
-  document.getElementById('group-coc').textContent = t["group-coc"];
-  document.getElementById('group-tuyet').textContent = t["group-tuyet"];
-  document.getElementById('group-sumo').textContent = t["group-sumo"];
-　document.getElementById('group-khobau').textContent = t["group-khobau"];
-  document.getElementById('group-gt').textContent = t["group-gt"];
-
-  document.getElementById('info1').textContent = t["info1"];
-  document.getElementById('info2').textContent = t["info2"];
-  document.getElementById('info3').textContent = t["info3"];
-
-  if (document.getElementById('coc-tiktok-lite')) {
-    document.getElementById('coc-tiktok-lite').textContent = t["coc-tiktok-lite"];
-  }
-  if (document.getElementById('coc-tiktok-regular')) {
-    document.getElementById('coc-tiktok-regular').textContent = t["coc-tiktok-regular"];
-  }
-
-  if (document.getElementById('modal-text')) {
-    document.getElementById('modal-text').innerHTML = t["modal-text"];
-  }
-  if (document.getElementById('modal-cancel')) {
-    document.getElementById('modal-cancel').textContent = t["modal-cancel"];
-  }
-  if (document.getElementById('modal-ok')) {
-    document.getElementById('modal-ok').textContent = t["modal-ok"];
-  }
-  if (document.getElementById('modal-error')) {
-    document.getElementById('modal-error').textContent = t["modal-error"];
-  }
-
-  if (document.getElementById('modal-text-reset')) {
-    document.getElementById('modal-text-reset').innerHTML = t["modal-text"];
-  }
-  if (document.getElementById('modal-cancel-reset')) {
-    document.getElementById('modal-cancel-reset').textContent = t["modal-cancel"];
-  }
-  if (document.getElementById('modal-ok-reset')) {
-    document.getElementById('modal-ok-reset').textContent = t["modal-ok"];
-  }
-  if (document.getElementById('modal-error-reset')) {
-    document.getElementById('modal-error-reset').textContent = t["modal-error"];
-  }
-
-  if (document.getElementById('contactInfoBtn')) {
-    document.getElementById('contactInfoBtn').textContent = '📞 ' + t["contact"];
-  }
-  document.getElementById('contactModalTitle').textContent = t["contact-title"];
-  document.getElementById('contactLine1').textContent = t["contact-line1"];
-  document.getElementById('contactLine2').textContent = t["contact-line2"];
-  document.getElementById('closeContactBtn').textContent = t["contact-close"];
-
-  if (document.getElementById('ios-modal-title')) {
-  document.getElementById('ios-modal-title').textContent = t["ios-modal-title"];
-  document.getElementById('ios-line1').innerHTML = t["ios-line1"];
-  document.getElementById('ios-line2').innerHTML = t["ios-line2"];
-  document.getElementById('ios-line3').innerHTML = t["ios-line3"];
-  document.getElementById('ios-ok-btn').textContent = t["ios-ok-btn"];
-  }
-
-  document.getElementById('info1').textContent = t["info1"];
-  document.getElementById('copied-success-text').textContent = t["copied-success-text"];
-
-  document.getElementById('modal-title').textContent = t["modal-title"];
-  document.getElementById('featureModal-ok').textContent = t["modal-ok-confirm"];
-  for (let i = 1; i <= 13; i++) {
-    const el = document.getElementById('modal-line' + i);
-    if (el) el.textContent = t['modal-line' + i];
-    }
-  }
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(function () {
-        console.log("✅ Service Worker registered.");
-      })
-      .catch(function (error) {
-        console.log("❌ Service Worker registration failed:", error);
-      });
-  }
-
-  </script>
+</script>
 </body>
 </html>
