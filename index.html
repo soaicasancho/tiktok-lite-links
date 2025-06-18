@@ -472,6 +472,7 @@
         <div id="info1"></div>
         <div id="info2"></div>
         <div id="info3"></div>
+        <div id="info4"></div>
     </div>
 </div>
 
@@ -660,7 +661,7 @@
     const enableCauCa = true;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại 🧡 500 Like 🧡
-    const enable500Like = true;
+    const enable500Like = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Giới Thiệu 📢
     const enableGioiThieu = true;
@@ -1421,10 +1422,9 @@
     // Đa ngôn ngữ
     const translations = {
         vi: {
-            title: "Video 60 Phút by Đăng Giáp",
+            title: "Video 60 Phút by Quang Đạo",
             "tiktok-normal": "TikTok",
             "tiktok-lite": "TikTok Lite",
-            "reset": "Reset Đếm Ngược",
             "group-coc": "Link Cóc 🐸",
             "coc-tiktok-lite": "TikTok Lite",
             "coc-tiktok-regular": "TikTok",
@@ -1434,9 +1434,10 @@
             "group-cauca": "🎣  Câu Cá  🎣",
             "group-500like": "🧡 500 Tim 🧡",
             "group-gt": "Link Giới Thiệu 📢",
-            "info1": "Mọi người cho Admin 1 lượt follow Video đang xem nhé!",
-            "info2": "",
-            "info3": "",
+            "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!",
+            "info2": "Thu mua lượt chéo các sự kiện của Tiktok.",
+            "info3": "Thanh toán bằng VNĐ/Yên sau khi hoàn tất.",
+            "info4": "Thông tin chi tiết liên hệ Zalo: 0979-518-322",
             "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
             "modal-cancel": "Hủy",
             "modal-ok": "OK",
@@ -1467,16 +1468,16 @@
             "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
             "ios-ok-btn": "Đã hiểu",
             "copied-success-text": "Đã sao chép liên kết",
+            "reset": "Reset Bộ Đếm",
             "dark-mode-on": "🌙 Chế độ Tối",
             "dark-mode-off": "🌞 Chế độ Sáng",
             "reset-success": "Đã reset thành công thời gian đến ngược Video.",
             "lang-changed": "Ngôn ngữ đã chuyển sang: Tiếng Việt"
         },
         en: {
-            title: "60-Minute Videos by Dang Giap",
+            title: "60 Minute Videos by Quang Dao",
             "tiktok-normal": "TikTok",
             "tiktok-lite": "TikTok Lite",
-            "reset": "Reset Countdown",
             "group-coc": "Frog Links 🐸",
             "coc-tiktok-lite": "TikTok Lite",
             "coc-tiktok-regular": "TikTok",
@@ -1489,6 +1490,7 @@
             "info1": "We’d appreciate your support with a follow!",
             "info2": "",
             "info3": "",
+            "info4": "",
             "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:",
             "modal-cancel": "Cancel",
             "modal-ok": "OK",
@@ -1519,16 +1521,16 @@
             "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.",
             "ios-ok-btn": "Got it",
             "copied-success-text": "Link copied successfully",
+            "reset": "Reset Countdown",
             "dark-mode-on": "🌙 Dark Mode",
             "dark-mode-off": "🌞 Light Mode",
             "reset-success": "Video countdown has been reset successfully.",
             "lang-changed": "Language has been switched to: English"
         },
         ja: {
-            title: "Đăng Giápの60分無音動画",
+            title: "光道の60分無音動画",
             "tiktok-normal": "テックトック",
             "tiktok-lite": "テックトックライト",
-            "reset": "初期化",
             "group-coc": "カエルリンク 🐸",
             "coc-tiktok-lite": "テックトックライト",
             "coc-tiktok-regular": "テックトック",
@@ -1541,6 +1543,7 @@
             "info1": "ぜひテックトックフォローをお願いします！",
             "info2": "",
             "info3": "",
+            "info4": "",
             "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。",
             "modal-cancel": "キャンセル",
             "modal-ok": "OK",
@@ -1571,6 +1574,7 @@
             "ios-line4": "3. <strong>「追加」</strong>をタップして完了。",
             "ios-ok-btn": "了解",
             "copied-success-text": "リンクをコピーしました",
+            "reset": "初期化",
             "dark-mode-on": "🌙 ダークモード",
             "dark-mode-off": "🌞 ライトモード",
             "reset-success": "動画のカウントダウンが正常にリセットされました。",
@@ -1615,6 +1619,7 @@
         document.getElementById('info1').textContent = t["info1"];
         document.getElementById('info2').textContent = t["info2"];
         document.getElementById('info3').textContent = t["info3"];
+        document.getElementById('info4').textContent = t["info4"];
         if (document.getElementById('coc-tiktok-lite')) document.getElementById('coc-tiktok-lite').textContent = t["coc-tiktok-lite"];
         if (document.getElementById('coc-tiktok-regular')) document.getElementById('coc-tiktok-regular').textContent = t["coc-tiktok-regular"];
 
