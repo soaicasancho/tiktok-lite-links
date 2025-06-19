@@ -465,6 +465,20 @@
     </style>
 </head>
 <body>
+
+<div id="languageSelectionModal" class="modal-overlay" style="display: none; z-index: 3000;">
+    <div class="modal">
+        <h3 style="margin-top: 0;">Vui lòng chọn ngôn ngữ</h3>
+        <p>Please select a language</p>
+        <p>言語を選択してください</p>
+        <div class="buttons" style="flex-direction: column; gap: 10px; margin-top: 15px;">
+            <button onclick="selectInitialLanguage('vi')" style="width: 100%; background-color: #1DA1F2; color: white;">Tiếng Việt</button>
+            <button onclick="selectInitialLanguage('en')" style="width: 100%; background-color: #1DA1F2; color: white;">English</button>
+            <button onclick="selectInitialLanguage('ja')" style="width: 100%; background-color: #1DA1F2; color: white;">日本語</button>
+        </div>
+    </div>
+</div>
+
 <div class="fixed-header" id="title"></div>
 
 <div class="contact-info">
@@ -1244,8 +1258,8 @@
         }
     }
 
-    // ✅ Modal thông báo tính năng mới
-    (function () {
+    // ✅ [CẬP NHẬT] Modal thông báo tính năng mới (được chuyển thành hàm có tên)
+    function showFeatureModalIfNeeded() {
         const modalKey = 'featureModalShownCount';
         let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
 
@@ -1260,10 +1274,14 @@
                 modal.style.display = 'none';
                 document.body.classList.remove('no-scroll');
                 localStorage.setItem(modalKey, (count + 1).toString());
+                // Sau khi đóng modal này, gọi modal hướng dẫn iOS
                 triggerIOSModalIfNeeded();
             });
+        } else {
+            // Nếu modal tính năng không hiện, vẫn phải kiểm tra để hiện modal iOS
+            triggerIOSModalIfNeeded();
         }
-    })();
+    }
 
     // ✅ Reset vô hiệu hóa Pass mở link
     (function () {
@@ -1306,7 +1324,9 @@
             tapCount++;
             if (tapCount >= 5) {
                 localStorage.removeItem('featureModalShownCount');
-                alert('✅ Đã reset số lần hiển thị thông báo lúc truy cập trang!');
+                localStorage.removeItem('languageSelected');
+                localStorage.removeItem('iosInstallModalShownCount');
+                alert('✅ Đã reset tùy chọn ngôn ngữ và thông báo lúc truy cập trang!');
                 tapCount = 0;
                 clearTimeout(tapTimeout);
                 return;
@@ -1387,17 +1407,7 @@
             localStorage.removeItem('wrongAttempts_' + lockKey);
         }
     }
-
-    // ✅ [CẬP NHẬT] Tự động kiểm tra trạng thái khóa khi tải trang
-    window.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem('darkMode') === 'yes') {
-            document.body.classList.add('dark-mode');
-        }
-        applyResetButtonLock(); // Gọi hàm kiểm tra khóa nút Reset
-        applyLanguage(currentLanguage); // Áp dụng ngôn ngữ khi tải trang
-    });
-
-
+    
     // Kéo xuống làm mới app
     let startY = 0;
     let isPulling = false;
@@ -1468,11 +1478,11 @@
             "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
             "ios-ok-btn": "Đã hiểu",
             "copied-success-text": "Đã sao chép liên kết",
-            "reset": "Reset Bộ Đếm",
+            "reset": "Khôi phục mặc định",
             "dark-mode-on": "🌙 Chế độ Tối",
             "dark-mode-off": "🌞 Chế độ Sáng",
-            "reset-success": "Đã reset thành công thời gian đến ngược Video.",
-            "lang-changed": "Ngôn ngữ đã chuyển sang: Tiếng Việt"
+            "reset-success": "Cài đặt mặc định đã được thiết lập",
+            "lang-changed": "Ngôn ngữ Tiếng Việt đã được thiết lập"
         },
         en: {
             title: "60 Minute Videos by Quang Dao",
@@ -1524,8 +1534,8 @@
             "reset": "Reset Countdown",
             "dark-mode-on": "🌙 Dark Mode",
             "dark-mode-off": "🌞 Light Mode",
-            "reset-success": "Video countdown has been reset successfully.",
-            "lang-changed": "Language has been switched to: English"
+            "reset-success": "Default settings have been set",
+            "lang-changed": "English language has been set"
         },
         ja: {
             title: "光道の60分無音動画",
@@ -1577,8 +1587,8 @@
             "reset": "初期化",
             "dark-mode-on": "🌙 ダークモード",
             "dark-mode-off": "🌞 ライトモード",
-            "reset-success": "動画のカウントダウンが正常にリセットされました。",
-            "lang-changed": "言語が日本語に切り替わりました。"
+            "reset-success": "最初化済み",
+            "lang-changed": "日本語に切り替わりました。"
         }
     };
     
@@ -1595,6 +1605,14 @@
         alert(translations[lang]['lang-changed']);
         location.reload();
     }
+    
+    // [MỚI] Hàm chọn ngôn ngữ lần đầu, không có alert và chỉ reload
+    function selectInitialLanguage(lang) {
+        localStorage.setItem('appLang', lang);
+        localStorage.setItem('languageSelected', 'true'); // Đánh dấu đã chọn ngôn ngữ
+        location.reload();
+    }
+
 
     function applyLanguage(lang) {
         const t = translations[lang];
@@ -1655,12 +1673,39 @@
         const isDark = document.body.classList.contains('dark-mode');
         document.getElementById('darkModeBtn').textContent = isDark ? t['dark-mode-off'] : t['dark-mode-on'];
     }
-
-    document.getElementById('lang-vi').style.display = (currentLanguage === 'vi') ? 'none' : 'block';
-    document.getElementById('lang-en').style.display = (currentLanguage === 'en') ? 'none' : 'block';
-    document.getElementById('lang-ja').style.display = (currentLanguage === 'ja') ? 'none' : 'block';
     
-    // Đã chuyển lệnh gọi applyLanguage vào sự kiện DOMContentLoaded
+    // [CẬP NHẬT] Luồng xử lý chính khi tải trang
+    window.addEventListener('DOMContentLoaded', () => {
+        // Kiểm tra xem người dùng đã từng chọn ngôn ngữ chưa
+        if (!localStorage.getItem('languageSelected')) {
+            // Nếu CHƯA, đây là lần đầu truy cập -> hiển thị modal chọn ngôn ngữ
+            const langModal = document.getElementById('languageSelectionModal');
+            if (langModal) {
+                langModal.style.display = 'flex';
+                document.body.classList.add('no-scroll');
+            }
+        } else {
+            // Nếu RỒI, tiến hành các bước khởi động bình thường
+            // 1. Áp dụng chế độ sáng/tối
+            if (localStorage.getItem('darkMode') === 'yes') {
+                document.body.classList.add('dark-mode');
+            }
+            // 2. Kiểm tra khóa nút Reset
+            applyResetButtonLock();
+            
+            // 3. Áp dụng ngôn ngữ đã lưu
+            applyLanguage(currentLanguage); 
+            
+            // 4. Hiển thị các nút trong menu nổi tương ứng
+            document.getElementById('lang-vi').style.display = (currentLanguage === 'vi') ? 'none' : 'block';
+            document.getElementById('lang-en').style.display = (currentLanguage === 'en') ? 'none' : 'block';
+            document.getElementById('lang-ja').style.display = (currentLanguage === 'ja') ? 'none' : 'block';
+            
+            // 5. Bắt đầu chuỗi hiển thị modal (tính năng mới -> hướng dẫn iOS)
+            showFeatureModalIfNeeded();
+        }
+    });
+
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
