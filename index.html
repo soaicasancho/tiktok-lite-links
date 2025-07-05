@@ -544,6 +544,13 @@
     </div>
 
     <div class="section">
+        <div class="section-title" onclick="toggleSection('linkQRcode')">
+            <span class="toggle-icon" id="icon-linkQRcode">+</span> <span id="group-QR">QR Code</span>
+        </div>
+        <div id="linkQRcode" class="link-container collapsed"></div>
+    </div>
+
+    <div class="section">
         <div class="section-title" onclick="toggleSection('linkGioiThieu')">
             <span class="toggle-icon" id="icon-linkGioiThieu">+</span> <span id="group-gt"></span>
         </div>
@@ -677,6 +684,9 @@
     // ✅ Đổi thành true/false để hiện/ẩn lại 🧡 500 Like 🧡
     const enable500Like = false;
 
+    // ✅ Đổi thành true/false để hiện/ẩn lại QR Code
+    const enableQRcode = true;
+
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Giới Thiệu 📢
     const enableGioiThieu = true;
 
@@ -724,13 +734,14 @@
 
     const link500Like = [
         {url: "", label: "MRT 005"}
-        
-        
+    ];
+
+    const linkQRcode = [
+        {url: "https://lite.tiktok.com/t/ZSBBvHmmd/", label: "S9+"}
     ];
 
     const linkGioiThieu = [
-        {url: "https://vt.tiktok.com/ZSh4FAKfk/", label: "Tiktok MRT 005"},
-        {url: "https://lite.tiktok.com/t/ZSkEsveJy/", label: "Tiktok Lite SE 020"}
+        {url: "https://vt.tiktok.com/ZSh4FAKfk/", label: "MRT 005"}
     ];
 
     const regularLinks = [
@@ -1134,7 +1145,7 @@
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
-        const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkGioiThieu'];
+        const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkGioiThieu'];
 
         allSections.forEach(sectionId => {
             const container = document.getElementById(sectionId);
@@ -1193,6 +1204,13 @@
         document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = 'none';
+    }
+
+    if (enableQRcode) {
+        renderLinks('linkQRcode', linkQRcode, 'QR', 'QRcode', true);
+        document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = '';
+    } else {
+        document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = 'none';
     }
 
     if (enableGioiThieu) {
@@ -1448,6 +1466,7 @@
             "group-khobau": "Mở Kho Báu 💎",
             "group-cauca": "🎣  Câu Cá  🎣",
             "group-500like": "🧡 500 Like 🧡",
+            "group-QR": "Quét Mã QR",
             "group-gt": "Link Giới Thiệu 📢",
             "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!",
             "info2": "Thu mua lượt chéo các sự kiện của Tiktok.",
@@ -1501,6 +1520,7 @@
             "group-khobau": "Treasure Chest 💎",
             "group-cauca": "🎣  Fishing  🎣",
             "group-500like": "🧡 500 Like 🧡",
+            "group-QR": "Scan QR Code",
             "group-gt": "Intro Links 📢",
             "info1": "We’d appreciate your support with a follow!",
             "info2": "",
@@ -1554,6 +1574,7 @@
             "group-khobau": "宝箱解放 💎",
             "group-cauca": "🎣  釣り  🎣",
             "group-500like": "🧡 500 Like 🧡",
+            "group-QR": "QRコードを読み取り",
             "group-gt": "紹介リンク 📢",
             "info1": "ぜひテックトックフォローをお願いします！",
             "info2": "",
@@ -1638,6 +1659,7 @@
         document.getElementById('group-khobau').textContent = t["group-khobau"];
         document.getElementById('group-cauca').textContent = t["group-cauca"];
         document.getElementById('group-500like').textContent = t["group-500like"];
+        document.getElementById('group-QR').textContent = t["group-QR"];
         document.getElementById('group-gt').textContent = t["group-gt"];
         document.getElementById('info1').textContent = t["info1"];
         document.getElementById('info2').textContent = t["info2"];
