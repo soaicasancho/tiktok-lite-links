@@ -670,7 +670,7 @@
     const enableCoc = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Tuyết ❄
-    const enableTuyet = true;
+    const enableTuyet = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Sumo 🤼
     const enableSumo = false;
@@ -682,7 +682,7 @@
     const enableCauCa = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại 🧡 500 Like 🧡
-    const enable500Like = false;
+    const enable500Like = true;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại QR Code
     const enableQRcode = true;
@@ -711,7 +711,8 @@
     const linkTuyet = [
         {url: "https://lite.tiktok.com/t/ZShxvepxY/", label: "🔒 MRT 005", hidden: true},
         {url: "https://lite.tiktok.com/t/ZSkUe9btj/", label: "Bấm ở đây GL6", highlight: true},
-        {url: "https://lite.tiktok.com/t/ZSkBQQwbU/", label: "🔒 GL7", protected: true},
+        {url: "https://lite.tiktok.com/t/ZSkBQQwbU/", label: "🔒 GL7", protected: true, hidden: true},
+        {url: "", label: "🔒", protected: true},
         {url: "https://lite.tiktok.com/t/ZSBHveVWd/", label: "🔒 GL8", protected: true}
     ];
 
@@ -731,7 +732,7 @@
     ];
 
     const link500Like = [
-        {url: "", label: "SE 002"}
+        {url: "https://lite.tiktok.com/t/ZSkBQQwbU/", label: "GL7", highlight: true}
     ];
 
     const linkQRcode = [
@@ -1082,7 +1083,7 @@
         btnCancel.addEventListener('click', closeModal);
 
         btnOk.addEventListener('click', () => {
-            if (input.value !== '8322') {
+            if (input.value !== '8323') {
                 // Áp dụng cho cả link được bảo vệ và nút reset
                 if (key) {
                     const failKey = 'wrongAttempts_' + key;
@@ -1463,7 +1464,7 @@
             "group-sumo": "Link Sumo 🤼",
             "group-khobau": "Mở Kho Báu 💎",
             "group-cauca": "🎣  Câu Cá  🎣",
-            "group-500like": "🧡 500 Like 🧡",
+            "group-500like": "🍯 Ong 🍯",
             "group-QR": "Quét Mã QR",
             "group-gt": "Link Giới Thiệu 📢",
             "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!",
@@ -1517,7 +1518,7 @@
             "group-sumo": "Sumo Links 🤼",
             "group-khobau": "Treasure Chest 💎",
             "group-cauca": "🎣  Fishing  🎣",
-            "group-500like": "🧡 500 Like 🧡",
+            "group-500like": "🍯 Honey 🍯",
             "group-QR": "Scan QR Code",
             "group-gt": "Intro Links 📢",
             "info1": "We’d appreciate your support with a follow!",
@@ -1571,7 +1572,7 @@
             "group-sumo": "相撲リンク 🤼",
             "group-khobau": "宝箱解放 💎",
             "group-cauca": "🎣  釣り  🎣",
-            "group-500like": "🧡 500 Like 🧡",
+            "group-500like": "🍯 蜂蜜 🍯",
             "group-QR": "QRコードを読み取り",
             "group-gt": "紹介リンク 📢",
             "info1": "ぜひテックトックフォローをお願いします！",
