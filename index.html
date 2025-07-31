@@ -516,6 +516,13 @@
     </div>
 
     <div class="section">
+        <div class="section-title" onclick="toggleSection('linkTao')">
+            <span class="toggle-icon" id="icon-linkTao">+</span> <span id="group-tao"></span>
+        </div>
+        <div id="linkTao" class="link-container collapsed"></div>
+    </div>
+
+    <div class="section">
         <div class="section-title" onclick="toggleSection('linkSumo')">
             <span class="toggle-icon" id="icon-linkSumo">+</span> <span id="group-sumo"></span>
         </div>
@@ -664,13 +671,16 @@
     const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai
 
     // ✅ Chỉnh số ngày bị khóa sau khi bấm xem video
-    const unlockDays = 15; // 👈 Số ngày đếm ngược khi xem video
+    const unlockDays = 1; // 👈 Số ngày đếm ngược khi xem video
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Cóc 🐸
     const enableCoc = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Tuyết ❄
     const enableTuyet = false;
+
+    // ✅ Đổi thành true/false để hiện/ẩn lại Link Táo 🍎
+    const enableTao = false;
 
     // ✅ Đổi thành true/false để hiện/ẩn lại Link Sumo 🤼
     const enableSumo = false;
@@ -715,6 +725,10 @@
         {url: "https://lite.tiktok.com/t/ZSBHveVWd/", label: "🔒 GL8", protected: true, hidden: true}
     ];
 
+    const linkTao = [
+        {url: "https://vt.tiktok.com/ZSSeJRhrB/", label: "🍎 Táo 🍎", highlight: true}
+    ];
+
     const linkSumo = [
         {url: "https://lite.tiktok.com/t/ZShKhA1Lb/", label: "GL 8", protected: true}
     ];
@@ -731,7 +745,7 @@
     ];
 
     const link500Like = [
-        {url: "https://vt.tiktok.com/ZSSeJRhrB/", label: "🐟 Cá Cõng Mèo 🐈", highlight: true}
+        {url: "", label: "🔓🔓", highlight: true}
     ];
 
     const linkQRcode = [
@@ -1143,7 +1157,7 @@
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
-        const allSections = ['linkCoc', 'linkTuyet', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkGioiThieu'];
+        const allSections = ['linkCoc', 'linkTuyet', 'linkTao', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkGioiThieu'];
 
         allSections.forEach(sectionId => {
             const container = document.getElementById(sectionId);
@@ -1174,6 +1188,13 @@
         document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = 'none';
+    }
+
+    if (enableTao) {
+        renderLinks('linkTao', linkTao, 'tao', 'Táo', true);
+        document.querySelector('[onclick="toggleSection(\'linkTao\')"]').parentElement.style.display = '';
+    } else {
+        document.querySelector('[onclick="toggleSection(\'linkTao\')"]').parentElement.style.display = 'none';
     }
 
     if (enableSumo) {
@@ -1460,10 +1481,11 @@
             "coc-tiktok-lite": "TikTok Lite",
             "coc-tiktok-regular": "TikTok",
             "group-tuyet": "❄ Tuyết ❄",
+            "group-tao": "🍎 Táo 🍎",
             "group-sumo": "🤼 Sumo 🤼",
             "group-khobau": "Mở Kho Báu 💎",
             "group-cauca": "🎣  Câu Cá  🎣",
-            "group-500like": "🐟 Cá Cõng Mèo 🐈",
+            "group-500like": "🧡 500 Like 🧡",
             "group-QR": "Quét Mã QR",
             "group-gt": "Giới Thiệu 📢",
             "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!",
@@ -1514,10 +1536,11 @@
             "coc-tiktok-lite": "TikTok Lite",
             "coc-tiktok-regular": "TikTok",
             "group-tuyet": "❄ Snow ❄",
+            "group-tao": "🍎 Apple 🍎",
             "group-sumo": "🤼 Sumo 🤼",
             "group-khobau": "Treasure Chest 💎",
             "group-cauca": "🎣  Fishing  🎣",
-            "group-500like": "🐟 Cá Cõng Mèo 🐈",
+            "group-500like": "🧡 500 Like 🧡",
             "group-QR": "Scan QR Code",
             "group-gt": "Intro Links 📢",
             "info1": "We’d appreciate your support with a follow!",
@@ -1568,10 +1591,11 @@
             "coc-tiktok-lite": "テックトックライト",
             "coc-tiktok-regular": "テックトック",
             "group-tuyet": "❄ 雪 ❄",
+            "group-tao": "🍎 りんご 🍎",
             "group-sumo": "🤼 相撲 🤼",
             "group-khobau": "宝箱解放 💎",
             "group-cauca": "🎣  釣り  🎣",
-            "group-500like": "🐟 Cá Cõng Mèo 🐈",
+            "group-500like": "🧡 500 Like 🧡",
             "group-QR": "QRコードを読み取り",
             "group-gt": "紹介リンク 📢",
             "info1": "ぜひテックトックフォローをお願いします！",
@@ -1653,6 +1677,7 @@
 
         document.getElementById('group-coc').textContent = t["group-coc"];
         document.getElementById('group-tuyet').textContent = t["group-tuyet"];
+        document.getElementById('group-tao').textContent = t["group-tao"];
         document.getElementById('group-sumo').textContent = t["group-sumo"];
         document.getElementById('group-khobau').textContent = t["group-khobau"];
         document.getElementById('group-cauca').textContent = t["group-cauca"];
