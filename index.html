@@ -673,32 +673,80 @@
     // ✅ Chỉnh số ngày bị khóa sau khi bấm xem video
     const unlockDays = 15; // 👈 Số ngày đếm ngược khi xem video
 
-    // ✅ Đổi thành true/false để hiện/ẩn lại Link Cóc 🐸
-    const enableCoc = false;
+    // ⛔️ KHỐI CÀI ĐẶT CŨ ĐÃ BỊ XÓA ⛔️
 
-    // ✅ Đổi thành true/false để hiện/ẩn lại Link Tuyết ❄
-    const enableTuyet = true;
+    // ✅ [CÀI ĐẶT MỚI] Cài đặt hiển thị và thời gian tự động ẩn cho các mục
+    const sectionSettings = {
+        
+        coc: {
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // Định dạng: YYYY-MM-DDTHH:mm:ss GMT+9
+        },
+        
+        tuyet: {
+            enabled: true,
+            expires: '2025-08-29T09:00:00+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+        
+        tao: {
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+       
+        sumo: {
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+        khoBau: {
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+        cauCa: {
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+        '500Like': { // Nếu tên mục có ký tự đặc biệt, đặt trong dấu nháy
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+        QRcode: {
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+        gioiThieu: {
+            enabled: true,
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        }
+    };
 
-    // ✅ Đổi thành true/false để hiện/ẩn lại Link Táo 🍎
-    const enableTao = false;
+    /**
+     * ✅ [HÀM MỚI] Kiểm tra xem một mục có nên được hiển thị hay không.
+     * Dựa vào cài đặt trong sectionSettings (đã bật và chưa hết hạn).
+     * @param {string} sectionName - Tên của mục (ví dụ: 'coc', 'tuyet').
+     * @returns {boolean} - true nếu nên hiển thị, false nếu không.
+     */
+    function isSectionVisible(sectionName) {
+        const settings = sectionSettings[sectionName];
 
-    // ✅ Đổi thành true/false để hiện/ẩn lại Link Sumo 🤼
-    const enableSumo = false;
+        // Nếu không có cài đặt hoặc mục bị tắt, ẩn nó đi
+        if (!settings || !settings.enabled) {
+            return false;
+        }
 
-    // ✅ Đổi thành true/false để hiện/ẩn lại Mở Kho Báu 💎
-    const enableKhoBau = false;
+        // Nếu có cài đặt ngày hết hạn, hãy kiểm tra
+        if (settings.expires) {
+            const now = new Date(); // Lấy thời gian hiện tại
+            const expiryDate = new Date(settings.expires); // Chuyển đổi chuỗi thời gian thành đối tượng Date
 
-    // ✅ Đổi thành true/false để hiện/ẩn lại Câu Cá 🎣
-    const enableCauCa = false;
+            // Nếu thời gian hiện tại đã lớn hơn (muộn hơn) thời gian hết hạn
+            if (now > expiryDate) {
+                return false; // Đã hết hạn -> Ẩn
+            }
+        }
 
-    // ✅ Đổi thành true/false để hiện/ẩn lại 🧡 500 Like 🧡
-    const enable500Like = false;
-
-    // ✅ Đổi thành true/false để hiện/ẩn lại QR Code
-    const enableQRcode = false;
-
-    // ✅ Đổi thành true/false để hiện/ẩn lại Link Giới Thiệu 📢
-    const enableGioiThieu = false;
+        // Nếu mục được bật và chưa hết hạn (hoặc không có ngày hết hạn)
+        return true;
+    }
 
     // ✅ Đổi thành true/false để hiện/ẩn lại hướng dẫn cài phím tắt
     const enable_ios_modal = true;
@@ -1268,8 +1316,8 @@
     }
     //___________________________________________________________
 
-    // ✅ Hiển thị các nhóm link
-    if (enableCoc) {
+    // ✅ [CẬP NHẬT] Hiển thị các nhóm link (logic đã được cập nhật để kiểm tra thời gian)
+    if (isSectionVisible('coc')) {
         renderLinks('linkCoc-lite', linkCocLite, 'coc-lite', 'Lite', true);
         renderLinks('linkCoc-regular', linkCocRegular, 'coc-regular', 'Thường', true);
         document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = '';
@@ -1277,56 +1325,56 @@
         document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = 'none';
     }
 
-    if (enableTuyet) {
+    if (isSectionVisible('tuyet')) {
         renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
         document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = 'none';
     }
 
-    if (enableTao) {
+    if (isSectionVisible('tao')) {
         renderLinks('linkTao', linkTao, 'tao', 'Táo', true);
         document.querySelector('[onclick="toggleSection(\'linkTao\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkTao\')"]').parentElement.style.display = 'none';
     }
 
-    if (enableSumo) {
+    if (isSectionVisible('sumo')) {
         renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true);
         document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = 'none';
     }
 
-    if (enableKhoBau) {
+    if (isSectionVisible('khoBau')) {
         renderLinks('linkKhoBau', linkKhoBau, 'khobau', 'Kho Báu', true);
         document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = 'none';
     }
 
-    if (enableCauCa) {
+    if (isSectionVisible('cauCa')) {
         renderLinks('linkCauCa', linkCauCa, 'cauca', 'Câu Cá', true);
         document.querySelector('[onclick="toggleSection(\'linkCauCa\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkCauCa\')"]').parentElement.style.display = 'none';
     }
 
-    if (enable500Like) {
+    if (isSectionVisible('500Like')) {
         renderLinks('link500Like', link500Like, '500like', 'Video', true);
         document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = 'none';
     }
 
-    if (enableQRcode) {
+    if (isSectionVisible('QRcode')) {
         renderLinks('linkQRcode', linkQRcode, 'QR', 'QRcode', true);
         document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = 'none';
     }
 
-    if (enableGioiThieu) {
+    if (isSectionVisible('gioiThieu')) {
         renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true);
         document.querySelector('[onclick="toggleSection(\'linkGioiThieu\')"]').parentElement.style.display = '';
     } else {
