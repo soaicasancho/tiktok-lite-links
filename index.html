@@ -462,6 +462,13 @@
             }
         }
 
+        .countdown {
+            margin-left: 10px; /* Tạo khoảng cách với tiêu đề */
+            color: #ff0000; /* Màu đỏ nổi bật */
+            font-weight: bold; /* Chữ đậm */
+            font-size: 16px;
+        }
+
     </style>
 </head>
 <body>
@@ -493,7 +500,8 @@
 <div class="top-section">
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkCoc')">
-            <span class="toggle-icon" id="icon-linkCoc">+</span> <span id="group-coc"></span>
+            <span class="toggle-icon" id="icon-linkCoc">+</span> <span id="group-coc"></span> 
+            <span class="countdown" id="countdown-coc"></span>
         </div>
 
         <div id="linkCoc" class="link-container collapsed">
@@ -511,6 +519,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkTuyet')">
             <span class="toggle-icon" id="icon-linkTuyet">+</span> <span id="group-tuyet"></span>
+            <span class="countdown" id="countdown-tuyet"></span>
         </div>
         <div id="linkTuyet" class="link-container collapsed"></div>
     </div>
@@ -518,6 +527,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkTao')">
             <span class="toggle-icon" id="icon-linkTao">+</span> <span id="group-tao"></span>
+            <span class="countdown" id="countdown-tao"></span>
         </div>
         <div id="linkTao" class="link-container collapsed"></div>
     </div>
@@ -525,6 +535,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkSumo')">
             <span class="toggle-icon" id="icon-linkSumo">+</span> <span id="group-sumo"></span>
+            <span class="countdown" id="countdown-sumo"></span>
         </div>
         <div id="linkSumo" class="link-container collapsed"></div>
     </div>
@@ -532,6 +543,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkKhoBau')">
             <span class="toggle-icon" id="icon-linkKhoBau">+</span> <span id="group-khobau">Mở Kho Báu 💎</span>
+            <span class="countdown" id="countdown-khoBau"></span>
         </div>
         <div id="linkKhoBau" class="link-container collapsed"></div>
     </div>
@@ -539,6 +551,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkCauCa')">
             <span class="toggle-icon" id="icon-linkCauCa">+</span> <span id="group-cauca">Câu Cá 🎣</span>
+            <span class="countdown" id="countdown-cauCa"></span>
         </div>
         <div id="linkCauCa" class="link-container collapsed"></div>
     </div>
@@ -546,6 +559,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('link500Like')">
             <span class="toggle-icon" id="icon-link500Like">+</span> <span id="group-500like">🧡  Cá  🧡</span>
+            <span class="countdown" id="countdown-500Like"></span>
         </div>
         <div id="link500Like" class="link-container collapsed"></div>
     </div>
@@ -553,6 +567,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkQRcode')">
             <span class="toggle-icon" id="icon-linkQRcode">+</span> <span id="group-QR">QR Code</span>
+            <span class="countdown" id="countdown-QRcode"></span>
         </div>
         <div id="linkQRcode" class="link-container collapsed"></div>
     </div>
@@ -560,6 +575,7 @@
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkGioiThieu')">
             <span class="toggle-icon" id="icon-linkGioiThieu">+</span> <span id="group-gt"></span>
+            <span class="countdown" id="countdown-gioiThieu"></span>
         </div>
         <div id="linkGioiThieu" class="link-container collapsed"></div>
     </div>
@@ -680,7 +696,7 @@
         
         coc: {
             enabled: true,
-            expires: '2025-08-20T23:59:59+09:00' // Định dạng: YYYY-MM-DDTHH:mm:ss GMT+9
+            expires: '2025-08-19T23:59:59+09:00' // Định dạng: YYYY-MM-DDTHH:mm:ss GMT+9
         },
         
         tuyet: {
@@ -943,6 +959,53 @@
 
     // ✅ Dữ liệu đã lưu lịch sử click trong localStorage
     const clickedLinks = JSON.parse(localStorage.getItem('clickedLinks') || '{}');
+
+    // ✅ Hàm cập nhật đồng hồ đếm ngược cho các mục chính
+    function updateSectionCountdowns() {
+        const now = new Date();
+        // Lấy chuỗi dịch tương ứng từ đối tượng translations
+        const langStrings = translations[currentLanguage]?.countdown || translations['vi'].countdown; // Mặc định là tiếng Việt nếu không tìm thấy
+
+        for (const section in sectionSettings) {
+            const settings = sectionSettings[section];
+            const expiresString = settings.expires;
+
+            if (!expiresString || !settings.enabled) {
+                continue;
+            }
+
+            const expiryDate = new Date(expiresString);
+            const timeLeft = expiryDate - now;
+
+            const sectionElement = document.getElementById(`link${section.charAt(0).toUpperCase() + section.slice(1)}`);
+            const countdownElement = document.getElementById(`countdown-${section}`);
+
+            if (timeLeft <= 0) {
+                if (sectionElement) {
+                    sectionElement.style.display = 'none';
+                }
+                if (countdownElement) {
+                    countdownElement.textContent = '';
+                }
+            } else {
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                // Cập nhật dòng hiển thị đếm ngược với định dạng mới
+                if (countdownElement) {
+                    countdownElement.textContent = `(${langStrings.remaining} ${days} ${langStrings.days} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')})`;
+                }
+            }
+        }
+    }
+
+    // ✅ Bắt đầu đếm ngược ngay khi trang tải và cập nhật mỗi giây
+    document.addEventListener('DOMContentLoaded', () => {
+        updateSectionCountdowns();
+        setInterval(updateSectionCountdowns, 1000);
+    });
 
     // ✅ Tạo nút link cho mỗi mục
     function createButton(link, label, type, allowMultiple = false, isProtected = false, highlight = false) {
@@ -1668,7 +1731,11 @@
             "dark-mode-on": "🌙 Chế độ Tối",
             "dark-mode-off": "🌞 Chế độ Sáng",
             "reset-success": "Cài đặt mặc định đã được thiết lập",
-            "lang-changed": "Ngôn ngữ Tiếng Việt đã được thiết lập"
+            "lang-changed": "Ngôn ngữ Tiếng Việt đã được thiết lập",
+            "countdown": {
+               "remaining": "Kết thúc sau:",
+               "days": "Ngày"
+            }
         },
         en: {
             title: "60 Minute Videos by Quang Dao",
@@ -1723,7 +1790,11 @@
             "dark-mode-on": "🌙 Dark Mode",
             "dark-mode-off": "🌞 Light Mode",
             "reset-success": "Default settings have been set",
-            "lang-changed": "English language has been set"
+            "lang-changed": "English language has been set",
+            "countdown": {
+               "remaining": "Remaining:",
+               "days": "Day"
+            }
         },
         ja: {
             title: "光道の60分無音動画",
@@ -1778,7 +1849,11 @@
             "dark-mode-on": "🌙 ダークモード",
             "dark-mode-off": "🌞 ライトモード",
             "reset-success": "最初化済み",
-            "lang-changed": "日本語に切り替わりました。"
+            "lang-changed": "日本語に切り替わりました。",
+            "countdown": {
+               "remaining": "有効期限：",
+               "days": "日"
+            }
         }
     };
     
