@@ -573,6 +573,14 @@
     </div>
 
     <div class="section">
+        <div class="section-title" onclick="toggleSection('linkRamen')">
+            <span class="toggle-icon" id="icon-linkRamen">+</span> <span id="group-ramen"></span>
+            <span class="countdown" id="countdown-ramen"></span>
+        </div>
+        <div id="linkRamen" class="link-container collapsed"></div>
+    </div>
+
+    <div class="section">
         <div class="section-title" onclick="toggleSection('linkGioiThieu')">
             <span class="toggle-icon" id="icon-linkGioiThieu">+</span> <span id="group-gt"></span>
             <span class="countdown" id="countdown-gioiThieu"></span>
@@ -697,8 +705,6 @@
     // ✅ Chỉnh số ngày bị khóa sau khi bấm xem video
     const unlockDays = 15; // 👈 Số ngày đếm ngược khi xem video
 
-    // ⛔️ KHỐI CÀI ĐẶT CŨ ĐÃ BỊ XÓA ⛔️
-
     // ✅ [CÀI ĐẶT MỚI] Cài đặt hiển thị và thời gian tự động ẩn cho các mục
     const sectionSettings = {
         
@@ -723,7 +729,7 @@
         },
         khoBau: {
             enabled: true,
-            expires: '2025-08-29T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+            expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
         },
         cauCa: {
             enabled: true,
@@ -736,6 +742,10 @@
         QRcode: {
             enabled: true,
             expires: '2025-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+        ramen: {
+            enabled: true,
+            expires: null // đặt là expires: null nếu không muốn tự tắt
         },
         gioiThieu: {
             enabled: true,
@@ -813,10 +823,7 @@
     ];
     
     const linkKhoBau = [
-        {url: "https://lite.tiktok.com/t/ZSHGT5mvrg5To-9NKNb/", label: "SONY 26", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHGTaQrThtJG-ZeyPZ/", label: "SONY22", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHGTHXQRJBLk-Iu7yj/", label: "SONY 4", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHGTqx6Qgu2a-c6rRS/", label: "C33"}
+        {url: "", label: ""}
     ];
 
     const linkCauCa = [
@@ -837,6 +844,13 @@
         {url: "https://lite.tiktok.com/t/ZSBBvHmmd/", label: "GL7"}
     ];
 
+    const linkRamen = [
+        {url: "https://lite.tiktok.com/t/ZSHGT5mvrg5To-9NKNb/", label: "SONY 26"},
+        {url: "https://lite.tiktok.com/t/ZSHGTaQrThtJG-ZeyPZ/", label: "SONY22"},
+        {url: "https://lite.tiktok.com/t/ZSHGTHXQRJBLk-Iu7yj/", label: "SONY 4"},
+        {url: "https://lite.tiktok.com/t/ZSHGTqx6Qgu2a-c6rRS/", label: "C33"}
+    ];
+    
     const linkGioiThieu = [
         {url: "https://vt.tiktok.com/ZSh4FAKfk/", label: "MRT 005"}
     ];
@@ -1386,7 +1400,7 @@
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
-        const allSections = ['linkCoc', 'linkTuyet', 'linkTao', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkGioiThieu', 'linkShein'];
+        const allSections = ['linkCoc', 'linkTuyet', 'linkTao', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkRamen', 'linkGioiThieu', 'linkShein'];
 
         allSections.forEach(sectionId => {
             const container = document.getElementById(sectionId);
@@ -1459,6 +1473,13 @@
         document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = 'none';
+    }
+
+    if (isSectionVisible('ramen')) {
+        renderLinks('linkRamen', linkRamen, 'ramen', 'Ramen', true);
+        document.querySelector('[onclick="toggleSection(\'linkRamen\')"]').parentElement.style.display = '';
+    } else {
+        document.querySelector('[onclick="toggleSection(\'linkRamen\')"]').parentElement.style.display = 'none';
     }
 
     if (isSectionVisible('gioiThieu')) {
@@ -1724,6 +1745,7 @@
             "group-cauca": "🎣  Câu Cá  🎣",
             "group-500like": "🧡 500 Like 🧡",
             "group-QR": "Quét Mã QR",
+            "group-ramen": "🍜Mì Ăn Liền🍜",
             "group-gt": "Giới Thiệu 📢",
             "group-shein": "Shein",
             "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!",
@@ -1784,6 +1806,7 @@
             "group-cauca": "🎣  Fishing  🎣",
             "group-500like": "🧡 500 Like 🧡",
             "group-QR": "Scan QR Code",
+            "group-ramen": "🍜Ramen🍜",
             "group-gt": "Intro 📢",
             "group-shein": "Shein",
             "info1": "We’d appreciate your support with a follow!",
@@ -1844,6 +1867,7 @@
             "group-cauca": "🎣  釣り  🎣",
             "group-500like": "🧡 500 Like 🧡",
             "group-QR": "QRコードを読み取り",
+            "group-ramen": "🍜ラーメン🍜",
             "group-gt": "紹介 📢",
             "group-shein": "Shein",
             "info1": "ぜひテックトックフォローをお願いします！",
@@ -1935,6 +1959,7 @@
         document.getElementById('group-cauca').textContent = t["group-cauca"];
         document.getElementById('group-500like').textContent = t["group-500like"];
         document.getElementById('group-QR').textContent = t["group-QR"];
+        document.getElementById('group-ramen').textContent = t["group-ramen"];
         document.getElementById('group-gt').textContent = t["group-gt"];
         document.getElementById('group-shein').textContent = t["group-shein"];
         document.getElementById('info1').textContent = t["info1"];
