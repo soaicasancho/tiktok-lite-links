@@ -571,7 +571,7 @@
         </div>
         <div id="linkQRcode" class="link-container collapsed"></div>
     </div>
-    
+
     <div class="section">
         <div class="section-title" onclick="toggleSection('linkRamen')">
             <span class="toggle-icon" id="icon-linkRamen">+</span> <span id="group-ramen"></span>
@@ -698,31 +698,7 @@
 
 <span id="copied-success-text" style="display: none;">Đã sao chép liên kết</span>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
 <script>
-    // ========================================================================
-    // BƯỚC 2.2: DÁN ĐỐI TƯỢNG firebaseConfig CỦA BẠN VÀO ĐÂY
-    // ========================================================================
-  const firebaseConfig = {
-    apiKey: "AIzaSyCLNt1MwXp8NKNwc2fsMonAkXpUarjITzI",
-    authDomain: "video60-ramen-sync.firebaseapp.com",
-    databaseURL: "https://video60-ramen-sync-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "video60-ramen-sync",
-    storageBucket: "video60-ramen-sync.firebasestorage.app",
-    messagingSenderId: "439588888908",
-    appId: "1:439588888908:web:2ec5f041ed3e07fdbd6fe9"
-  };
-
-    // Khởi tạo Firebase
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const database = firebase.database();
-    // ========================================================================
-
-
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
     const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai
 
@@ -831,12 +807,11 @@
     ];
 
     const linkTuyet = [
-        {url: "https://lite.tiktok.com/t/ZSSWfoNBD/", label: "Bấm ở đây GL6", highlight: true},
-        {url: "", label: "🔒", protected: true},
-        {url: "https://lite.tiktok.com/t/ZSSWP6hgf/", label: "🔒 GL7", hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSHt86bJrU4dv-FMqFa/", label: "Bấm ở đây GL6", highlight: true},
         {url: "", label: "🔒", protected: true, hidden: true},
-        {url: "", label: "🔒", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHGS1RDgMBC8-iIFNP/", label: "NGUYỄN QUANG HUY"}
+        {url: "", label: "🔒 GL7", hidden: true},
+        {url: "", label: "🔒", protected: true, hidden: true},
+        {url: "", label: "🔒", hidden: true}
     ];
 
     const linkTao = [
@@ -869,7 +844,6 @@
         {url: "https://lite.tiktok.com/t/ZSBBvHmmd/", label: "GL7"}
     ];
 
-    // DỮ LIỆU LINK RAMEN GIỮ NGUYÊN
     const linkRamen = [
         {url: "https://lite.tiktok.com/t/ZSHGT5mvrg5To-9NKNb/", label: "SONY 26"},
         {url: "https://lite.tiktok.com/t/ZSHGTaQrThtJG-ZeyPZ/", label: "SONY22"},
@@ -1438,216 +1412,6 @@
             });
         }
     }
-    
-
-    // =======================================================
-    // BƯỚC 2.3: THAY THẾ TOÀN BỘ LOGIC CỦA MỤC RAMEN
-    // =======================================================
-
-    // Biến để lưu các interval của đồng hồ đếm ngược, giúp ta dừng chúng khi cần
-    const ramenCountdownIntervals = {};
-
-    // Hàm để tạo ID duy nhất cho mỗi nút ramen từ URL của nó
-    function getRamenButtonId(url) {
-        // Thay thế các ký tự không hợp lệ cho key của Firebase
-        return url.replace(/[.#$[\]]/g, '_');
-    }
-
-    // Đọc dữ liệu từ localStorage để biết thiết bị này đã bấm nút nào
-    function getLocalRamenClicks() {
-        try {
-            return JSON.parse(localStorage.getItem('userRamenClicks')) || {};
-        } catch (e) {
-            return {};
-        }
-    }
-
-    // Ghi dữ liệu vào localStorage
-    function saveLocalRamenClicks(clicks) {
-        localStorage.setItem('userRamenClicks', JSON.stringify(clicks));
-    }
-
-    // Hàm chính để hiển thị một nút Ramen dựa trên trạng thái
-    function renderRamenButton(linkData, globalState) {
-        const buttonId = getRamenButtonId(linkData.url);
-        let btn = document.getElementById(buttonId);
-        const container = document.getElementById('linkRamen');
-        
-        // Nếu nút chưa có, tạo mới
-        if (!btn) {
-            btn = document.createElement('button');
-            btn.id = buttonId;
-            btn.className = 'link-button';
-            container.appendChild(btn);
-        }
-
-        // Dừng bất kỳ đồng hồ đếm ngược cũ nào đang chạy cho nút này
-        if (ramenCountdownIntervals[buttonId]) {
-            clearInterval(ramenCountdownIntervals[buttonId]);
-        }
-
-        const now = Date.now();
-        const localClicks = getLocalRamenClicks();
-        const thisDeviceClickInfo = localClicks[buttonId];
-        const firstClickTimestamp = globalState ? globalState.firstClickTimestamp : null;
-        
-        // --- CÁC TRƯỜNG HỢP LOGIC ---
-
-        // TRƯỜNG HỢP 1: Nút đang trong chu kỳ đếm ngược 24 giờ
-        if (firstClickTimestamp && (now < firstClickTimestamp + 24* 60 * 60 * 1000)) {
-            btn.disabled = false; // Luôn cho phép bấm trong 24h
-            btn.classList.remove('clicked');
-
-            const updateCountdown24h = () => {
-                const remaining = (firstClickTimestamp + 24 * 60 * 60 * 1000) - Date.now();
-                if (remaining <= 0) {
-                    clearInterval(ramenCountdownIntervals[buttonId]);
-                    // Tải lại trạng thái từ Firebase để chuyển sang giai đoạn khóa 6 ngày hoặc reset
-                    database.ref('ramen_buttons/' + buttonId).get().then(snapshot => {
-                        renderRamenButton(linkData, snapshot.val());
-                    });
-                } else {
-                    const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                    const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                    const s = Math.floor((remaining % (1000 * 60)) / 1000).toString().padStart(2, '0');
-                    btn.textContent = `${linkData.label} (${h}:${m}:${s})`;
-                }
-            };
-            updateCountdown24h();
-            ramenCountdownIntervals[buttonId] = setInterval(updateCountdown24h, 1000);
-        } 
-        // TRƯỜNG HỢP 2: Chu kỳ 24 giờ đã kết thúc
-        else if (firstClickTimestamp) {
-            // Kiểm tra xem thiết bị này CÓ tham gia vào chu kỳ vừa rồi không
-            if (thisDeviceClickInfo && thisDeviceClickInfo.cycleStart === firstClickTimestamp) {
-                const lockoutEndTime = firstClickTimestamp + (24 * 60 * 60 * 1000) + (6 * 24 * 60 * 60 * 1000); // 1 ngày + 6 ngày
-                
-                // Nếu vẫn đang trong thời gian khóa 6 ngày
-                if (now < lockoutEndTime) {
-                    btn.disabled = true;
-                    btn.classList.add('clicked');
-                    
-                    const updateLockdown6d = () => {
-                        const remaining = lockoutEndTime - Date.now();
-                        if (remaining <= 0) {
-                            clearInterval(ramenCountdownIntervals[buttonId]);
-                            // Sau khi hết khóa, reset trạng thái nút
-                            btn.disabled = false;
-                            btn.classList.remove('clicked');
-                            btn.textContent = linkData.label;
-                            // Xóa thông tin click cũ trong localStorage
-                            const currentClicks = getLocalRamenClicks();
-                            delete currentClicks[buttonId];
-                            saveLocalRamenClicks(currentClicks);
-                        } else {
-                            const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
-                            const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                            const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                            const s = Math.floor((remaining % (1000 * 60)) / 1000).toString().padStart(2, '0');
-                            btn.textContent = `🔒 ${linkData.label} (${d}d ${h}:${m}:${s})`;
-                        }
-                    };
-                    updateLockdown6d();
-                    ramenCountdownIntervals[buttonId] = setInterval(updateLockdown6d, 1000);
-                } else {
-                     // Thời gian khóa 6 ngày đã hết
-                     btn.disabled = false;
-                     btn.classList.remove('clicked');
-                     btn.textContent = linkData.label;
-                }
-            } else {
-                // Thiết bị này KHÔNG tham gia, nút trở về bình thường
-                btn.disabled = false;
-                btn.classList.remove('clicked');
-                btn.textContent = linkData.label;
-            }
-        }
-        // TRƯỜNG HỢP 3: Nút ở trạng thái chờ, chưa có ai bấm
-        else {
-             // Vẫn phải kiểm tra xem máy này có đang bị khóa từ chu kỳ trước đó không
-            if (thisDeviceClickInfo && (now < thisDeviceClickInfo.cycleStart + 7 * 24 * 60 * 60 * 1000)) {
-                 const lockoutEndTime = thisDeviceClickInfo.cycleStart + 7 * 24 * 60 * 60 * 1000;
-                 btn.disabled = true;
-                 btn.classList.add('clicked');
-                 const updateOldLockdown = () => {
-                     const remaining = lockoutEndTime - Date.now();
-                     if (remaining <= 0) {
-                         clearInterval(ramenCountdownIntervals[buttonId]);
-                         btn.disabled = false;
-                         btn.classList.remove('clicked');
-                         btn.textContent = linkData.label;
-                         const currentClicks = getLocalRamenClicks();
-                         delete currentClicks[buttonId];
-                         saveLocalRamenClicks(currentClicks);
-                     } else {
-                         const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
-                         const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                         const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                         const s = Math.floor((remaining % (1000 * 60)) / 1000).toString().padStart(2, '0');
-                         btn.textContent = `🔒 ${d}d ${h}:${m}:${s}`;
-                     }
-                 };
-                 updateOldLockdown();
-                 ramenCountdownIntervals[buttonId] = setInterval(updateOldLockdown, 1000);
-            } else {
-                btn.disabled = false;
-                btn.classList.remove('clicked');
-                btn.textContent = linkData.label;
-            }
-        }
-
-        // Gán sự kiện click cho nút
-        btn.onclick = () => {
-            const buttonRef = database.ref('ramen_buttons/' + buttonId);
-            
-            buttonRef.get().then((snapshot) => {
-                const currentGlobalState = snapshot.val();
-                const currentTime = Date.now();
-                
-                // Kiểm tra xem có nên bắt đầu một chu kỳ mới không
-                const isNewCycle = !currentGlobalState || !currentGlobalState.firstClickTimestamp || (currentTime >= currentGlobalState.firstClickTimestamp + 24 * 60 * 60 * 1000);
-
-                if (isNewCycle) {
-                    // Bắt đầu chu kỳ mới
-                    buttonRef.set({ firstClickTimestamp: currentTime });
-                    const localClicks = getLocalRamenClicks();
-                    localClicks[buttonId] = { cycleStart: currentTime };
-                    saveLocalRamenClicks(localClicks);
-                } else {
-                    // Tham gia vào chu kỳ hiện tại
-                    const localClicks = getLocalRamenClicks();
-                    localClicks[buttonId] = { cycleStart: currentGlobalState.firstClickTimestamp };
-                    saveLocalRamenClicks(localClicks);
-                }
-                
-                // Mở link sau khi đã xử lý logic
-                window.open(linkData.url, '_blank');
-            });
-        };
-    }
-
-    // Hàm khởi tạo các nút trong mục Ramen
-    function initializeRamenSection() {
-        const container = document.getElementById('linkRamen');
-        container.innerHTML = ''; // Xóa các nút cũ nếu có
-
-        linkRamen.forEach(link => {
-            if (link.hidden) return;
-            const buttonId = getRamenButtonId(link.url);
-            const buttonRef = database.ref('ramen_buttons/' + buttonId);
-
-            // Lắng nghe sự thay đổi dữ liệu thời gian thực từ Firebase
-            buttonRef.on('value', (snapshot) => {
-                const globalState = snapshot.val();
-                renderRamenButton(link, globalState);
-            });
-        });
-    }
-
-    // =======================================================
-    // KẾT THÚC PHẦN CODE MỚI CHO MỤC RAMEN
-    // =======================================================
-
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
@@ -1725,10 +1489,9 @@
     } else {
         document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = 'none';
     }
-    
-    // BƯỚC 2.4: THAY ĐỔI CÁCH GỌI HÀM CHO MỤC RAMEN
+
     if (isSectionVisible('ramen')) {
-        initializeRamenSection(); // GỌI HÀM MỚI
+        renderLinks('linkRamen', linkRamen, 'ramen', 'Ramen', true);
         document.querySelector('[onclick="toggleSection(\'linkRamen\')"]').parentElement.style.display = '';
     } else {
         document.querySelector('[onclick="toggleSection(\'linkRamen\')"]').parentElement.style.display = 'none';
@@ -1781,7 +1544,6 @@
     // Hàm reset thực sự
     function resetCountdown() {
         localStorage.removeItem('clickedLinks');
-        localStorage.removeItem('userRamenClicks'); // Thêm dòng này để xóa cả dữ liệu ramen
         localStorage.removeItem('wrongAttempts_resetBtn_lock');
         localStorage.removeItem('lockStartTime_resetBtn_lock');
         alert(translations[currentLanguage]['reset-success']);
