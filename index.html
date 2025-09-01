@@ -698,7 +698,44 @@
 
 <span id="copied-success-text" style="display: none;">Đã sao chép liên kết</span>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <script>
+    // ========================================================================
+    // DÁN ĐỐI TƯỢNG firebaseConfig CỦA BẠN VÀO ĐÂY
+    // HÃY CHẮC CHẮN BẠN SAO CHÉP ĐẦY ĐỦ, KHÔNG THIẾU DẤU PHẨY HAY DẤU NGOẶC NÀO
+    // ========================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLNt1MwXp8NKNwc2fsMonAkXpUarjITzI",
+    authDomain: "video60-ramen-sync.firebaseapp.com",
+    databaseURL: "https://video60-ramen-sync-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "video60-ramen-sync",
+    storageBucket: "video60-ramen-sync.firebasestorage.app",
+    messagingSenderId: "439588888908",
+    appId: "1:439588888908:web:2ec5f041ed3e07fdbd6fe9"
+  };
+
+    // Khởi tạo Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database();
+    // ========================================================================
+
+
+    // [MỚI] Hàm tạo và lấy ID duy nhất cho mỗi thiết bị để đếm lượt click
+    function getOrCreateDeviceUniqueId() {
+        let deviceId = localStorage.getItem('deviceUniqueId');
+        if (!deviceId) {
+            // Tạo một ID ngẫu nhiên và lưu lại trình duyệt để dùng cho các lần sau
+            deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('deviceUniqueId', deviceId);
+        }
+        return deviceId;
+    }
+    const uniqueDeviceId = getOrCreateDeviceUniqueId();
+
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
     const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai
 
@@ -766,24 +803,10 @@
      */
     function isSectionVisible(sectionName) {
         const settings = sectionSettings[sectionName];
-
-        // Nếu không có cài đặt hoặc mục bị tắt, ẩn nó đi
-        if (!settings || !settings.enabled) {
-            return false;
-        }
-
-        // Nếu có cài đặt ngày hết hạn, hãy kiểm tra
+        if (!settings || !settings.enabled) return false;
         if (settings.expires) {
-            const now = new Date(); // Lấy thời gian hiện tại
-            const expiryDate = new Date(settings.expires); // Chuyển đổi chuỗi thời gian thành đối tượng Date
-
-            // Nếu thời gian hiện tại đã lớn hơn (muộn hơn) thời gian hết hạn
-            if (now > expiryDate) {
-                return false; // Đã hết hạn -> Ẩn
-            }
+            if (new Date() > new Date(settings.expires)) return false;
         }
-
-        // Nếu mục được bật và chưa hết hạn (hoặc không có ngày hết hạn)
         return true;
     }
 
@@ -1017,37 +1040,26 @@
     // ✅ Hàm cập nhật đồng hồ đếm ngược cho các mục chính
     function updateSectionCountdowns() {
         const now = new Date();
-        // Lấy chuỗi dịch tương ứng từ đối tượng translations
-        const langStrings = (translations[currentLanguage] && translations[currentLanguage].countdown) || translations['vi'].countdown; // Mặc định là tiếng Việt nếu không tìm thấy
-
+        const langStrings = (translations[currentLanguage] && translations[currentLanguage].countdown) || translations['vi'].countdown;
         for (const section in sectionSettings) {
             const settings = sectionSettings[section];
             const expiresString = settings.expires;
-
-            if (!expiresString || !settings.enabled) {
-                continue;
-            }
-
+            if (!expiresString || !settings.enabled) continue;
             const expiryDate = new Date(expiresString);
             const timeLeft = expiryDate - now;
-
             const sectionElement = document.getElementById(`link${section.charAt(0).toUpperCase() + section.slice(1)}`);
             const countdownElement = document.getElementById(`countdown-${section}`);
-
             if (timeLeft <= 0) {
                 if (sectionElement) {
-                    sectionElement.style.display = 'none';
+                    const parent = sectionElement.closest('.section');
+                    if (parent) parent.style.display = 'none';
                 }
-                if (countdownElement) {
-                    countdownElement.textContent = '';
-                }
+                if (countdownElement) countdownElement.textContent = '';
             } else {
                 const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-                // Cập nhật dòng hiển thị đếm ngược với định dạng mới
                 if (countdownElement) {
                     countdownElement.textContent = `(${langStrings.remaining} ${days} ${langStrings.days} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')})`;
                 }
@@ -1068,17 +1080,13 @@
         const realUrl = typeof link === 'string' ? link : link.url;
         const key = realUrl + '_' + type;
         const clickTimestamp = clickedLinks[key];
-
-        // Kiểm tra nếu đã bị khóa do nhập sai mật khẩu
         const lockStartTime = parseInt(localStorage.getItem('lockStartTime_' + key));
         if (!isNaN(lockStartTime)) {
-            const lockDuration = lockDays * 24 * 60 * 60 * 1000; // ms
+            const lockDuration = lockDays * 24 * 60 * 60 * 1000;
             const newLockUntil = lockStartTime + lockDuration;
-
             if (Date.now() < newLockUntil) {
                 btn.disabled = true;
                 btn.classList.add('clicked');
-
                 const updateCountdown = () => {
                     const remaining = newLockUntil - Date.now();
                     if (remaining <= 0) {
@@ -1096,44 +1104,29 @@
                         btn.textContent = `🔓 ${days}日${hours}時${minutes.toString().padStart(2, '0')}分${seconds.toString().padStart(2, '0')}秒`;
                     }
                 };
-
-                updateCountdown(); // Gọi lần đầu
-                const interval = setInterval(updateCountdown, 1000); // Cập nhật mỗi giây
-
+                updateCountdown();
+                const interval = setInterval(updateCountdown, 1000);
                 return btn;
             } else {
-                // Đã hết thời gian khóa → xóa key
                 localStorage.removeItem('lockStartTime_' + key);
                 localStorage.removeItem('wrongAttempts_' + key);
             }
         }
-
-        // Chỉnh thời gian đếm ngược khi xem video
         const now = Date.now();
         const clickCount = clickedLinks[key + '_count'] || 0;
-
         if (!allowMultiple && clickTimestamp) {
             const clickedDate = new Date(clickTimestamp);
             const unlockDate = new Date(clickedDate);
             unlockDate.setDate(clickedDate.getDate() + unlockDays);
             unlockDate.setHours(0, 0, 0, 0);
-
             const timeLeft = unlockDate - now;
-
             if (timeLeft > 0) {
-                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                btn.textContent = `⏳ ${days}日${hours}時${minutes.toString().padStart(2, '0')}分${seconds.toString().padStart(2, '0')}秒`;
+                btn.textContent = `...`;
                 btn.classList.add('clicked');
                 btn.disabled = true;
-
-                // Cập nhật đếm ngược theo thời gian thực cho nút bấm Video
                 const interval = setInterval(() => {
                     const nowUpdate = Date.now();
                     const timeLeftUpdate = unlockDate - nowUpdate;
-
                     if (timeLeftUpdate <= 0) {
                         clearInterval(interval);
                         btn.textContent = `${label} (${clickCount} lượt)`;
@@ -1157,24 +1150,20 @@
                 btn.textContent = `${label} ${clickCount > 0 ? `(${clickCount} lượt)` : ''}`;
             }
         }
-
         btn.onclick = () => {
             const realUrl = typeof link === 'string' ? link : link.url;
-
             if (link.copyOnly) {
-                navigator.clipboard.writeText(realUrl)
-                    .then(() => {
-                        const oldText = btn.textContent;
-                        btn.textContent = document.getElementById('copied-success-text').textContent;
-                        btn.disabled = true;
-                        setTimeout(() => {
-                            btn.textContent = oldText;
-                            btn.disabled = false;
-                        }, 2000);
-                    })
-                    .catch(() => {
-                        alert("❌ Sao chép thất bại. Dùng trình duyệt khác và thử lại");
-                    });
+                navigator.clipboard.writeText(realUrl).then(() => {
+                    const oldText = btn.textContent;
+                    btn.textContent = document.getElementById('copied-success-text').textContent;
+                    btn.disabled = true;
+                    setTimeout(() => {
+                        btn.textContent = oldText;
+                        btn.disabled = false;
+                    }, 2000);
+                }).catch(() => {
+                    alert("❌ Sao chép thất bại. Dùng trình duyệt khác và thử lại");
+                });
             } else if (isProtected) {
                 showPasswordPrompt({
                     title: "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
@@ -1196,39 +1185,24 @@
         const realUrl = typeof linkObj === 'string' ? linkObj : linkObj.url;
         const type = _key.split('_')[1];
         const key = realUrl + '_' + type;
-
-        const isStandalone =
-            window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true;
-
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         if (isStandalone) {
             window.location.href = realUrl;
         } else {
             window.open(realUrl, '_blank');
         }
-
         const now = Date.now();
         clickedLinks[key] = now;
         clickedLinks[key + '_count'] = (clickedLinks[key + '_count'] || 0) + 1;
         localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
-
         localStorage.removeItem('wrongAttempts_' + key);
         localStorage.removeItem('lockStartTime_' + key);
-
-        // LOGIC MỚI: Dựa vào 'type', quyết định vẽ lại cả danh sách hay chỉ thay thế 1 nút
         if (type === 'regular') {
-            // Nếu là link trong cột TikTok Thường, vẽ lại toàn bộ cột đó
             renderLinks('regularColumn', regularLinks, 'regular', 'Video');
         } else if (type === 'lite') {
-            // Nếu là link trong cột TikTok Lite, vẽ lại toàn bộ cột đó
             renderLinks('liteColumn', liteLinks, 'lite', 'Video');
         } else {
-            // Nếu là các loại link khác, giữ nguyên hành vi cũ là chỉ thay thế nút vừa bấm
-            const newBtn = createButton(
-                linkObj, label, type, allowMultiple,
-                linkObj.protected || false,
-                linkObj.highlight || false
-            );
+            const newBtn = createButton(linkObj, label, type, allowMultiple, linkObj.protected || false, linkObj.highlight || false);
             btn.replaceWith(newBtn);
         }
     }
@@ -1236,63 +1210,40 @@
     // ✅ [CẬP NHẬT] Hàm hiển thị modal mật khẩu, giờ có thể khóa cả nút Reset
     function showPasswordPrompt(options) {
         const {title, onSuccess, link, key, label, btn} = options;
-
         const overlay = document.createElement('div');
         overlay.className = 'modal-overlay';
-        overlay.innerHTML = `
-          <div class="modal">
-            <div id="modal-text">${title}</div>
-            <input type="password" id="modal-password" autocomplete="new-password" />
-            <div class="buttons">
-              <button id="modal-cancel">Hủy</button>
-              <button id="modal-ok" disabled>OK</button>
-            </div>
-            <div class="error" id="modal-error">Mật khẩu không đúng. Vui lòng thử lại.</div>
-          </div>
-        `;
+        overlay.innerHTML = `<div class="modal"><div id="modal-text">${title}</div><input type="password" id="modal-password" autocomplete="new-password" /><div class="buttons"><button id="modal-cancel">Hủy</button><button id="modal-ok" disabled>OK</button></div><div class="error" id="modal-error">Mật khẩu không đúng. Vui lòng thử lại.</div></div>`;
         document.body.appendChild(overlay);
         document.body.classList.add('no-scroll');
         applyLanguage(currentLanguage);
-
         const input = overlay.querySelector('#modal-password');
         const btnOk = overlay.querySelector('#modal-ok');
         const btnCancel = overlay.querySelector('#modal-cancel');
         const errorMsg = overlay.querySelector('#modal-error');
-
         const closeModal = () => {
             document.body.removeChild(overlay);
             document.body.classList.remove('no-scroll');
         };
-
         input.addEventListener('input', () => {
             errorMsg.style.display = 'none';
             btnOk.disabled = input.value.trim().length === 0;
         });
-
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !btnOk.disabled) btnOk.click();
         });
-
         btnCancel.addEventListener('click', closeModal);
-
         btnOk.addEventListener('click', () => {
             if (input.value !== '8323') {
-                // Áp dụng cho cả link được bảo vệ và nút reset
                 if (key) {
                     const failKey = 'wrongAttempts_' + key;
                     const currentFail = parseInt(localStorage.getItem(failKey)) || 0;
                     const newFail = currentFail + 1;
                     localStorage.setItem(failKey, newFail);
-
                     if (newFail >= 5) {
                         localStorage.setItem('lockStartTime_' + key, Date.now());
                         closeModal();
-
-                        // Nếu là nút động (link sumo), thay thế nút. Nếu là nút reset, tải lại trang.
                         if (btn && link) {
-                            const newBtn = createButton(
-                                link, label, key.split('_')[1], true, true, link.highlight || false
-                            );
+                            const newBtn = createButton(link, label, key.split('_')[1], true, true, link.highlight || false);
                             btn.replaceWith(newBtn);
                         } else {
                             location.reload();
@@ -1304,17 +1255,13 @@
                 input.focus();
                 return;
             }
-
-            // Nhập đúng, xóa lịch sử nhập sai nếu có
             if (key) {
                 localStorage.removeItem('wrongAttempts_' + key);
                 localStorage.removeItem('lockStartTime_' + key);
             }
-
             closeModal();
-            onSuccess(); // Chạy hàm callback khi thành công
+            onSuccess();
         });
-
         input.focus();
     }
 
@@ -1322,33 +1269,23 @@
     function renderLinks(containerId, links, type, prefix, allowMultiple = false) {
         const container = document.getElementById(containerId);
         if (!container) return;
-
         const shouldSort = (type === 'lite' || type === 'regular');
-
         if (shouldSort) {
-            // 1. Xóa các nút cũ trong cột để vẽ lại, nhưng giữ lại tiêu đề
             const buttons = container.querySelectorAll('.link-button');
             buttons.forEach(button => button.remove());
-
-            // 2. Tạo các mảng để phân loại link theo tiêu chí mới
             const never_clicked = [];
             const clicked_but_unlocked = [];
             const locked_with_countdown = [];
-
             links.forEach((link, i) => {
                 const realUrl = typeof link === 'string' ? link : link.url;
                 const key = realUrl + '_' + type;
-
                 const clickTimestamp = clickedLinks[key];
                 const clickCount = clickedLinks[key + '_count'] || 0;
-
                 const item = {
                     link,
                     label: (typeof link === 'string') ? `${prefix} ${i + 1}` : (link.label || `${prefix} ${i + 1}`),
-                    clickCount: clickCount // Lưu lại số lượt click để sắp xếp
+                    clickCount: clickCount
                 };
-
-                // Xác định xem link có đang bị khóa (đếm ngược) hay không
                 let isCurrentlyLocked = false;
                 if (clickTimestamp) {
                     const now = Date.now();
@@ -1356,13 +1293,10 @@
                     const unlockDate = new Date(clickedDate);
                     unlockDate.setDate(clickedDate.getDate() + unlockDays);
                     unlockDate.setHours(0, 0, 0, 0);
-
                     if (unlockDate - now > 0) {
                         isCurrentlyLocked = true;
                     }
                 }
-
-                // 3. Phân loại link vào các nhóm tương ứng
                 if (isCurrentlyLocked) {
                     locked_with_countdown.push(item);
                 } else if (clickCount > 0) {
@@ -1371,147 +1305,242 @@
                     never_clicked.push(item);
                 }
             });
-
-            // 4. Sắp xếp nhóm "đã bấm nhưng không khóa" theo số lượt click tăng dần
             clicked_but_unlocked.sort((a, b) => a.clickCount - b.clickCount);
-
-            // Hàm hỗ trợ vẽ các nút
             const renderGroup = (group) => {
-                group.forEach(({ link, label }) => {
+                group.forEach(({link, label}) => {
                     const isProtected = typeof link !== 'string' && link.protected;
                     const highlight = typeof link !== 'string' && link.highlight;
-                    const btn = createButton(
-                        link,
-                        label,
-                        type,
-                        allowMultiple,
-                        isProtected || false,
-                        highlight || false
-                    );
+                    const btn = createButton(link, label, type, allowMultiple, isProtected || false, highlight || false);
                     container.appendChild(btn);
                 });
             };
-
-            // 5. Vẽ các nhóm theo đúng thứ tự bạn yêu cầu
-            renderGroup(never_clicked);          // Chưa bấm bao giờ
-            renderGroup(clicked_but_unlocked);   // Đã bấm, sắp xếp theo lượt bấm
-            renderGroup(locked_with_countdown);  // Đang bị khóa
-
+            renderGroup(never_clicked);
+            renderGroup(clicked_but_unlocked);
+            renderGroup(locked_with_countdown);
         } else {
-            // Giữ nguyên logic cũ cho các nhóm link khác không cần sắp xếp
             links.forEach((link, i) => {
                 if (link.hidden) return;
-                const btn = createButton(
-                    link,
-                    link.label || `${prefix} ${i + 1}`,
-                    type,
-                    allowMultiple,
-                    link.protected || false,
-                    link.highlight || false
-                );
+                const btn = createButton(link, link.label || `${prefix} ${i + 1}`, type, allowMultiple, link.protected || false, link.highlight || false);
                 container.appendChild(btn);
             });
         }
     }
 
+    // =======================================================
+    // [CẬP NHẬT] TOÀN BỘ LOGIC MỚI CHO MỤC RAMEN
+    // =======================================================
+    const ramenCountdownIntervals = {};
+
+    function getRamenButtonId(url) {
+        return 'ramen_' + url.replace(/[.#$[\]]/g, '_');
+    }
+
+    function getLocalRamenClicks() {
+        try {
+            return JSON.parse(localStorage.getItem('userRamenClicks')) || {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function saveLocalRamenClicks(clicks) {
+        localStorage.setItem('userRamenClicks', JSON.stringify(clicks));
+    }
+
+    function renderRamenButton(linkData, globalState) {
+        const buttonId = getRamenButtonId(linkData.url);
+        let btn = document.getElementById(buttonId);
+        if (!btn) return;
+        const existingUnlockBtn = document.getElementById(`unlock_${buttonId}`);
+        if (existingUnlockBtn) {
+            existingUnlockBtn.remove();
+        }
+        btn.style.width = '100%';
+        if (ramenCountdownIntervals[buttonId]) {
+            clearInterval(ramenCountdownIntervals[buttonId]);
+        }
+        const now = Date.now();
+        const localClicks = getLocalRamenClicks();
+        const thisDeviceClickInfo = localClicks[buttonId];
+        const firstClickTimestamp = globalState ? globalState.firstClickTimestamp : null;
+
+        // --- CÁC TRƯỜNG HỢP LOGIC ---
+
+        // TRƯỜNG HỢP 1: Nút đang trong chu kỳ đếm ngược 24 giờ
+        if (firstClickTimestamp && (now < firstClickTimestamp + 24 * 60 * 60 * 1000)) {
+            btn.disabled = false; // Luôn cho phép bấm trong 24h
+            btn.classList.remove('clicked');
+            const deviceCount = globalState.clickedDevices ? Object.keys(globalState.clickedDevices).length : 1;
+            const updateCountdown24h = () => {
+                const remaining = (firstClickTimestamp + 24 * 60 * 60 * 1000) - Date.now();
+                if (remaining <= 0) {
+                    clearInterval(ramenCountdownIntervals[buttonId]);
+                    renderRamenButton(linkData, globalState);
+                } else {
+                    const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                    const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                    const s = Math.floor((remaining % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                    btn.textContent = `${linkData.label} (${deviceCount} ${h}:${m}:${s})`;
+                }
+            };
+            updateCountdown24h();
+            ramenCountdownIntervals[buttonId] = setInterval(updateCountdown24h, 1000);
+        }
+        // TRƯỜNG HỢP 2: Chu kỳ 24 giờ đã kết thúc
+        else if (firstClickTimestamp) {
+            // Kiểm tra xem thiết bị này CÓ tham gia vào chu kỳ vừa rồi không
+            if (thisDeviceClickInfo && thisDeviceClickInfo.cycleStart === firstClickTimestamp) {
+                const lockoutEndTime = firstClickTimestamp + (24 * 60 * 60 * 1000) + (13 * 24 * 60 * 60 * 1000); // 1 ngày + 13 ngày
+
+                // Nếu vẫn đang trong thời gian khóa 6 ngày
+                if (now < lockoutEndTime) {
+                    btn.disabled = true;
+                    btn.classList.add('clicked');
+                    btn.style.width = 'calc(100% - 70px)';
+                    const unlockBtn = document.createElement('button');
+                    unlockBtn.id = `unlock_${buttonId}`;
+                    unlockBtn.textContent = '🔓';
+                    unlockBtn.className = 'link-button';
+                    unlockBtn.style.width = '60px';
+                    unlockBtn.style.marginLeft = '10px';
+                    unlockBtn.style.backgroundColor = '#f0ad4e';
+                    unlockBtn.onclick = () => {
+                        showPasswordPrompt({
+                            title: "Nhập mật khẩu để mở khóa:",
+                            onSuccess: () => {
+                                const currentClicks = getLocalRamenClicks();
+                                delete currentClicks[buttonId];
+                                saveLocalRamenClicks(currentClicks);
+                                renderRamenButton(linkData, null);
+                            }
+                        });
+                    };
+                    btn.insertAdjacentElement('afterend', unlockBtn);
+                    const updateLockdown6d = () => {
+                        const remaining = lockoutEndTime - Date.now();
+                        if (remaining <= 0) {
+                            clearInterval(ramenCountdownIntervals[buttonId]);
+                            const currentClicks = getLocalRamenClicks();
+                            delete currentClicks[buttonId];
+                            saveLocalRamenClicks(currentClicks);
+                            renderRamenButton(linkData, null);
+                        } else {
+                            const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
+                            const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                            const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                            const s = Math.floor((remaining % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                            btn.textContent = `🔒 ${d}d ${h}:${m}:${s}`;
+                        }
+                    };
+                    updateLockdown6d();
+                    ramenCountdownIntervals[buttonId] = setInterval(updateLockdown6d, 1000);
+                } else {
+
+                     // Thời gian khóa 6 ngày đã hết
+                    btn.disabled = false;
+                    btn.classList.remove('clicked');
+                    btn.textContent = linkData.label;
+                }
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('clicked');
+                btn.textContent = linkData.label;
+            }
+        } else {
+
+            // Thiết bị này KHÔNG tham gia, nút trở về bình thường
+            btn.disabled = false;
+            btn.classList.remove('clicked');
+            btn.textContent = linkData.label;
+        }
+    }
+
+    function initializeRamenSection() {
+        const container = document.getElementById('linkRamen');
+        container.innerHTML = '';
+        linkRamen.forEach(link => {
+            if (link.hidden) return;
+            const buttonId = getRamenButtonId(link.url);
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'flex';
+            wrapper.style.alignItems = 'center';
+            const btn = document.createElement('button');
+            btn.id = buttonId;
+            btn.className = 'link-button';
+            btn.textContent = link.label;
+            wrapper.appendChild(btn);
+            container.appendChild(wrapper);
+            btn.onclick = () => {
+                if (btn.disabled) return;
+                const buttonRef = database.ref('ramen_buttons/' + buttonId);
+                const currentTime = Date.now();
+                buttonRef.get().then((snapshot) => {
+                    const globalState = snapshot.val();
+                    const isNewCycle = !globalState || !globalState.firstClickTimestamp || (currentTime >= globalState.firstClickTimestamp + 24 * 60 * 60 * 1000);
+                    if (isNewCycle) {
+                        const newClickedDevices = {};
+                        newClickedDevices[uniqueDeviceId] = true;
+                        buttonRef.set({
+                            firstClickTimestamp: currentTime,
+                            clickedDevices: newClickedDevices
+                        });
+                        const localClicks = getLocalRamenClicks();
+                        localClicks[buttonId] = { cycleStart: currentTime };
+                        saveLocalRamenClicks(localClicks);
+                    } else {
+                        buttonRef.child('clickedDevices').child(uniqueDeviceId).set(true);
+                        const localClicks = getLocalRamenClicks();
+                        localClicks[buttonId] = { cycleStart: globalState.firstClickTimestamp };
+                        saveLocalRamenClicks(localClicks);
+                    }
+                    window.open(link.url, '_blank');
+                });
+            };
+            const buttonRef = database.ref('ramen_buttons/' + buttonId);
+            buttonRef.on('value', (snapshot) => {
+                const globalState = snapshot.val();
+                renderRamenButton(link, globalState);
+            });
+        });
+    }
+
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
         const allSections = ['linkCoc', 'linkTuyet', 'linkTao', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkRamen', 'linkGioiThieu', 'linkShein'];
-
+        const container = document.getElementById(id);
+        if (!container) return;
+        const icon = document.getElementById('icon-' + id);
+        const isCurrentlyCollapsed = container.classList.contains('collapsed');
         allSections.forEach(sectionId => {
-            const container = document.getElementById(sectionId);
-            const icon = document.getElementById('icon-' + sectionId);
-            if (sectionId === id) {
-                const isCollapsed = container.classList.contains('collapsed');
-                container.classList.toggle('collapsed');
-                icon.textContent = container.classList.contains('collapsed') ? '+' : '−';
-            } else {
-                container.classList.add('collapsed');
-                if (icon) icon.textContent = '+';
+            if (sectionId !== id) {
+                const otherContainer = document.getElementById(sectionId);
+                const otherIcon = document.getElementById('icon-' + sectionId);
+                if (otherContainer) otherContainer.classList.add('collapsed');
+                if (otherIcon) otherIcon.textContent = '+';
             }
         });
+        if (isCurrentlyCollapsed) {
+            container.classList.remove('collapsed');
+            if (icon) icon.textContent = '−';
+        } else {
+            container.classList.add('collapsed');
+            if (icon) icon.textContent = '+';
+        }
     }
     //___________________________________________________________
 
-    // ✅ [CẬP NHẬT] Hiển thị các nhóm link (logic đã được cập nhật để kiểm tra thời gian)
-    if (isSectionVisible('coc')) {
-        renderLinks('linkCoc-lite', linkCocLite, 'coc-lite', 'Lite', true);
-        renderLinks('linkCoc-regular', linkCocRegular, 'coc-regular', 'Thường', true);
-        document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkCoc\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('tuyet')) {
-        renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true);
-        document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkTuyet\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('tao')) {
-        renderLinks('linkTao', linkTao, 'tao', 'Táo', true);
-        document.querySelector('[onclick="toggleSection(\'linkTao\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkTao\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('sumo')) {
-        renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true);
-        document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkSumo\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('khoBau')) {
-        renderLinks('linkKhoBau', linkKhoBau, 'khobau', 'Kho Báu', true);
-        document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkKhoBau\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('cauCa')) {
-        renderLinks('linkCauCa', linkCauCa, 'cauca', 'Câu Cá', true);
-        document.querySelector('[onclick="toggleSection(\'linkCauCa\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkCauCa\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('500Like')) {
-        renderLinks('link500Like', link500Like, '500like', 'Video', true);
-        document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'link500Like\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('QRcode')) {
-        renderLinks('linkQRcode', linkQRcode, 'QR', 'QRcode', true);
-        document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkQRcode\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('ramen')) {
-        renderLinks('linkRamen', linkRamen, 'ramen', 'Ramen', true);
-        document.querySelector('[onclick="toggleSection(\'linkRamen\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkRamen\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('gioiThieu')) {
-        renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true);
-        document.querySelector('[onclick="toggleSection(\'linkGioiThieu\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkGioiThieu\')"]').parentElement.style.display = 'none';
-    }
-
-    if (isSectionVisible('shein')) {
-        renderLinks('linkShein', linkShein, 'shein', 'Shein', true);
-        document.querySelector('[onclick="toggleSection(\'linkShein\')"]').parentElement.style.display = '';
-    } else {
-        document.querySelector('[onclick="toggleSection(\'linkShein\')"]').parentElement.style.display = 'none';
-    }
-
+    // ✅ [CẬP NHẬT] Hiển thị các nhóm link
+    if (isSectionVisible('coc')) { renderLinks('linkCoc-lite', linkCocLite, 'coc-lite', 'Lite', true); renderLinks('linkCoc-regular', linkCocRegular, 'coc-regular', 'Thường', true); }
+    if (isSectionVisible('tuyet')) { renderLinks('linkTuyet', linkTuyet, 'tuyet', 'Tuyết', true); }
+    if (isSectionVisible('tao')) { renderLinks('linkTao', linkTao, 'tao', 'Táo', true); }
+    if (isSectionVisible('sumo')) { renderLinks('linkSumo', linkSumo, 'sumo', 'Sumo', true); }
+    if (isSectionVisible('khoBau')) { renderLinks('linkKhoBau', linkKhoBau, 'khobau', 'Kho Báu', true); }
+    if (isSectionVisible('cauCa')) { renderLinks('linkCauCa', linkCauCa, 'cauca', 'Câu Cá', true); }
+    if (isSectionVisible('500Like')) { renderLinks('link500Like', link500Like, '500like', 'Video', true); }
+    if (isSectionVisible('QRcode')) { renderLinks('linkQRcode', linkQRcode, 'QR', 'QRcode', true); }
+    if (isSectionVisible('ramen')) { initializeRamenSection(); }
+    if (isSectionVisible('gioiThieu')) { renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true); }
+    if (isSectionVisible('shein')) { renderLinks('linkShein', linkShein, 'shein', 'Shein', true); }
     //___________________________________________________________
 
     // ✅ Các cột TikTok được hiển thị bên dưới
@@ -1537,16 +1566,14 @@
         menu.classList.add('hidden');
         showPasswordPrompt({
             title: "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
-            key: 'resetBtn_lock', // Key duy nhất để theo dõi lượt nhập sai
+            key: 'resetBtn_lock',
             onSuccess: () => resetCountdown()
         });
     });
 
     // Hàm reset thực sự
     function resetCountdown() {
-        localStorage.removeItem('clickedLinks');
-        localStorage.removeItem('wrongAttempts_resetBtn_lock');
-        localStorage.removeItem('lockStartTime_resetBtn_lock');
+        localStorage.clear();
         alert(translations[currentLanguage]['reset-success']);
         location.reload();
     }
@@ -1557,13 +1584,11 @@
         const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
         const iosModalKey = 'iosInstallModalShownCount';
         let count = parseInt(localStorage.getItem(iosModalKey) || '0', 10);
-
         if (enable_ios_modal && isIOS && !isInStandaloneMode && count < 1) {
             const modal = document.getElementById('iosInstallModal');
             if (modal) {
                 modal.style.display = 'flex';
                 document.body.classList.add('no-scroll');
-
                 const okBtn = document.getElementById('ios-ok-btn');
                 okBtn.addEventListener('click', () => {
                     modal.style.display = 'none';
@@ -1578,36 +1603,29 @@
     function showFeatureModalIfNeeded() {
         const modalKey = 'featureModalShownCount';
         let count = parseInt(localStorage.getItem(modalKey) || '0', 10);
-
         if (count < 1) {
             const modal = document.getElementById('featureModal');
             const okBtn = document.getElementById('featureModal-ok');
-
             modal.style.display = 'flex';
             document.body.classList.add('no-scroll');
-
             okBtn.addEventListener('click', () => {
                 modal.style.display = 'none';
                 document.body.classList.remove('no-scroll');
                 localStorage.setItem(modalKey, (count + 1).toString());
-                // Sau khi đóng modal này, gọi modal hướng dẫn iOS
                 triggerIOSModalIfNeeded();
             });
         } else {
-            // Nếu modal tính năng không hiện, vẫn phải kiểm tra để hiện modal iOS
             triggerIOSModalIfNeeded();
         }
     }
-
+    
     // ✅ Reset vô hiệu hóa Pass mở link
     (function () {
         let clickCount = 0;
         let lastClickTime = 0;
         const maxInterval = 1000;
-
         const el = document.getElementById('tiktok-lite');
         if (!el) return;
-
         el.addEventListener('click', () => {
             const now = Date.now();
             if (now - lastClickTime > maxInterval) {
@@ -1616,7 +1634,6 @@
                 clickCount++;
             }
             lastClickTime = now;
-
             if (clickCount >= 5) {
                 for (const key in localStorage) {
                     if (key.startsWith("wrongAttempts_") || key.startsWith("lockStartTime_")) {
@@ -1633,7 +1650,6 @@
     // ✅ reset số lần hiển thị thông báo tính năng mới
     let tapCount = 0;
     let tapTimeout;
-
     const tiktokText = document.getElementById('tiktok-normal');
     if (tiktokText) {
         tiktokText.addEventListener('click', () => {
@@ -1657,26 +1673,11 @@
     // Toggle menu nổi
     const menuButton = document.getElementById('floatingMenuButton');
     const menu = document.getElementById('floatingMenuOptions');
-
-    menuButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menu.classList.toggle('hidden');
-    });
-
-    menu.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-    document.addEventListener('click', () => {
-        menu.classList.add('hidden');
-    });
-    document.addEventListener('touchstart', (e) => {
-        if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== menuButton) {
-            menu.classList.add('hidden');
-        }
-    });
-    window.addEventListener('scroll', () => {
-        menu.classList.add('hidden');
-    });
+    menuButton.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+    menu.addEventListener('click', (e) => { e.stopPropagation(); });
+    document.addEventListener('click', () => { menu.classList.add('hidden'); });
+    document.addEventListener('touchstart', (e) => { if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== menuButton) { menu.classList.add('hidden'); } });
+    window.addEventListener('scroll', () => { menu.classList.add('hidden'); });
 
     // Giao diện sáng/tối
     function toggleDarkMode() {
@@ -1693,13 +1694,10 @@
         const btn = document.getElementById('resetBtn');
         const lockKey = 'resetBtn_lock';
         const lockStartTime = parseInt(localStorage.getItem('lockStartTime_' + lockKey));
-
-        if (isNaN(lockStartTime)) return; // Không bị khóa thì thoát
-
+        if (isNaN(lockStartTime)) return;
         const lockUntil = lockStartTime + (lockDays * 24 * 60 * 60 * 1000);
         if (Date.now() < lockUntil) {
             btn.disabled = true;
-
             const interval = setInterval(() => {
                 const remaining = lockUntil - Date.now();
                 if (remaining <= 0) {
@@ -1707,7 +1705,6 @@
                     btn.disabled = false;
                     localStorage.removeItem('lockStartTime_' + lockKey);
                     localStorage.removeItem('wrongAttempts_' + lockKey);
-                    // Phục hồi lại text gốc của nút sau khi hết khóa
                     applyLanguage(currentLanguage);
                 } else {
                     const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
@@ -1718,7 +1715,6 @@
                 }
             }, 1000);
         } else {
-            // Khóa đã hết hạn
             localStorage.removeItem('lockStartTime_' + lockKey);
             localStorage.removeItem('wrongAttempts_' + lockKey);
         }
@@ -1728,210 +1724,22 @@
     let startY = 0;
     let isPulling = false;
     const threshold = 60;
-
-    document.addEventListener('touchstart', (e) => {
-        if (window.scrollY === 0) {
-            startY = e.touches[0].clientY;
-            isPulling = true;
-        }
-    });
-    document.addEventListener('touchmove', (e) => {
-        if (isPulling && (e.touches[0].clientY - startY) > threshold) {
-            isPulling = false;
-            location.reload();
-        }
-    });
-    document.addEventListener('touchend', () => {
-        isPulling = false;
-    });
+    document.addEventListener('touchstart', (e) => { if (window.scrollY === 0) { startY = e.touches[0].clientY; isPulling = true; } });
+    document.addEventListener('touchmove', (e) => { if (isPulling && (e.touches[0].clientY - startY) > threshold) { isPulling = false; location.reload(); } });
+    document.addEventListener('touchend', () => { isPulling = false; });
 
     // Đa ngôn ngữ
     const translations = {
         vi: {
-            title: "Video 60 Phút by Quang Đạo",
-            "tiktok-normal": "TikTok",
-            "tiktok-lite": "TikTok Lite",
-            "group-coc": "🐸 Cóc 🐸",
-            "coc-tiktok-lite": "TikTok Lite",
-            "coc-tiktok-regular": "TikTok",
-            "group-tuyet": "❄ Tuyết ❄",
-            "group-tao": "🍎 Táo 🍎",
-            "group-sumo": "🤼 Sumo 🤼",
-            "group-khobau": "Mở Kho Báu 💎",
-            "group-cauca": "🎣  Câu Cá  🎣",
-            "group-500like": "🧡 500 Like 🧡",
-            "group-QR": "Quét Mã QR",
-            "group-ramen": "🍜Mì Ăn Liền🍜",
-            "group-gt": "Giới Thiệu 📢",
-            "group-shein": "Shein",
-            "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!",
-            "info2": "",
-            "info3": "",
-            "info4": "",
-            "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:",
-            "modal-cancel": "Hủy",
-            "modal-ok": "OK",
-            "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.",
-            "modal-ok-confirm": "Đã hiểu",
-            "modal-title": "🔔 Thông báo",
-            "modal-line1": "➤ Thay đổi tên miền:",
-            "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:",
-            "modal-line3": "👉 video60min.com",
-            "modal-line4": "● Website cũ không thể truy cập.",
-            "modal-line5": "👉 .............",
-            "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:",
-            "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.",
-            "modal-line8": "● Hãy chọn video khác để xem.",
-            "modal-line9": "➤ Lưu ý:",
-            "modal-line10": "● Tất cả video có nội dung giống nhau.",
-            "modal-line11": "● Âm thanh Video đã được loại bỏ.",
-            "modal-line12": "Admin Đăng Giáp!",
-            "contact": "Thông Tin Liên Hệ",
-            "contact-title": "📞 Thông Tin Liên Hệ",
-            "contact-line1": "Zalo: 0979-518-322",
-            "contact-line2": "Email: chichchoehoa001@gmail.com",
-            "contact-close": "Đóng",
-            "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt",
-            "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)",
-            "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.",
-            "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.",
-            "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.",
-            "ios-ok-btn": "Đã hiểu",
-            "copied-success-text": "Đã sao chép liên kết",
-            "reset": "Khôi phục mặc định",
-            "dark-mode-on": "🌙 Chế độ Tối",
-            "dark-mode-off": "🌞 Chế độ Sáng",
-            "reset-success": "Cài đặt mặc định đã được thiết lập",
-            "lang-changed": "Ngôn ngữ Tiếng Việt đã được thiết lập",
-            "countdown": {
-               "remaining": "Còn:",
-               "days": "Ngày"
-            }
+            title: "Video 60 Phút by Quang Đạo", "tiktok-normal": "TikTok", "tiktok-lite": "TikTok Lite", "group-coc": "🐸 Cóc 🐸", "coc-tiktok-lite": "TikTok Lite", "coc-tiktok-regular": "TikTok", "group-tuyet": "❄ Tuyết ❄", "group-tao": "🍎 Táo 🍎", "group-sumo": "🤼 Sumo 🤼", "group-khobau": "Mở Kho Báu 💎", "group-cauca": "🎣  Câu Cá  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "Quét Mã QR", "group-ramen": "🍜Mì Ăn Liền🍜", "group-gt": "Giới Thiệu 📢", "group-shein": "Shein", "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!", "info2": "", "info3": "", "info4": "", "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:", "modal-cancel": "Hủy", "modal-ok": "OK", "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.", "modal-ok-confirm": "Đã hiểu", "modal-title": "🔔 Thông báo", "modal-line1": "➤ Thay đổi tên miền:", "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:", "modal-line3": "👉 video60min.com", "modal-line4": "● Website cũ không thể truy cập.", "modal-line5": "👉 .............", "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:", "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.", "modal-line8": "● Hãy chọn video khác để xem.", "modal-line9": "➤ Lưu ý:", "modal-line10": "● Tất cả video có nội dung giống nhau.", "modal-line11": "● Âm thanh Video đã được loại bỏ.", "modal-line12": "Admin Đăng Giáp!", "contact": "Thông Tin Liên Hệ", "contact-title": "📞 Thông Tin Liên Hệ", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "Email: chichchoehoa001@gmail.com", "contact-close": "Đóng", "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt", "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)", "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.", "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.", "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.", "ios-ok-btn": "Đã hiểu", "copied-success-text": "Đã sao chép liên kết", "reset": "Khôi phục mặc định", "dark-mode-on": "🌙 Chế độ Tối", "dark-mode-off": "🌞 Chế độ Sáng", "reset-success": "Cài đặt mặc định đã được thiết lập", "lang-changed": "Ngôn ngữ Tiếng Việt đã được thiết lập", "countdown": { "remaining": "Còn:", "days": "Ngày" }
         },
         en: {
-            title: "60 Minute Videos by Quang Dao",
-            "tiktok-normal": "TikTok",
-            "tiktok-lite": "TikTok Lite",
-            "group-coc": "🐸 Frog 🐸",
-            "coc-tiktok-lite": "TikTok Lite",
-            "coc-tiktok-regular": "TikTok",
-            "group-tuyet": "❄ Snow ❄",
-            "group-tao": "🍎 Apple 🍎",
-            "group-sumo": "🤼 Sumo 🤼",
-            "group-khobau": "Treasure Chest 💎",
-            "group-cauca": "🎣  Fishing  🎣",
-            "group-500like": "🧡 500 Like 🧡",
-            "group-QR": "Scan QR Code",
-            "group-ramen": "🍜Ramen🍜",
-            "group-gt": "Intro 📢",
-            "group-shein": "Shein",
-            "info1": "We’d appreciate your support with a follow!",
-            "info2": "",
-            "info3": "",
-            "info4": "",
-            "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:",
-            "modal-cancel": "Cancel",
-            "modal-ok": "OK",
-            "modal-error": "Incorrect password. Please try again.",
-            "modal-ok-confirm": "Got it",
-            "modal-title": "🔔 Notification",
-            "modal-line1": "➤ Domain Name Change:",
-            "modal-line2": "● From May 26, 2025, the website address will change to:",
-            "modal-line3": "👉 video60min.com",
-            "modal-line4": "● The old website will still be accessible.",
-            "modal-line5": "👉 ..........",
-            "modal-line6": "➤ Anti-Detection Feature for Phone Fram:",
-            "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.",
-            "modal-line8": "● Please select another video to watch.",
-            "modal-line9": "➤ Note:",
-            "modal-line10": "● All videos have the same content.",
-            "modal-line11": "● Video audio has been removed.",
-            "modal-line12": "Admin Dang Giap!",
-            "contact": "Contact Info",
-            "contact-title": "Contact the administrator.",
-            "contact-line1": "Zalo: 0979-518-322",
-            "contact-line2": "Email: chichchoehoa001@gmail.com",
-            "contact-close": "Close",
-            "ios-modal-title": "How to Add to Home Screen",
-            "ios-line1": "(To optimize your experience, we recommend following the steps below)",
-            "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.",
-            "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.",
-            "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.",
-            "ios-ok-btn": "Got it",
-            "copied-success-text": "Link copied successfully",
-            "reset": "Reset Countdown",
-            "dark-mode-on": "🌙 Dark Mode",
-            "dark-mode-off": "🌞 Light Mode",
-            "reset-success": "Default settings have been set",
-            "lang-changed": "English language has been set",
-            "countdown": {
-               "remaining": "Remaining:",
-               "days": "Day"
-            }
+            title: "60 Minute Videos by Quang Dao", "tiktok-normal": "TikTok", "tiktok-lite": "TikTok Lite", "group-coc": "🐸 Frog 🐸", "coc-tiktok-lite": "TikTok Lite", "coc-tiktok-regular": "TikTok", "group-tuyet": "❄ Snow ❄", "group-tao": "🍎 Apple 🍎", "group-sumo": "🤼 Sumo 🤼", "group-khobau": "Treasure Chest 💎", "group-cauca": "🎣  Fishing  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "Scan QR Code", "group-ramen": "🍜Ramen🍜", "group-gt": "Intro 📢", "group-shein": "Shein", "info1": "We’d appreciate your support with a follow!", "info2": "", "info3": "", "info4": "", "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:", "modal-cancel": "Cancel", "modal-ok": "OK", "modal-error": "Incorrect password. Please try again.", "modal-ok-confirm": "Got it", "modal-title": "🔔 Notification", "modal-line1": "➤ Domain Name Change:", "modal-line2": "● From May 26, 2025, the website address will change to:", "modal-line3": "👉 video60min.com", "modal-line4": "● The old website will still be accessible.", "modal-line5": "👉 ..........", "modal-line6": "➤ Anti-Detection Feature for Phone Fram:", "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.", "modal-line8": "● Please select another video to watch.", "modal-line9": "➤ Note:", "modal-line10": "● All videos have the same content.", "modal-line11": "● Video audio has been removed.", "modal-line12": "Admin Dang Giap!", "contact": "Contact Info", "contact-title": "Contact the administrator.", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "Email: chichchoehoa001@gmail.com", "contact-close": "Close", "ios-modal-title": "How to Add to Home Screen", "ios-line1": "(To optimize your experience, we recommend following the steps below)", "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.", "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.", "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.", "ios-ok-btn": "Got it", "copied-success-text": "Link copied successfully", "reset": "Reset Countdown", "dark-mode-on": "🌙 Dark Mode", "dark-mode-off": "🌞 Light Mode", "reset-success": "Default settings have been set", "lang-changed": "English language has been set", "countdown": { "remaining": "Remaining:", "days": "Day" }
         },
         ja: {
-            title: "光道の60分無音動画",
-            "tiktok-normal": "テックトック",
-            "tiktok-lite": "テックトックライト",
-            "group-coc": "🐸 カエル 🐸",
-            "coc-tiktok-lite": "テックトックライト",
-            "coc-tiktok-regular": "テックトック",
-            "group-tuyet": "❄ 雪 ❄",
-            "group-tao": "🍎 りんご 🍎",
-            "group-sumo": "🤼 相撲 🤼",
-            "group-khobau": "宝箱解放 💎",
-            "group-cauca": "🎣  釣り  🎣",
-            "group-500like": "🧡 500 Like 🧡",
-            "group-QR": "QRコードを読み取り",
-            "group-ramen": "🍜ラーメン🍜",
-            "group-gt": "紹介 📢",
-            "group-shein": "Shein",
-            "info1": "ぜひテックトックフォローをお願いします！",
-            "info2": "",
-            "info3": "",
-            "info4": "",
-            "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。",
-            "modal-cancel": "キャンセル",
-            "modal-ok": "OK",
-            "modal-error": "パスワードが間違っています。もう一度お試しください。",
-            "modal-ok-confirm": "了解",
-            "modal-title": "🔔 お知らせ",
-            "modal-line1": "➤ ドメイン変更:",
-            "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更された:",
-            "modal-line3": "👉 video60min.com",
-            "modal-line4": "● 旧ウェブサイト利用不可です。",
-            "modal-line5": "👉 ............... ",
-            "modal-line6": "➤ Phone Fram検出防止機能:",
-            "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。",
-            "modal-line8": "● 別の動画を選択してください。",
-            "modal-line9": "➤ 注意:",
-            "modal-line10": "● すべての動画の内容は同じです。",
-            "modal-line11": "● 動画の音声は削除されています。",
-            "modal-line12": "管理者 Đăng Giáp!",
-            "contact": "問い合わせ",
-            "contact-title": "管理者の問い合わせ：",
-            "contact-line1": "Zalo: 0979-518-322",
-            "contact-line2": "メール: chichchoehoa001@gmail.com",
-            "contact-close": "OK",
-            "ios-modal-title": "ホーム画面に追加する方法",
-            "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）",
-            "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。",
-            "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。",
-            "ios-line4": "3. <strong>「追加」</strong>をタップして完了。",
-            "ios-ok-btn": "了解",
-            "copied-success-text": "リンクをコピーしました",
-            "reset": "初期化",
-            "dark-mode-on": "🌙 ダークモード",
-            "dark-mode-off": "🌞 ライトモード",
-            "reset-success": "最初化済み",
-            "lang-changed": "日本語に切り替わりました。",
-            "countdown": {
-               "remaining": "有効期限：",
-               "days": "日"
-            }
+            title: "光道の60分無音動画", "tiktok-normal": "テックトック", "tiktok-lite": "テックトックライト", "group-coc": "🐸 カエル 🐸", "coc-tiktok-lite": "テックトックライト", "coc-tiktok-regular": "テックトック", "group-tuyet": "❄ 雪 ❄", "group-tao": "🍎 りんご 🍎", "group-sumo": "🤼 相撲 🤼", "group-khobau": "宝箱解放 💎", "group-cauca": "🎣  釣り  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "QRコードを読み取り", "group-ramen": "🍜ラーメン🍜", "group-gt": "紹介 📢", "group-shein": "Shein", "info1": "ぜひテックトックフォローをお願いします！", "info2": "", "info3": "", "info4": "", "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。", "modal-cancel": "キャンセル", "modal-ok": "OK", "modal-error": "パスワードが間違っています。もう一度お試しください。", "modal-ok-confirm": "了解", "modal-title": "🔔 お知らせ", "modal-line1": "➤ ドメイン変更:", "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更された:", "modal-line3": "👉 video60min.com", "modal-line4": "● 旧ウェブサイト利用不可です。", "modal-line5": "👉 ............... ", "modal-line6": "➤ Phone Fram検出防止機能:", "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。", "modal-line8": "● 別の動画を選択してください。", "modal-line9": "➤ 注意:", "modal-line10": "● すべての動画の内容は同じです。", "modal-line11": "● 動画の音声は削除されています。", "modal-line12": "管理者 Đăng Giáp!", "contact": "問い合わせ", "contact-title": "管理者の問い合わせ：", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "メール: chichchoehoa001@gmail.com", "contact-close": "OK", "ios-modal-title": "ホーム画面に追加する方法", "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）", "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。", "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。", "ios-line4": "3. <strong>「追加」</strong>をタップして完了。", "ios-ok-btn": "了解", "copied-success-text": "リンクをコピーしました", "reset": "初期化", "dark-mode-on": "🌙 ダークモード", "dark-mode-off": "🌞 ライトモード", "reset-success": "最初化済み", "lang-changed": "日本語に切り替わりました。", "countdown": { "remaining": "有効期限：", "days": "日" }
         }
     };
-    
     let currentLanguage = localStorage.getItem('appLang');
     if (!currentLanguage) {
         const browserLang = navigator.language || navigator.userLanguage;
@@ -1945,28 +1753,24 @@
         alert(translations[lang]['lang-changed']);
         location.reload();
     }
-    
+
     // [MỚI] Hàm chọn ngôn ngữ lần đầu, không có alert và chỉ reload
     function selectInitialLanguage(lang) {
         localStorage.setItem('appLang', lang);
-        localStorage.setItem('languageSelected', 'true'); // Đánh dấu đã chọn ngôn ngữ
+        localStorage.setItem('languageSelected', 'true');
         location.reload();
     }
 
-
     function applyLanguage(lang) {
         const t = translations[lang];
-
         document.title = t.title.split(' by ')[0];
         document.getElementById('title').textContent = t.title;
         document.getElementById('tiktok-normal').textContent = t["tiktok-normal"];
         document.getElementById('tiktok-lite').textContent = t["tiktok-lite"];
-
         const resetBtn = document.getElementById('resetBtn');
         if (!resetBtn.disabled) {
             resetBtn.textContent = '🔄 ' + t["reset"];
         }
-
         document.getElementById('group-coc').textContent = t["group-coc"];
         document.getElementById('group-tuyet').textContent = t["group-tuyet"];
         document.getElementById('group-tao').textContent = t["group-tao"];
@@ -1984,7 +1788,6 @@
         document.getElementById('info4').textContent = t["info4"];
         if (document.getElementById('coc-tiktok-lite')) document.getElementById('coc-tiktok-lite').textContent = t["coc-tiktok-lite"];
         if (document.getElementById('coc-tiktok-regular')) document.getElementById('coc-tiktok-regular').textContent = t["coc-tiktok-regular"];
-
         const modalText = document.querySelector('.modal-overlay #modal-text');
         if (modalText) modalText.innerHTML = t["modal-text"];
         const modalCancel = document.querySelector('.modal-overlay #modal-cancel');
@@ -1993,7 +1796,6 @@
         if (modalOk) modalOk.textContent = t["modal-ok"];
         const modalError = document.querySelector('.modal-overlay #modal-error');
         if (modalError) modalError.textContent = t["modal-error"];
-
         if (document.getElementById('contactInfoBtn')) document.getElementById('contactInfoBtn').textContent = '📞 ' + t["contact"];
         document.getElementById('contactModalTitle').textContent = t["contact-title"];
         document.getElementById('contactLine1').textContent = t["contact-line1"];
@@ -2013,50 +1815,36 @@
             const el = document.getElementById('modal-line' + i);
             if (el && t['modal-line' + i]) el.innerHTML = t['modal-line' + i];
         }
-
         const isDark = document.body.classList.contains('dark-mode');
         document.getElementById('darkModeBtn').textContent = isDark ? t['dark-mode-off'] : t['dark-mode-on'];
     }
-    
-    // [CẬP NHẬT] Luồng xử lý chính khi tải trang
+
+    // ✅ [CẬP NHẬT] Luồng xử lý chính khi tải trang
     window.addEventListener('DOMContentLoaded', () => {
-        // Kiểm tra xem người dùng đã từng chọn ngôn ngữ chưa
         if (!localStorage.getItem('languageSelected')) {
-            // Nếu CHƯA, đây là lần đầu truy cập -> hiển thị modal chọn ngôn ngữ
             const langModal = document.getElementById('languageSelectionModal');
             if (langModal) {
                 langModal.style.display = 'flex';
                 document.body.classList.add('no-scroll');
             }
         } else {
-            // Nếu RỒI, tiến hành các bước khởi động bình thường
-            // 1. Áp dụng chế độ sáng/tối
             if (localStorage.getItem('darkMode') === 'yes') {
                 document.body.classList.add('dark-mode');
             }
-            // 2. Kiểm tra khóa nút Reset
             applyResetButtonLock();
-            
-            // 3. Áp dụng ngôn ngữ đã lưu
-            applyLanguage(currentLanguage); 
-            
-            // 4. Hiển thị các nút trong menu nổi tương ứng
+            applyLanguage(currentLanguage);
             document.getElementById('lang-vi').style.display = (currentLanguage === 'vi') ? 'none' : 'block';
             document.getElementById('lang-en').style.display = (currentLanguage === 'en') ? 'none' : 'block';
             document.getElementById('lang-ja').style.display = (currentLanguage === 'ja') ? 'none' : 'block';
-            
-            // 5. Bắt đầu chuỗi hiển thị modal (tính năng mới -> hướng dẫn iOS)
             showFeatureModalIfNeeded();
         }
     });
-
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
             .then(() => console.log("✅ Service Worker registered."))
             .catch((error) => console.log("❌ Service Worker registration failed:", error));
     }
-
 </script>
 </body>
 </html>
