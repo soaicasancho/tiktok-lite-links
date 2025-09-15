@@ -723,7 +723,6 @@
     const database = firebase.database();
     // ========================================================================
 
-
     // [MỚI] Hàm tạo và lấy ID duy nhất cho mỗi thiết bị để đếm lượt click
     function getOrCreateDeviceUniqueId() {
         let deviceId = localStorage.getItem('deviceUniqueId');
@@ -735,6 +734,17 @@
         return deviceId;
     }
     const uniqueDeviceId = getOrCreateDeviceUniqueId();
+
+    // [HÀM MỚI] Lấy ngày hiện tại theo múi giờ +9 (Nhật Bản) ở định dạng YYYY-MM-DD
+    function getCurrentJstDateString() {
+        const now = new Date();
+        // Sử dụng toLocaleString để lấy thời gian ở Tokyo, sau đó tạo lại đối tượng Date để tránh các vấn đề múi giờ của trình duyệt
+        const jstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+        const year = jstDate.getFullYear();
+        const month = String(jstDate.getMonth() + 1).padStart(2, '0');
+        const day = String(jstDate.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
     // ✅ Chỉnh số ngày bị khóa sau 5 lần nhập pass sai
     const lockDays = 120; // 👈 Số ngày bị khóa sau 5 lần sai
@@ -1180,11 +1190,36 @@
         return btn;
     }
 
-    // ✅ Mở link và lưu lịch sử click
+    // ✅ [CẬP NHẬT] Mở link và lưu lịch sử click với logic đếm 1 lượt/ngày
     function openLinkAndSave(linkObj, label, _key, allowMultiple, clickCount, btn) {
         const realUrl = typeof linkObj === 'string' ? linkObj : linkObj.url;
-        const type = _key.split('_')[1];
+        // Lấy 'type' từ key một cách an toàn, phòng trường hợp URL có dấu '_'
+        const type = _key.substring(_key.lastIndexOf('_') + 1);
         const key = realUrl + '_' + type;
+
+        // Danh sách các mục sẽ áp dụng logic đếm 1 lượt/ngày
+        const sectionsForDailyCount = ['coc-lite', 'coc-regular', 'tuyet', 'tao', 'sumo', 'khobau', 'cauca', '500like', 'QR', 'gioithieu', 'shein'];
+
+        if (sectionsForDailyCount.includes(type)) {
+            // Áp dụng logic đếm mới cho các mục trong danh sách
+            const currentJstDate = getCurrentJstDateString();
+            const lastClickDateKey = key + '_last_click_date_jst';
+            const lastClickDate = clickedLinks[lastClickDateKey];
+
+            if (lastClickDate !== currentJstDate) {
+                // Nếu ngày bấm cuối cùng khác ngày hôm nay (hoặc chưa bấm bao giờ)
+                // thì mới cộng dồn lượt bấm và cập nhật ngày bấm cuối cùng.
+                clickedLinks[key + '_count'] = (clickedLinks[key + '_count'] || 0) + 1;
+                clickedLinks[lastClickDateKey] = currentJstDate;
+            }
+            // Nếu đã bấm trong ngày hôm nay rồi thì không làm gì cả (không tăng lượt đếm).
+
+        } else {
+            // Giữ nguyên logic cũ (đếm mỗi lần bấm) cho các mục khác không có trong danh sách
+            // (ví dụ: hai cột video dưới cùng hoặc mục Ramen).
+            clickedLinks[key + '_count'] = (clickedLinks[key + '_count'] || 0) + 1;
+        }
+
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         if (isStandalone) {
             window.location.href = realUrl;
@@ -1192,11 +1227,14 @@
             window.open(realUrl, '_blank');
         }
         const now = Date.now();
+        
+        // Luôn cập nhật timestamp của lần click gần nhất để tính năng khóa nút (countdown) hoạt động bình thường
         clickedLinks[key] = now;
-        clickedLinks[key + '_count'] = (clickedLinks[key + '_count'] || 0) + 1;
+        
         localStorage.setItem('clickedLinks', JSON.stringify(clickedLinks));
         localStorage.removeItem('wrongAttempts_' + key);
         localStorage.removeItem('lockStartTime_' + key);
+
         if (type === 'regular') {
             renderLinks('regularColumn', regularLinks, 'regular', 'Video');
         } else if (type === 'lite') {
