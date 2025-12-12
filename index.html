@@ -788,7 +788,7 @@
         },
         QRcode: {
             enabled: true,
-            expires: '2026-08-20T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+            expires: 'null' // đặt là expires: null nếu không muốn tự tắt
         },
         ramen: {
             enabled: true,
@@ -807,7 +807,7 @@
 
     /**
      * ✅ [HÀM MỚI] Kiểm tra xem một mục có nên được hiển thị hay không.
-     * Dựa vào cài đặt trong sectionSettings (đã bật và chưa hết hạn).
+     * Dựa vào cài đặt trong sectionSettings (đã bật và ủi chưa hết hạn).
      * @param {string} sectionName - Tên của mục (ví dụ: 'coc', 'tuyet').
      * @returns {boolean} - true nếu nên hiển thị, false nếu không.
      */
