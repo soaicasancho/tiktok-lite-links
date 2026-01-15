@@ -757,7 +757,7 @@
         
         coc: {
             enabled: true,
-            expires: null // Định dạng: YYYY-MM-DDTHH:mm:ss GMT+9
+            expires: '2025-10-24T21:00:00+09:00' // Định dạng: YYYY-MM-DDTHH:mm:ss GMT+9
         },
         
         tuyet: {
@@ -788,7 +788,7 @@
         },
         QRcode: {
             enabled: true,
-            expires: null // đặt là expires: null nếu không muốn tự tắt
+            expires: '2025-10-24T21:00:00+09:00' // đặt là expires: null nếu không muốn tự tắt
         },
         ramen: {
             enabled: true,
@@ -825,33 +825,21 @@
 
     // ✅ Dữ liệu link cụ thể. protected: true khóa pass, highlight: true nhấp nháy chữ trong nút, hidden: true ẩn nút, copyOnly: true là chỉ coppy link.
     const linkCocLite = [
-        {url: "https://lite.tiktok.com/t/ZSHKsXbuWLKTH-Z9Es6/", label: "Xs", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHKWeDrSDVT2-jvIU6/", label: "GS-06", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHEdh9JM5QhS-mtM9L/", label: "S20-6", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHEFavp5u7Fn-fQI2X/", label: "Sony 7", highlight: true}
+        {url: "https://lite.tiktok.com/t/ZSHKWeDrSDVT2-jvIU6/", label: "GS-06", hidden: true}
     ];
 
     const linkCocRegular = [
-        {url: "https://vt.tiktok.com/ZSkSN7puy/", label: "16PRM", hidden: true},
-        {url: "https://vt.tiktok.com/ZSSSksXud/", label: "XS", hidden: true},
-        {url: "https://vt.tiktok.com/ZSkkegXK9/", label: "MRT 005", hidden: true},
-        {url: "https://vt.tiktok.com/ZSkSUToee/", label: "Sony 2", hidden: true}
+        {url: "https://vt.tiktok.com/ZSkSN7puy/", label: "16PRM", hidden: true}
     ];
 
     const linkTuyet = [
-        {url: "https://lite.tiktok.com/t/ZSH3ewNea9wGm-F2Gd3/", label: "👹GS1👹", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHTcjgE4Mt8a-9ji8d/", label: "Bùi Hà", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHwXyauknfWo-ycJXC/", label: "🍯BÙI HÀ🍯", highlight: true, hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHKT71jcJ1Q4-9IEy8/", label: "🤡BUI HA🤡", highlight: true},
-        {url: "https://lite.tiktok.com/t/ZSHEYX7GuN7NW-H5TDW/", label: "🍯Bui Hà🍯", highlight: true, hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHwtj1bsgbvw-QPePi/", label: "Hiền Đệ", hidden: true},
+        {url: "https://lite.tiktok.com/t/ZSH3ewNea9wGm-F2Gd3/", label: "👹GS1👹", highlight: true},
+        {url: "https://lite.tiktok.com/t/ZSHojqqWY2Tds-B8zCZ/", label: "👹Bùi👹Hà👹", hidden: true},
         {url: "http://spprofile.prestige-inc.jp/apn-profile-2.mobileconfig", label: "🔒APN🔒", hidden: true}
     ];
 
     const linkTao = [
-                {url: "https://vt.tiktok.com/ZSHvhQmUrr3a9-IZDiS/", label: "XS", highlight: true},
-                {url: "https://vt.tiktok.com/ZSHtYrw5cGvvA-n9nLk/", label: "16PRM", hidden: true},
-                {url: "https://vt.tiktok.com/ZSHtSmVtG48GQ-eHJcp/", label: "C75", hidden: true}
+                {url: "https://vt.tiktok.com/ZSHtYrw5cGvvA-n9nLk/", label: "16PRM", hidden: true}
     ];
 
     const linkSumo = [
@@ -867,43 +855,15 @@
     ];
 
     const link500Like = [
-        {url: "https://lite.tiktok.com/t/ZSAJrJv9g/", label: "C74"},
-        {url: "https://lite.tiktok.com/t/ZSAJhAYua/", label: "C71"},
-        {url: "https://lite.tiktok.com/t/ZSHGeaFExhTKD-bWCqq/", label: "C38"},
-        {url: "https://lite.tiktok.com/t/ZSAJSxHsA/", label: "C46"},
-        {url: "https://lite.tiktok.com/t/ZSAJSx5rD/", label: "C36"},
-        {url: "https://lite.tiktok.com/t/ZSAJBgTbs/", label: "C76"},
-        {url: "https://lite.tiktok.com/t/ZSAJB9DRN/", label: "C75"}
+        {url: "https://lite.tiktok.com/t/ZSAJrJv9g/", label: "C74"}
     ];
 
     const linkQRcode = [
-        {url: "https://lite.tiktok.com/t/ZSHwuermdeUQN-nFK2A/", label: "Radio 037", hidden: true},
-        {url: "https://lite.tiktok.com/t/ZSHEdhgnn6XxX-oaRnu/", label: "S20-6", highlight: true},
-        {url: "https://lite.tiktok.com/t/ZSHKWe6gLDsW5-S6dwZ/", label: "GS-06", hidden: true}
+        {url: "https://lite.tiktok.com/t/ZSHwuermdeUQN-nFK2A/", label: "Radio 037", hidden: true}
     ];
 
     const linkRamen = [
-        {url: "https://lite.tiktok.com/t/ZSHtxmjq69pA5-wtJK3/", label: "16PRM 325"},
-        {url: "https://lite.tiktok.com/t/ZSHGT5mvrg5To-9NKNb/", label: "SONY 26"},
-        {url: "https://lite.tiktok.com/t/ZSHGTaQrThtJG-ZeyPZ/", label: "SONY22"},
-        {url: "https://lite.tiktok.com/t/ZSHGTHXQRJBLk-Iu7yj/", label: "SONY 4"},
-        {url: "https://lite.tiktok.com/t/ZSHGTqx6Qgu2a-c6rRS/", label: "C33 1s3"},
-        {url: "https://lite.tiktok.com/t/ZSHG7Nm6beHBv-YnMMB/", label: "C003 1s"},
-        {url: "https://lite.tiktok.com/t/ZSAubCVDu/", label: "C54 700"},
-        {url: "https://lite.tiktok.com/t/ZSAutgE65/", label: "C38 700"},
-        {url: "https://lite.tiktok.com/t/ZSAuwPS4y/", label: "H37 1S3"},
-        {url: "https://lite.tiktok.com/t/ZSAuwJqdM/", label: "C87 1S3"},
-        {url: "https://lite.tiktok.com/t/ZSAu72Q4U/", label: "C86 700"},
-        {url: "https://lite.tiktok.com/t/ZSAu7L94d/", label: "C83 1S"},
-        {url: "https://lite.tiktok.com/t/ZSAuWVbEQ/", label: "C82 1S"},
-        {url: "https://lite.tiktok.com/t/ZSAun7yY7/", label: "C74 700"},
-        {url: "https://lite.tiktok.com/t/ZSAuWdA7q/", label: "C54 700"},
-        {url: "https://lite.tiktok.com/t/ZSAutcn2R/", label: "C41 1S"},
-        {url: "https://lite.tiktok.com/t/ZSAHdhd4V/", label: "C70 1S"},
-        {url: "https://lite.tiktok.com/t/ZSAuoNjrN/", label: "T17 700"},
-        {url: "https://lite.tiktok.com/t/ZSAuoErsN/", label: "C84 700"},
-        {url: "https://lite.tiktok.com/t/ZSAuEWmG4/", label: "C79 700"},
-        {url: "https://lite.tiktok.com/t/ZSHtasUgYx9Qx-eW3Ca/", label: "SONY 24"}
+        {url: "https://lite.tiktok.com/t/ZSHtxmjq69pA5-wtJK3/", label: "16PRM 325"}
     ];
     
     const linkGioiThieu = [
