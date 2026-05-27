@@ -597,6 +597,14 @@
     </div>
 </div>
 
+<div class="section">
+        <div class="section-title" onclick="toggleSection('linkInote')">
+            <span class="toggle-icon" id="icon-linkInote">+</span> <span id="group-inote"></span>
+            <span class="countdown" id="countdown-inote"></span>
+        </div>
+        <div id="linkInote" class="link-container collapsed"></div>
+    </div>
+
 <div class="bottom-section">
     <div class="section" id="regularColumn">
         <div class="section-title" id="tiktok-normal">TikTok Thường</div>
@@ -802,6 +810,11 @@
         shein: {
             enabled: true,
             expires: '2025-09-15T23:59:59+09:00' // đặt là expires: null nếu không muốn tự tắt
+        },
+
+        inote: {
+            enabled: true,
+            expires: null // đặt là expires: null nếu không muốn tự tắt
         }
     };
 
@@ -872,6 +885,10 @@
     const linkShein = [
         {url: "https://jp.shein.com/user/auth/login?direction=nav", label: "Tạo Tài Khoản"},
         {url: "https://onelink.shein.com/16/50y0l908c5r1", label: "SONY 29"}
+    ];
+
+    const linkInote = [
+        {url: "https://inote.net/w", label: "Note"}
     ];
 
     const regularLinks = [
@@ -1160,7 +1177,7 @@
         const key = realUrl + '_' + type;
 
         // Danh sách các mục sẽ áp dụng logic đếm 1 lượt/ngày
-        const sectionsForDailyCount = ['coc-lite', 'coc-regular', 'tuyet', 'tao', 'sumo', 'khobau', 'cauca', '500like', 'QR', 'gioithieu', 'shein'];
+        const sectionsForDailyCount = ['coc-lite', 'coc-regular', 'tuyet', 'tao', 'sumo', 'khobau', 'cauca', '500like', 'QR', 'gioithieu', 'shein', 'inote'];
 
         if (sectionsForDailyCount.includes(type)) {
             // Áp dụng logic đếm mới cho các mục trong danh sách
@@ -1506,7 +1523,7 @@
 
     // ✅ Đổi icon + ↔ − khi thu gọn/mở rộng nhóm
     function toggleSection(id) {
-        const allSections = ['linkCoc', 'linkTuyet', 'linkTao', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkRamen', 'linkGioiThieu', 'linkShein'];
+        const allSections = ['linkCoc', 'linkTuyet', 'linkTao', 'linkSumo', 'linkKhoBau', 'linkCauCa', 'link500Like', 'linkQRcode', 'linkRamen', 'linkGioiThieu', 'linkShein', 'linkInote'];
         const container = document.getElementById(id);
         if (!container) return;
         const icon = document.getElementById('icon-' + id);
@@ -1541,6 +1558,7 @@
     if (isSectionVisible('ramen')) { initializeRamenSection(); }
     if (isSectionVisible('gioiThieu')) { renderLinks('linkGioiThieu', linkGioiThieu, 'gioithieu', 'GT', true); }
     if (isSectionVisible('shein')) { renderLinks('linkShein', linkShein, 'shein', 'Shein', true); }
+    if (isSectionVisible('inote')) { renderLinks('linkInote', linkInote, 'inote', 'Inote', true); }
     //___________________________________________________________
 
     // ✅ Các cột TikTok được hiển thị bên dưới
@@ -1731,13 +1749,13 @@
     // Đa ngôn ngữ
     const translations = {
         vi: {
-            title: "Video 60 Phút by Quang Đạo", "tiktok-normal": "TikTok", "tiktok-lite": "TikTok Lite", "group-coc": "🐸 Cóc 🐸", "coc-tiktok-lite": "TikTok Lite", "coc-tiktok-regular": "TikTok", "group-tuyet": "❄ Tuyết ❄", "group-tao": "🍎 Táo 🍎", "group-sumo": "🤼 Sumo 🤼", "group-khobau": "Mở Kho Báu 💎", "group-cauca": "🎣  Câu Cá  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "Quét Mã QR", "group-ramen": "🍜Mì Ăn Liền🍜", "group-gt": "Giới Thiệu 📢", "group-shein": "Shein", "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!", "info2": "", "info3": "", "info4": "", "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:", "modal-cancel": "Hủy", "modal-ok": "OK", "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.", "modal-ok-confirm": "Đã hiểu", "modal-title": "🔔 Thông báo", "modal-line1": "➤ Thay đổi tên miền:", "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:", "modal-line3": "👉 video60min.com", "modal-line4": "● Website cũ không thể truy cập.", "modal-line5": "👉 .............", "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:", "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.", "modal-line8": "● Hãy chọn video khác để xem.", "modal-line9": "➤ Lưu ý:", "modal-line10": "● Tất cả video có nội dung giống nhau.", "modal-line11": "● Âm thanh Video đã được loại bỏ.", "modal-line12": "Admin Đăng Giáp!", "contact": "Thông Tin Liên Hệ", "contact-title": "📞 Thông Tin Liên Hệ", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "Email: chichchoehoa001@gmail.com", "contact-close": "Đóng", "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt", "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)", "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.", "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.", "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.", "ios-ok-btn": "Đã hiểu", "copied-success-text": "Đã sao chép liên kết", "reset": "Khôi phục mặc định", "dark-mode-on": "🌙 Chế độ Tối", "dark-mode-off": "🌞 Chế độ Sáng", "reset-success": "Cài đặt mặc định đã được thiết lập", "lang-changed": "Ngôn ngữ Tiếng Việt đã được thiết lập", "countdown": { "remaining": "Còn:", "days": "Ngày" }
+            title: "Video 60 Phút by Quang Đạo", "tiktok-normal": "TikTok", "tiktok-lite": "TikTok Lite", "group-coc": "🐸 Cóc 🐸", "coc-tiktok-lite": "TikTok Lite", "coc-tiktok-regular": "TikTok", "group-tuyet": "❄ Tuyết ❄", "group-tao": "🍎 Táo 🍎", "group-sumo": "🤼 Sumo 🤼", "group-khobau": "Mở Kho Báu 💎", "group-cauca": "🎣  Câu Cá  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "Quét Mã QR", "group-ramen": "🍜Mì Ăn Liền🍜", "group-gt": "Giới Thiệu 📢", "group-shein": "Shein", "group-inote": "Inote", "info1": "Các Bạn giúp mình 1 lượt follow Video đang xem nhé!", "info2": "", "info3": "", "info4": "", "modal-text": "Bạn không có quyền truy cập tính năng này<br>Nhập Mật Khẩu để tiếp tục:", "modal-cancel": "Hủy", "modal-ok": "OK", "modal-error": "Mật khẩu không đúng. Vui lòng thử lại.", "modal-ok-confirm": "Đã hiểu", "modal-title": "🔔 Thông báo", "modal-line1": "➤ Thay đổi tên miền:", "modal-line2": "● Từ ngày 26/05/2025 tên truy cập website sẽ đổi thành:", "modal-line3": "👉 video60min.com", "modal-line4": "● Website cũ không thể truy cập.", "modal-line5": "👉 .............", "modal-line6": "➤ Tính năng chống bị phát hiện Phone Fram:", "modal-line7": "● Sau khi click xem video bất kỳ, video đó sẽ bị vô hiệu hóa một thời gian nhất định.", "modal-line8": "● Hãy chọn video khác để xem.", "modal-line9": "➤ Lưu ý:", "modal-line10": "● Tất cả video có nội dung giống nhau.", "modal-line11": "● Âm thanh Video đã được loại bỏ.", "modal-line12": "Admin Đăng Giáp!", "contact": "Thông Tin Liên Hệ", "contact-title": "📞 Thông Tin Liên Hệ", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "Email: chichchoehoa001@gmail.com", "contact-close": "Đóng", "ios-modal-title": "Hướng Dẫn Tạo Phím Tắt", "ios-line1": "(Để tăng mức độ tối ưu khi sử dụng, chúng tôi khuyên bạn nên làm theo chỉ dẫn bên dưới)", "ios-line2": "1. Nhấn biểu tượng <strong>Chia sẻ</strong> (hình vuông có mũi tên đi lên) ở dưới cùng Safari.", "ios-line3": "2. Chọn <strong>\"Thêm vào Màn hình chính\"</strong>.", "ios-line4": "3. Nhấn <strong>\"Thêm\"</strong> để hoàn tất.", "ios-ok-btn": "Đã hiểu", "copied-success-text": "Đã sao chép liên kết", "reset": "Khôi phục mặc định", "dark-mode-on": "🌙 Chế độ Tối", "dark-mode-off": "🌞 Chế độ Sáng", "reset-success": "Cài đặt mặc định đã được thiết lập", "lang-changed": "Ngôn ngữ Tiếng Việt đã được thiết lập", "countdown": { "remaining": "Còn:", "days": "Ngày" }
         },
         en: {
-            title: "60 Minute Videos by Quang Dao", "tiktok-normal": "TikTok", "tiktok-lite": "TikTok Lite", "group-coc": "🐸 Frog 🐸", "coc-tiktok-lite": "TikTok Lite", "coc-tiktok-regular": "TikTok", "group-tuyet": "❄ Snow ❄", "group-tao": "🍎 Apple 🍎", "group-sumo": "🤼 Sumo 🤼", "group-khobau": "Treasure Chest 💎", "group-cauca": "🎣  Fishing  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "Scan QR Code", "group-ramen": "🍜Ramen🍜", "group-gt": "Intro 📢", "group-shein": "Shein", "info1": "We’d appreciate your support with a follow!", "info2": "", "info3": "", "info4": "", "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:", "modal-cancel": "Cancel", "modal-ok": "OK", "modal-error": "Incorrect password. Please try again.", "modal-ok-confirm": "Got it", "modal-title": "🔔 Notification", "modal-line1": "➤ Domain Name Change:", "modal-line2": "● From May 26, 2025, the website address will change to:", "modal-line3": "👉 video60min.com", "modal-line4": "● The old website will still be accessible.", "modal-line5": "👉 ..........", "modal-line6": "➤ Anti-Detection Feature for Phone Fram:", "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.", "modal-line8": "● Please select another video to watch.", "modal-line9": "➤ Note:", "modal-line10": "● All videos have the same content.", "modal-line11": "● Video audio has been removed.", "modal-line12": "Admin Dang Giap!", "contact": "Contact Info", "contact-title": "Contact the administrator.", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "Email: chichchoehoa001@gmail.com", "contact-close": "Close", "ios-modal-title": "How to Add to Home Screen", "ios-line1": "(To optimize your experience, we recommend following the steps below)", "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.", "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.", "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.", "ios-ok-btn": "Got it", "copied-success-text": "Link copied successfully", "reset": "Reset Countdown", "dark-mode-on": "🌙 Dark Mode", "dark-mode-off": "🌞 Light Mode", "reset-success": "Default settings have been set", "lang-changed": "English language has been set", "countdown": { "remaining": "Remaining:", "days": "Day" }
+            title: "60 Minute Videos by Quang Dao", "tiktok-normal": "TikTok", "tiktok-lite": "TikTok Lite", "group-coc": "🐸 Frog 🐸", "coc-tiktok-lite": "TikTok Lite", "coc-tiktok-regular": "TikTok", "group-tuyet": "❄ Snow ❄", "group-tao": "🍎 Apple 🍎", "group-sumo": "🤼 Sumo 🤼", "group-khobau": "Treasure Chest 💎", "group-cauca": "🎣  Fishing  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "Scan QR Code", "group-ramen": "🍜Ramen🍜", "group-gt": "Intro 📢", "group-shein": "Shein", "group-inote": "Inote", "info1": "We’d appreciate your support with a follow!", "info2": "", "info3": "", "info4": "", "modal-text": "You do not have permission to access this feature.<br>Please enter the password to continue:", "modal-cancel": "Cancel", "modal-ok": "OK", "modal-error": "Incorrect password. Please try again.", "modal-ok-confirm": "Got it", "modal-title": "🔔 Notification", "modal-line1": "➤ Domain Name Change:", "modal-line2": "● From May 26, 2025, the website address will change to:", "modal-line3": "👉 video60min.com", "modal-line4": "● The old website will still be accessible.", "modal-line5": "👉 ..........", "modal-line6": "➤ Anti-Detection Feature for Phone Fram:", "modal-line7": "● After clicking to watch any video, that video will be disabled for a certain time.", "modal-line8": "● Please select another video to watch.", "modal-line9": "➤ Note:", "modal-line10": "● All videos have the same content.", "modal-line11": "● Video audio has been removed.", "modal-line12": "Admin Dang Giap!", "contact": "Contact Info", "contact-title": "Contact the administrator.", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "Email: chichchoehoa001@gmail.com", "contact-close": "Close", "ios-modal-title": "How to Add to Home Screen", "ios-line1": "(To optimize your experience, we recommend following the steps below)", "ios-line2": "1. Tap the <strong>Share</strong> icon (square with arrow) at the bottom of Safari.", "ios-line3": "2. Choose <strong>\"Add to Home Screen\"</strong>.", "ios-line4": "3. Tap <strong>\"Add\"</strong> to confirm.", "ios-ok-btn": "Got it", "copied-success-text": "Link copied successfully", "reset": "Reset Countdown", "dark-mode-on": "🌙 Dark Mode", "dark-mode-off": "🌞 Light Mode", "reset-success": "Default settings have been set", "lang-changed": "English language has been set", "countdown": { "remaining": "Remaining:", "days": "Day" }
         },
         ja: {
-            title: "光道の60分無音動画", "tiktok-normal": "テックトック", "tiktok-lite": "テックトックライト", "group-coc": "🐸 カエル 🐸", "coc-tiktok-lite": "テックトックライト", "coc-tiktok-regular": "テックトック", "group-tuyet": "❄ 雪 ❄", "group-tao": "🍎 りんご 🍎", "group-sumo": "🤼 相撲 🤼", "group-khobau": "宝箱解放 💎", "group-cauca": "🎣  釣り  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "QRコードを読み取り", "group-ramen": "🍜ラーメン🍜", "group-gt": "紹介 📢", "group-shein": "Shein", "info1": "ぜひテックトックフォローをお願いします！", "info2": "", "info3": "", "info4": "", "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。", "modal-cancel": "キャンセル", "modal-ok": "OK", "modal-error": "パスワードが間違っています。もう一度お試しください。", "modal-ok-confirm": "了解", "modal-title": "🔔 お知らせ", "modal-line1": "➤ ドメイン変更:", "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更された:", "modal-line3": "👉 video60min.com", "modal-line4": "● 旧ウェブサイト利用不可です。", "modal-line5": "👉 ............... ", "modal-line6": "➤ Phone Fram検出防止機能:", "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。", "modal-line8": "● 別の動画を選択してください。", "modal-line9": "➤ 注意:", "modal-line10": "● すべての動画の内容は同じです。", "modal-line11": "● 動画の音声は削除されています。", "modal-line12": "管理者 Đăng Giáp!", "contact": "問い合わせ", "contact-title": "管理者の問い合わせ：", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "メール: chichchoehoa001@gmail.com", "contact-close": "OK", "ios-modal-title": "ホーム画面に追加する方法", "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）", "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。", "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。", "ios-line4": "3. <strong>「追加」</strong>をタップして完了。", "ios-ok-btn": "了解", "copied-success-text": "リンクをコピーしました", "reset": "初期化", "dark-mode-on": "🌙 ダークモード", "dark-mode-off": "🌞 ライトモード", "reset-success": "最初化済み", "lang-changed": "日本語に切り替わりました。", "countdown": { "remaining": "有効期限：", "days": "日" }
+            title: "光道の60分無音動画", "tiktok-normal": "テックトック", "tiktok-lite": "テックトックライト", "group-coc": "🐸 カエル 🐸", "coc-tiktok-lite": "テックトックライト", "coc-tiktok-regular": "テックトック", "group-tuyet": "❄ 雪 ❄", "group-tao": "🍎 りんご 🍎", "group-sumo": "🤼 相撲 🤼", "group-khobau": "宝箱解放 💎", "group-cauca": "🎣  釣り  🎣", "group-500like": "🧡 500 Like 🧡", "group-QR": "QRコードを読み取り", "group-ramen": "🍜ラーメン🍜", "group-gt": "紹介 📢", "group-shein": "Shein", "group-inote": "Inote", "info1": "ぜひテックトックフォローをお願いします！", "info2": "", "info3": "", "info4": "", "modal-text": "この機能にアクセスする権限がありません。<br>続行するにはパスワードを入力してください。", "modal-cancel": "キャンセル", "modal-ok": "OK", "modal-error": "パスワードが間違っています。もう一度お試しください。", "modal-ok-confirm": "了解", "modal-title": "🔔 お知らせ", "modal-line1": "➤ ドメイン変更:", "modal-line2": "● 2025年5月26日より、ウェブサイトのアドレスが以下に変更された:", "modal-line3": "👉 video60min.com", "modal-line4": "● 旧ウェブサイト利用不可です。", "modal-line5": "👉 ............... ", "modal-line6": "➤ Phone Fram検出防止機能:", "modal-line7": "● 任意の動画をクリックすると、一定時間その動画は使用できなくなります。", "modal-line8": "● 別の動画を選択してください。", "modal-line9": "➤ 注意:", "modal-line10": "● すべての動画の内容は同じです。", "modal-line11": "● 動画の音声は削除されています。", "modal-line12": "管理者 Đăng Giáp!", "contact": "問い合わせ", "contact-title": "管理者の問い合わせ：", "contact-line1": "Zalo: 0979-518-322", "contact-line2": "メール: chichchoehoa001@gmail.com", "contact-close": "OK", "ios-modal-title": "ホーム画面に追加する方法", "ios-line1": "（使いやすくするために、以下の手順に従うことをおすすめします）", "ios-line2": "1. Safariの下部にある<strong>共有</strong>アイコン（上向きの矢印付きの四角）をタップ。", "ios-line3": "2. <strong>「ホーム画面に追加」</strong>を選択。", "ios-line4": "3. <strong>「追加」</strong>をタップして完了。", "ios-ok-btn": "了解", "copied-success-text": "リンクをコピーしました", "reset": "初期化", "dark-mode-on": "🌙 ダークモード", "dark-mode-off": "🌞 ライトモード", "reset-success": "最初化済み", "lang-changed": "日本語に切り替わりました。", "countdown": { "remaining": "有効期限：", "days": "日" }
         }
     };
     let currentLanguage = localStorage.getItem('appLang');
@@ -1782,6 +1800,7 @@
         document.getElementById('group-ramen').textContent = t["group-ramen"];
         document.getElementById('group-gt').textContent = t["group-gt"];
         document.getElementById('group-shein').textContent = t["group-shein"];
+        document.getElementById('group-inote').textContent = t["group-inote"];
         document.getElementById('info1').textContent = t["info1"];
         document.getElementById('info2').textContent = t["info2"];
         document.getElementById('info3').textContent = t["info3"];
